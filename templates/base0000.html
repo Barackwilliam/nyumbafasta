@@ -1,0 +1,254 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="sw" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NyumbaFasta - Pata Nyumba Na Makao Bora Tanzania{% endblock %}</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    
+    <!-- Meta Tags for SEO -->
+    <meta name="description" content="NyumbaFasta - Tafuta nyumba, viwanja, majengo ya kukodisha na kununua Tanzania. Bei nafuu na makao bora.">
+    <meta name="keywords" content="nyumba Tanzania, makao Tanzania, viwanja, majengo ya kukodisha, bei ya nyumba, property Tanzania">
+    <meta name="author" content="NyumbaFasta">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3 text-primary" href="{% url 'makazi:home' %}">
+                <i class="bi bi-house-heart-fill me-2"></i>NyumbaFasta
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link fw-medium" href="{% url 'makazi:home' %}">
+                            <i class="bi bi-house-door me-1"></i>Nyumbani
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-medium" href="{% url 'makazi:listings' %}">
+                            <i class="bi bi-grid-3x3-gap me-1"></i>Makazi Yote
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link fw-medium dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-geo-alt me-1"></i>Eneo
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for location in popular_locations|slice:":10" %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'makazi:listings' %}?location={{ location.location }}">
+                                    {{ location.location }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-medium" href="{% url 'makazi:about' %}">
+                            <i class="bi bi-info-circle me-1"></i>Kuhusu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-medium" href="{% url 'makazi:contact' %}">
+                            <i class="bi bi-telephone me-1"></i>Wasiliana
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Search Bar -->
+                <form class="d-flex me-3" action="{% url 'makazi:listings' %}" method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-primary" 
+                               name="search" placeholder="Tafuta nyumba..." 
+                               value="{{ request.GET.search }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Theme Toggle -->
+                <button class="btn btn-outline-secondary me-2" id="themeToggle">
+                    <i class="bi bi-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-5">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white pt-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Company Info -->
+                <div class="col-lg-4">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-house-heart-fill me-2"></i>NyumbaFasta
+                    </h4>
+                    <p class="text-light mb-4">
+                        Wazo bora la kukaa nalo ni kukaa mahali unapopenda. 
+                        Tunaunganisha watu na makao bora nchini Tanzania.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#" class="btn btn-outline-light btn-sm me-2">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-light btn-sm me-2">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-light btn-sm me-2">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="fw-bold mb-4">Viungo</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="{% url 'makazi:home' %}" class="text-light text-decoration-none">
+                                Nyumbani
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'makazi:listings' %}" class="text-light text-decoration-none">
+                                Makazi Yote
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'makazi:about' %}" class="text-light text-decoration-none">
+                                Kuhusu Sisi
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'makazi:contact' %}" class="text-light text-decoration-none">
+                                Wasiliana Nasi
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Popular Locations -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="fw-bold mb-4">Eneo Maarufu</h5>
+                    <ul class="list-unstyled">
+                        {% for location in popular_locations|slice:":5" %}
+                        <li class="mb-2">
+                            <a href="{% url 'makazi:listings' %}?location={{ location.location }}" 
+                               class="text-light text-decoration-none">
+                                <i class="bi bi-geo-alt me-1"></i>{{ location.location }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-lg-3">
+                    <h5 class="fw-bold mb-4">Wasiliana Nasi</h5>
+                    <ul class="list-unstyled text-light">
+                        <li class="mb-3">
+                            <i class="bi bi-envelope me-2"></i>
+                            info@nyumbafasta.co.tz
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-telephone me-2"></i>
+                            +255 768 123 456
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-whatsapp me-2"></i>
+                            +255 621 789 012
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-geo-alt me-2"></i>
+                            Dar es Salaam, Tanzania
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+
+            <!-- Copyright -->
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">
+                        &copy; {% now "Y" %} NyumbaFasta. Haki zote zimehifadhiwa.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-light text-decoration-none me-3">Sera ya Faragha</a>
+                    <a href="#" class="text-light text-decoration-none">Vigezo vya Matumizi</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery (optional, for AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="/static/js/main.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Google Analytics (optional) -->
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-bs-theme', newTheme);
+            themeIcon.className = newTheme === 'light' ? 'bi bi-moon' : 'bi bi-sun';
+            
+            // Save preference
+            localStorage.setItem('theme', newTheme);
+        });
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        themeIcon.className = savedTheme === 'light' ? 'bi bi-moon' : 'bi bi-sun';
+    </script>
+</body>
+</html>

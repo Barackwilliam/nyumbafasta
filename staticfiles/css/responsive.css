@@ -1,0 +1,58 @@
+/* Responsive Design Utilities */
+
+/* Extra small devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.3rem; }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .property-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Small devices (576px to 768px) */
+@media (min-width: 576px) and (max-width: 768px) {
+    .property-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* Medium devices (768px to 992px) */
+@media (min-width: 768px) and (max-width: 992px) {
+    .property-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+/* Large devices (992px and up) */
+@media (min-width: 992px) {
+    .property-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    footer,
+    .btn,
+    .no-print {
+        display: none !important;
+    }
+    
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}

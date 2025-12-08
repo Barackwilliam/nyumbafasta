@@ -1,0 +1,1136 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_filters %}
+
+
+{% block title %}All Properties - NyumbaFasta{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/animations.css' %}">
+<style>
+    /* Additional styles for listings page */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-light) 0%, var(--light) 100%);
+        border-radius: var(--radius-xl);
+        padding: var(--space-2xl) var(--space-lg);
+        margin-bottom: var(--space-2xl);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+    
+    .stats-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-sm);
+        border: var(--card-border);
+        text-align: center;
+        transition: var(--transition-base);
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+    }
+    
+    .stats-label {
+        font-size: 0.875rem;
+        color: var(--gray-500);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: var(--space-xs);
+    }
+    
+    /* Enhanced filter sidebar */
+    .filter-group {
+        margin-bottom: var(--space-lg);
+    }
+    
+    .filter-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray-600);
+        margin-bottom: var(--space-sm);
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+    }
+    
+    /* View toggle enhancements */
+    .view-toggle .btn {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Map view button */
+    #mapView {
+        display: none;
+    }
+    
+    @media (min-width: 768px) {
+        #mapView {
+            display: inline-flex;
+        }
+    }
+    
+    /* Loading state for cards */
+    .listing-card.loading {
+        min-height: 400px;
+    }
+    
+    /* Map container */
+    #mapContainer {
+        height: 600px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        margin-bottom: var(--space-xl);
+        display: none;
+    }
+    
+    /* Quick actions */
+    .quick-actions {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+    
+    .quick-action-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-lg);
+        transition: var(--transition-fast);
+    }
+    
+    .quick-action-btn:hover {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="container">
+        <!-- Page Header with Stats -->
+        <div class="page-header animate-scale-in">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <nav aria-label="breadcrumb" class="mb-3">
+                        <ol class="breadcrumb bg-transparent px-0">
+                            <li class="breadcrumb-item"><a href="{% url 'makazi:home' %}" class="text-decoration-none">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">All Properties</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="display-6 fw-bold mb-3 gradient-text">Find the Best Properties in Tanzania</h1>
+                    <p class="lead text-muted mb-4">
+                        {{ total_listings|default:"500+" }} properties are waiting for you. Search for affordable prices and find your dream home.
+                    </p>
+                    
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="stats-card animate-slide-left" style="animation-delay: 0.1s">
+                            <div class="stats-number">{{ total_listings|default:"500+" }}</div>
+                            <div class="stats-label">All Properties</div>
+                        </div>
+                        <div class="stats-card animate-slide-left" style="animation-delay: 0.2s">
+                            <div class="stats-number">{{ featured_count|default:"50+" }}</div>
+                            <div class="stats-label">Featured Properties</div>
+                        </div>
+                        <div class="stats-card animate-slide-left" style="animation-delay: 0.3s">
+                            <div class="stats-number">{{ locations_count|default:"20+" }}</div>
+                            <div class="stats-label">Locations</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mt-4 mt-lg-0">
+                    <div class="card border-0 shadow-lg animate-slide-right">
+                        <div class="card-body p-4">
+                            <h5 class="card-title fw-bold mb-3">What are you looking for?</h5>
+                            <form action="{% url 'makazi:listings' %}" method="get" class="quick-search">
+                                <div class="mb-3">
+                                    <label class="form-label">Location</label>
+                                    <select class="form-select" name="location">
+                                        <option value="">Choose location</option>
+                                        {% for location in locations|slice:":5" %}
+                                        <option value="{{ location }}">{{ location }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label">Bedrooms</label>
+                                        <select class="form-select" name="bedrooms">
+                                            <option value="">Any</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3+</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">Type</label>
+                                        <select class="form-select" name="property_type">
+                                            <option value="">Any</option>
+                                            <option value="house">House</option>
+                                            <option value="apartment">Apartment</option>
+                                            <option value="room">Room</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-search me-2"></i>Search Now
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Map View (Hidden by default) -->
+<div id="mapContainer">
+    <div id="propertyMap" style="height: 600px; width: 100%;"></div>
+</div>
+        
+        <!-- Main Content Area -->
+        <div class="row g-4">
+            <!-- Filters Sidebar -->
+            <div class="col-lg-3">
+                <div class="filters-sidebar">
+                    <!-- Mobile Filter Header -->
+                    <div class="d-lg-none mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0">Filters</h5>
+                            <button class="btn btn-sm btn-link text-decoration-none" type="button" 
+                                    data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+                                Open All
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filters Content -->
+                    <div class="collapse d-lg-block" id="filterCollapse">
+                        <!-- Active Filters -->
+                        {% if request.GET %}
+                        <div class="filter-section mb-4 animate-fade-in">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Selected Filters</h6>
+                                <a href="{% url 'makazi:listings' %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-x-circle"></i> Clear
+                                </a>
+                            </div>
+                            <div class="filter-tags mt-3">
+                                {% for key, value in request.GET.items %}
+                                    {% if value and key != 'page' and key != 'sort' %}
+                                    <span class="filter-tag">
+                                        {{ key }}: {{ value }}
+                                        <a href="?{% for k, v in request.GET.items %}{% if k != key %}{{ k }}={{ v }}&{% endif %}{% endfor %}" 
+                                           class="text-white ms-1">
+                                            <i class="bi bi-x"></i>
+                                        </a>
+                                    </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Search Filter -->
+                        <div class="filter-section mb-4">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Search</h6>
+                            </div>
+                            <div class="filter-group">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" 
+                                           name="search" 
+                                           placeholder="Search for houses..."
+                                           value="{{ request.GET.search }}"
+                                           id="searchInput">
+                                    <button class="btn btn-outline-primary" type="button" id="searchButton">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Location Filter -->
+                        <div class="filter-section mb-4">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Location</h6>
+                            </div>
+                            <div class="filter-group">
+                                <select class="form-select" name="location" id="locationFilter">
+                                    <option value="">Choose Location</option>
+                                    {% for location in locations %}
+                                    <option value="{{ location }}" 
+                                            {% if request.GET.location == location %}selected{% endif %}>
+                                        {{ location }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="filter-group mt-3">
+                                <div class="filter-title">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span>Popular Locations</span>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for location in popular_locations|slice:":6" %}
+                                    <a href="?location={{ location.location }}" 
+                                       class="badge bg-primary bg-opacity-10 text-primary text-decoration-none hover-grow">
+                                        {{ location.location }}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Price Filter -->
+                        <div class="filter-section mb-4">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Price (TSh)</h6>
+                            </div>
+                            <div class="filter-group">
+                                <div class="row g-2 mb-3">
+                                    <div class="col">
+                                        <input type="number" 
+                                               class="form-control" 
+                                               id="minPrice" 
+                                               placeholder="From"
+                                               value="{{ request.GET.min_price }}">
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" 
+                                               class="form-control" 
+                                               id="maxPrice" 
+                                               placeholder="To"
+                                               value="{{ request.GET.max_price }}">
+                                    </div>
+                                </div>
+                                <div class="price-slider mt-3" id="priceSlider"></div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-muted" id="minPriceLabel">0</small>
+                                    <small class="text-muted" id="maxPriceLabel">100,000,000</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Property Type Filter -->
+                        <div class="filter-section mb-4">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Property Type</h6>
+                            </div>
+                            <div class="filter-group">
+                                {% for prop_type in property_types %}
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           name="property_type" 
+                                           value="{{ prop_type }}" 
+                                           id="type{{ forloop.counter }}"
+                                           {% if request.GET.property_type == prop_type %}checked{% endif %}>
+                                    <label class="form-check-label" for="type{{ forloop.counter }}">
+                                        {{ prop_type|default:"Properties" }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Apply Filters Button -->
+                        <div class="sticky-bottom bg-white pt-3" style="bottom: 0;">
+                            <button type="button" class="btn btn-primary w-100 mb-2" id="applyFilters">
+                                <i class="bi bi-check-circle me-2"></i>Apply Filters
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary w-100" id="resetFilters">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Properties Grid -->
+            <div class="col-lg-9">
+                <!-- Toolbar -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body py-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="fw-bold mb-0 me-3">All Properties</h5>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary">
+                                        {{ listings.paginator.count }} found
+                                    </span>
+                                </div>
+                                {% if request.GET %}
+                                <small class="text-muted">With selected filters</small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-end align-items-center gap-3">
+                                    <!-- View Toggle -->
+                                    <div class="btn-group view-toggle" role="group">
+                                        <button type="button" class="btn btn-outline-primary active" id="gridView" 
+                                                data-bs-toggle="tooltip" title="Grid View">
+                                            <i class="bi bi-grid-3x3-gap"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary" id="listView"
+                                                data-bs-toggle="tooltip" title="List View">
+                                            <i class="bi bi-list-task"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary" id="mapView"
+                                                data-bs-toggle="tooltip" title="Map View">
+                                            <i class="bi bi-map"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Sort Dropdown -->
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                                                data-bs-toggle="dropdown">
+                                            <i class="bi bi-sort-down me-2"></i>Sort
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="?sort=-scraped_at">Newest</a></li>
+                                            <li><a class="dropdown-item" href="?sort=price">Price: Low to High</a></li>
+                                            <li><a class="dropdown-item" href="?sort=-price">Price: High to Low</a></li>
+                                            <li><a class="dropdown-item" href="?sort=-bedrooms">Bedrooms: Most</a></li>
+                                            <li><a class="dropdown-item" href="?sort=bedrooms">Bedrooms: Least</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Properties Grid/List View -->
+                <div id="propertiesContainer" class="property-grid">
+                    {% for listing in listings %}
+                    <div class="listing-card animate-on-scroll">
+                        <div class="listing-image">
+                            <img src="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}" 
+                                 alt="{{ listing.title }}"
+                                 data-src="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}"
+                                 class="img-fluid" loading="lazy">
+                            
+                            <div class="listing-badges">
+                                {% if listing.is_featured %}
+                                <span class="listing-badge badge-featured">
+                                    <i class="bi bi-star-fill me-1"></i>Featured
+                                </span>
+                                {% endif %}
+                                
+                                {% if listing.is_verified %}
+                                <span class="listing-badge badge-verified">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Verified
+                                </span>
+                                {% endif %}
+                                
+                                <span class="listing-badge badge-type">
+                                    {{ listing.property_type|default:"Property" }}
+                                </span>
+                            </div>
+                            
+                            <!-- Favorite Button -->
+                            <button class="btn btn-light btn-sm rounded-circle position-absolute top-0 end-0 m-3 favorite-btn"
+                                    data-listing-id="{{ listing.id }}"
+                                    data-bs-toggle="tooltip"
+                                    title="Save">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="listing-content">
+                            <h3 class="listing-title">
+                                <a href="{{ listing.get_absolute_url }}" class="text-decoration-none text-dark">
+                                    {{ listing.title|truncatechars:60 }}
+                                </a>
+                            </h3>
+                            
+                            <div class="listing-location">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span>{{ listing.location|truncatechars:40 }}</span>
+                            </div>
+                            
+                          <div class="listing-price">
+                            {{ listing.price|only_digits }}
+                        </div>
+
+                                                    
+                            <div class="listing-features">
+                                {% if listing.bedrooms %}
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-door-closed"></i>
+                                    </div>
+                                    <span class="feature-value">{{ listing.bedrooms }}</span>
+                                    <span class="feature-label">Bedrooms</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if listing.bathrooms %}
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-droplet"></i>
+                                    </div>
+                                    <span class="feature-value">{{ listing.bathrooms }}</span>
+                                    <span class="feature-label">Bathrooms</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if listing.area_sqft %}
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-arrows-fullscreen"></i>
+                                    </div>
+                                    <span class="feature-value">{{ listing.area_sqft }}</span>
+                                    <span class="feature-label">Sq. Ft</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <p class="text-muted small mb-3">
+                                {{ listing.description|truncatechars:100 }}
+                            </p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <small class="text-muted">
+                                    <i class="bi bi-clock me-1"></i>
+                                    {{ listing.scraped_at|timesince }} ago
+                                </small>
+                                
+                                <a href="{{ listing.get_absolute_url }}" class="btn btn-primary btn-sm hover-lift">
+                                    View Details
+                                    <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- No Results -->
+                {% if not listings %}
+                <div class="no-results text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-house-exclamation display-1 text-muted"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">No Properties Found</h4>
+                    <p class="text-muted mb-4">Change your filters or check our recommendations</p>
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                        <a href="{% url 'makazi:listings' %}" class="btn btn-primary">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Reset Filters
+                        </a>
+                        <a href="{% url 'makazi:home' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-house me-2"></i>Return Home
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Pagination -->
+                {% if listings.has_other_pages %}
+                <nav aria-label="Page navigation" class="mt-5">
+                    <ul class="pagination pagination-custom justify-content-center">
+                        {% if listings.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ listings.previous_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for i in listings.paginator.page_range %}
+                            {% if listings.number == i %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ i }}</span>
+                            </li>
+                            {% elif i > listings.number|add:'-3' and i < listings.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ i }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {{ i }}
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if listings.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ listings.next_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <button class="btn btn-primary quick-action-btn" id="scrollToTop" 
+            data-bs-toggle="tooltip" title="Scroll to top">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+    <button class="btn btn-success quick-action-btn" id="sharePage"
+            data-bs-toggle="tooltip" title="Share">
+        <i class="bi bi-share"></i>
+    </button>
+    <button class="btn btn-info quick-action-btn" id="contactSupport"
+            data-bs-toggle="tooltip" title="Contact">
+        <i class="bi bi-whatsapp"></i>
+    </button>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+<script>
+    $(document).ready(function() {
+        // Initialize tooltips
+        $('[data-bs-toggle="tooltip"]').tooltip();
+        
+        // View Toggle Functionality
+        const gridViewBtn = $('#gridView');
+        const listViewBtn = $('#listView');
+        const mapViewBtn = $('#mapView');
+        const propertiesContainer = $('#propertiesContainer');
+        const mapContainer = $('#mapContainer');
+        
+        // Leaflet Map Variables
+        let map = null;
+        let markers = [];
+        let propertyLocations = [
+            {% for listing in listings %}
+            {
+                id: "{{ listing.id }}",
+                title: "{{ listing.title|escapejs }}",
+                price: "{{ listing.price }}",
+                location: "{{ listing.location|escapejs }}",
+                url: "{{ listing.get_absolute_url }}",
+                image: "{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}",
+                type: "{{ listing.property_type|default:'Property' }}",
+                {% if listing.latitude and listing.longitude %}
+                lat: {{ listing.latitude }},
+                lng: {{ listing.longitude }},
+                has_coordinates: true
+                {% else %}
+                has_coordinates: false,
+                lat: null,
+                lng: null
+                {% endif %}
+            },
+            {% endfor %}
+        ];
+        
+        // Function to initialize map
+        function initMap() {
+            if (map) return;
+            
+            // Default to Dar es Salaam coordinates
+            const defaultCenter = [-6.7924, 39.2083];
+            
+            // Create map
+            map = L.map('propertyMap').setView(defaultCenter, 12);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+            }).addTo(map);
+            
+            // Add scale control
+            L.control.scale().addTo(map);
+            
+            // Create a marker cluster group
+            const markersCluster = L.markerClusterGroup({
+                showCoverageOnHover: false,
+                maxClusterRadius: 50,
+                spiderfyOnMaxZoom: true
+            });
+            
+            // Create custom icon for properties
+            const propertyIcon = L.divIcon({
+                html: '<div class="map-marker"><i class="bi bi-house-fill"></i></div>',
+                className: 'custom-marker',
+                iconSize: [30, 30],
+                iconAnchor: [15, 30]
+            });
+            
+            // Add markers for properties with coordinates
+            propertyLocations.forEach(property => {
+                if (property.has_coordinates && property.lat && property.lng) {
+                    const marker = L.marker([property.lat, property.lng], {
+                        icon: propertyIcon
+                    });
+                    
+                    // Create popup content
+                    const popupContent = `
+                        <div class="map-popup">
+                            <div class="popup-image">
+                                <img src="${property.image}" alt="${property.title}" 
+                                     onerror="this.src='/static/images/default-property.jpg'">
+                            </div>
+                            <div class="popup-content">
+                                <h6 class="fw-bold mb-1">${property.title}</h6>
+                                <p class="text-muted small mb-2">
+                                    <i class="bi bi-geo-alt me-1"></i>${property.location}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-primary fw-bold">TSh ${property.price}</span>
+                                    <a href="${property.url}" class="btn btn-sm btn-primary">
+                                        View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    marker.bindPopup(popupContent);
+                    markersCluster.addLayer(marker);
+                    markers.push(marker);
+                }
+            });
+            
+            // Add marker cluster to map
+            map.addLayer(markersCluster);
+            
+            // If no markers, show a message
+            if (markers.length === 0) {
+                const noDataControl = L.control({position: 'topright'});
+                noDataControl.onAdd = function() {
+                    const div = L.DomUtil.create('div', 'info legend');
+                    div.innerHTML = '<div class="alert alert-info m-2"><i class="bi bi-info-circle"></i> No location data available</div>';
+                    return div;
+                };
+                noDataControl.addTo(map);
+            }
+        }
+        
+        // Function to fit map to markers bounds
+        function fitMapToMarkers() {
+            if (markers.length > 0) {
+                const group = new L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+        
+        gridViewBtn.click(function() {
+            $(this).addClass('active').removeClass('btn-outline-primary');
+            listViewBtn.removeClass('active').addClass('btn-outline-primary');
+            mapViewBtn.removeClass('active').addClass('btn-outline-primary');
+            propertiesContainer.removeClass('list-view').addClass('property-grid');
+            mapContainer.hide();
+            propertiesContainer.show();
+            showToast('Grid view activated');
+        });
+        
+        listViewBtn.click(function() {
+            $(this).addClass('active').removeClass('btn-outline-primary');
+            gridViewBtn.removeClass('active').addClass('btn-outline-primary');
+            mapViewBtn.removeClass('active').addClass('btn-outline-primary');
+            propertiesContainer.removeClass('property-grid').addClass('list-view');
+            mapContainer.hide();
+            propertiesContainer.show();
+            showToast('List view activated');
+        });
+        
+        mapViewBtn.click(function() {
+            $(this).addClass('active').removeClass('btn-outline-primary');
+            gridViewBtn.removeClass('active').addClass('btn-outline-primary');
+            listViewBtn.removeClass('active').addClass('btn-outline-primary');
+            propertiesContainer.hide();
+            mapContainer.show();
+            
+            // Initialize map if not already initialized
+            if (!map) {
+                initMap();
+            } else {
+                // Refresh map if already initialized
+                map.invalidateSize();
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
+            }
+            
+            showToast('Map view activated');
+        });
+        
+        // Add CSS for map markers and popups
+        const style = document.createElement('style');
+        style.textContent = `
+            .custom-marker {
+                background: none;
+                border: none;
+            }
+            .map-marker {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 14px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                border: 2px solid white;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            .map-marker:hover {
+                transform: scale(1.2);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            }
+            .map-popup {
+                min-width: 250px;
+            }
+            .map-popup .popup-image {
+                height: 120px;
+                overflow: hidden;
+                border-radius: 8px 8px 0 0;
+                margin: -10px -10px 10px -10px;
+            }
+            .map-popup .popup-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .map-popup .popup-content {
+                padding: 5px;
+            }
+            .leaflet-popup-content {
+                margin: 10px;
+            }
+            .leaflet-cluster-anim .leaflet-marker-icon, 
+            .leaflet-cluster-anim .leaflet-marker-shadow {
+                -webkit-transition: -webkit-transform 0.3s ease-out, opacity 0.3s ease-in;
+                -moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease-in;
+                -o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease-in;
+                transition: transform 0.3s ease-out, opacity 0.3s ease-in;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Price Slider with formatted labels
+        const priceSlider = $('#priceSlider');
+        const minPriceInput = $('#minPrice');
+        const maxPriceInput = $('#maxPrice');
+        const minPriceLabel = $('#minPriceLabel');
+        const maxPriceLabel = $('#maxPriceLabel');
+        
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-TZ').format(value);
+        }
+        
+        priceSlider.slider({
+            range: true,
+            min: 0,
+            max: 100000000,
+            values: [{{ request.GET.min_price|default:0 }}, {{ request.GET.max_price|default:100000000 }}],
+            slide: function(event, ui) {
+                minPriceInput.val(ui.values[0]);
+                maxPriceInput.val(ui.values[1]);
+                minPriceLabel.text(formatCurrency(ui.values[0]));
+                maxPriceLabel.text(formatCurrency(ui.values[1]));
+            },
+            change: function(event, ui) {
+                minPriceLabel.text(formatCurrency(ui.values[0]));
+                maxPriceLabel.text(formatCurrency(ui.values[1]));
+            }
+        });
+        
+        // Update slider when input changes
+        minPriceInput.on('input', function() {
+            const values = priceSlider.slider('values');
+            values[0] = $(this).val() || 0;
+            priceSlider.slider('values', values);
+            minPriceLabel.text(formatCurrency(values[0]));
+        });
+        
+        maxPriceInput.on('input', function() {
+            const values = priceSlider.slider('values');
+            values[1] = $(this).val() || 100000000;
+            priceSlider.slider('values', values);
+            maxPriceLabel.text(formatCurrency(values[1]));
+        });
+        
+        // Initialize price labels
+        minPriceLabel.text(formatCurrency(priceSlider.slider('values')[0]));
+        maxPriceLabel.text(formatCurrency(priceSlider.slider('values')[1]));
+        
+        // Enhanced Filter Application
+        $('#applyFilters').click(function() {
+            applyFilters();
+        });
+        
+        $('#searchButton').click(function() {
+            applyFilters();
+        });
+        
+        $('#searchInput').keypress(function(e) {
+            if (e.which === 13) {
+                applyFilters();
+            }
+        });
+        
+        function applyFilters() {
+            const params = new URLSearchParams(window.location.search);
+            
+            // Get all filter values
+            const filters = {
+                search: $('#searchInput').val(),
+                location: $('#locationFilter').val(),
+                min_price: $('#minPrice').val(),
+                max_price: $('#maxPrice').val(),
+                property_type: $('input[name="property_type"]:checked').val(),
+                bedrooms: $('input[name="bedrooms"]:checked').val(),
+                is_featured: $('#featuredFilter').is(':checked') ? 'true' : '',
+                is_verified: $('#verifiedFilter').is(':checked') ? 'true' : '',
+                sort: '{{ request.GET.sort }}'
+            };
+            
+            // Update URL parameters
+            for (const [key, value] of Object.entries(filters)) {
+                if (value) {
+                    params.set(key, value);
+                } else {
+                    params.delete(key);
+                }
+            }
+            
+            // Remove page parameter when filters change
+            params.delete('page');
+            
+            // Show loading state
+            showLoading();
+            
+            // Navigate to filtered page
+            window.location.search = params.toString();
+        }
+        
+        function showLoading() {
+            const loadingToast = showToast('Searching properties...', 'info');
+            setTimeout(() => {
+                loadingToast.hide();
+            }, 2000);
+        }
+        
+        // Reset Filters with confirmation
+        $('#resetFilters').click(function() {
+            if (confirm('Are you sure you want to clear all filters?')) {
+                window.location.href = "{% url 'makazi:listings' %}";
+            }
+        });
+        
+        // Auto-apply when certain filters change
+        $('#locationFilter, #featuredFilter, #verifiedFilter').change(function() {
+            applyFilters();
+        });
+        
+        // Enhanced Favorite functionality
+        $('.favorite-btn').click(function(e) {
+            e.preventDefault();
+            const btn = $(this);
+            const listingId = btn.data('listing-id');
+            const icon = btn.find('i');
+            
+            // Add animation
+            btn.addClass('animate-pulse');
+            
+            // Toggle icon
+            if (icon.hasClass('bi-heart')) {
+                icon.removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+                showToast('Property added to favorites', 'success');
+            } else {
+                icon.removeClass('bi-heart-fill text-danger').addClass('bi-heart');
+                showToast('Property removed from favorites', 'warning');
+            }
+            
+            // Save to localStorage
+            let favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
+            if (favorites.includes(listingId)) {
+                favorites = favorites.filter(id => id !== listingId);
+            } else {
+                favorites.push(listingId);
+            }
+            localStorage.setItem('nyumbafasta_favorites', JSON.stringify(favorites));
+            
+            // Remove animation
+            setTimeout(() => {
+                btn.removeClass('animate-pulse');
+            }, 600);
+        });
+        
+        // Check and update favorite buttons on page load
+        $('.favorite-btn').each(function() {
+            const btn = $(this);
+            const listingId = btn.data('listing-id');
+            const favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
+            
+            if (favorites.includes(listingId)) {
+                btn.find('i').removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+            }
+        });
+        
+        // Quick Actions
+        $('#scrollToTop').click(function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        $('#sharePage').click(function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    text: 'Check out these properties on NyumbaFasta',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showToast('URL copied to clipboard!', 'success');
+                });
+            }
+        });
+        
+        $('#contactSupport').click(function() {
+            const phoneNumber = '+255621789012';
+            const message = 'Hello, I am interested in properties on NyumbaFasta';
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+        
+        // Lazy loading images
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const src = img.getAttribute('data-src');
+                        
+                        if (src) {
+                            img.src = src;
+                            img.removeAttribute('data-src');
+                            img.classList.add('loaded');
+                        }
+                        
+                        observer.unobserve(img);
+                    }
+                });
+            });
+            
+            $('img[data-src]').each(function() {
+                imageObserver.observe(this);
+            });
+        }
+        
+        // Scroll animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        $('.animate-on-scroll').each(function() {
+            observer.observe(this);
+        });
+        
+        // Responsive adjustments
+        function handleResize() {
+            if (window.innerWidth < 992) {
+                // Mobile adjustments
+                $('.quick-actions').addClass('d-none');
+            } else {
+                $('.quick-actions').removeClass('d-none');
+            }
+            
+            // Invalidate map size on resize if map is visible
+            if (map && mapContainer.is(':visible')) {
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 300);
+            }
+        }
+        
+        // Initial call
+        handleResize();
+        
+        // Listen for resize
+        $(window).resize(debounce(handleResize, 250));
+        
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    });
+</script>
+{% endblock %}

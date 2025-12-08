@@ -1,0 +1,835 @@
+<!-- templates/listings.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Makazi Yote - NyumbaFasta{% endblock %}
+
+{% block extra_css %}
+<style>
+    .filters-sidebar {
+        position: sticky;
+        top: 80px;
+        height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+    
+    .filter-section {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eaeaea;
+    }
+    
+    .filter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .price-range {
+        padding: 0 10px;
+    }
+    
+    .price-slider {
+        height: 6px;
+        border-radius: 3px;
+        background: #e0e0e0;
+        margin: 20px 0;
+    }
+    
+    .price-slider .ui-slider-range {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 3px;
+    }
+    
+    .price-slider .ui-slider-handle {
+        width: 20px;
+        height: 20px;
+        background: white;
+        border: 2px solid #667eea;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    .property-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+    }
+    
+    .listing-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid #eaeaea;
+        height: 100%;
+    }
+    
+    .listing-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-color: #667eea;
+    }
+    
+    .listing-image {
+        height: 220px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .listing-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .listing-card:hover .listing-image img {
+        transform: scale(1.05);
+    }
+    
+    .listing-badges {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .listing-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .badge-featured {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: white;
+    }
+    
+    .badge-verified {
+        background: linear-gradient(135deg, #00b09b, #96c93d);
+        color: white;
+    }
+    
+    .badge-type {
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+        backdrop-filter: blur(10px);
+    }
+    
+    .listing-content {
+        padding: 20px;
+    }
+    
+    .listing-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        line-height: 1.4;
+    }
+    
+    .listing-location {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .listing-price {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .listing-features {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        margin: 15px 0;
+    }
+    
+    .feature-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .feature-icon {
+        width: 32px;
+        height: 32px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #667eea;
+    }
+    
+    .feature-label {
+        font-size: 0.8rem;
+        color: #7f8c8d;
+    }
+    
+    .feature-value {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .sort-dropdown .dropdown-toggle {
+        background: white;
+        border: 1px solid #dee2e6;
+        color: #495057;
+        font-weight: 500;
+    }
+    
+    .pagination-custom .page-link {
+        border-radius: 8px;
+        margin: 0 3px;
+        border: none;
+        color: #667eea;
+        font-weight: 500;
+    }
+    
+    .pagination-custom .page-item.active .page-link {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 16px;
+        border: 2px dashed #dee2e6;
+    }
+    
+    .filter-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .filter-tag {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    @media (max-width: 992px) {
+        .filters-sidebar {
+            position: static;
+            height: auto;
+            margin-bottom: 30px;
+        }
+        
+        .property-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .property-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent px-0">
+                        <li class="breadcrumb-item"><a href="{% url 'makazi:home' %}" class="text-decoration-none">Nyumbani</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Makazi Yote</li>
+                    </ol>
+                </nav>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="fw-bold display-6 mb-2">Makazi Yote</h1>
+                        <p class="text-muted mb-0">Pata makazi {{ total_listings|default:"500+" }} kutoka maeneo mbalimbali Tanzania</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- View Toggle -->
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary active" id="gridView">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" id="listView">
+                                <i class="bi bi-list-task"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Sort Dropdown -->
+                        <div class="dropdown sort-dropdown">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-sort-down me-2"></i>Panga kwa
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="?sort=-scraped_at">Mpya zaidi</a></li>
+                                <li><a class="dropdown-item" href="?sort=price">Bei: Chini kwenda Juu</a></li>
+                                <li><a class="dropdown-item" href="?sort=-price">Bei: Juu kwenda Chini</a></li>
+                                <li><a class="dropdown-item" href="?sort=-bedrooms">Vyumba: Vingi</a></li>
+                                <li><a class="dropdown-item" href="?sort=bedrooms">Vyumba: Vichache</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Filters Sidebar -->
+            <div class="col-lg-3">
+                <div class="filters-sidebar">
+                    <!-- Mobile Filter Toggle -->
+                    <div class="d-lg-none mb-3">
+                        <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+                            <i class="bi bi-funnel me-2"></i>Fungua Filters
+                        </button>
+                    </div>
+                    
+                    <div class="collapse d-lg-block" id="filterCollapse">
+                        <!-- Active Filters -->
+                        {% if request.GET %}
+                        <div class="filter-section">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Filters Zilizochaguliwa</h6>
+                                <a href="{% url 'makazi:listings' %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-x-circle"></i> Futa Zote
+                                </a>
+                            </div>
+                            <div class="filter-tags">
+                                {% for key, value in request.GET.items %}
+                                    {% if value and key != 'page' and key != 'sort' %}
+                                    <span class="filter-tag">
+                                        {{ key }}: {{ value }}
+                                        <a href="?{% for k, v in request.GET.items %}{% if k != key %}{{ k }}={{ v }}&{% endif %}{% endfor %}" 
+                                           class="text-white ms-1">
+                                            <i class="bi bi-x"></i>
+                                        </a>
+                                    </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Search Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Tafuta</h6>
+                            </div>
+                            <form id="searchFilterForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Neno muhimu</label>
+                                    <input type="text" class="form-control" 
+                                           name="search" 
+                                           placeholder="Nyumba, chumba, apartment..."
+                                           value="{{ request.GET.search }}">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-search me-2"></i>Tafuta
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Location Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Eneo</h6>
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-select" name="location" id="locationFilter">
+                                    <option value="">Chagua Eneo</option>
+                                    {% for location in locations %}
+                                    <option value="{{ location }}" 
+                                            {% if request.GET.location == location %}selected{% endif %}>
+                                        {{ location }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="popular-locations">
+                                <small class="text-muted d-block mb-2">Maeneo Maarufu:</small>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for location in popular_locations|slice:":6" %}
+                                    <a href="?location={{ location.location }}" 
+                                       class="badge bg-light text-dark text-decoration-none">
+                                        {{ location.location }}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Price Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Bei</h6>
+                            </div>
+                            <div class="price-range">
+                                <div class="row g-2 mb-3">
+                                    <div class="col">
+                                        <input type="number" 
+                                               class="form-control" 
+                                               id="minPrice" 
+                                               placeholder="Kuanzia"
+                                               value="{{ request.GET.min_price }}">
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" 
+                                               class="form-control" 
+                                               id="maxPrice" 
+                                               placeholder="Hadi"
+                                               value="{{ request.GET.max_price }}">
+                                    </div>
+                                </div>
+                                <div class="price-slider mt-4" id="priceSlider"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Property Type Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Aina ya Makazi</h6>
+                            </div>
+                            <div class="property-types">
+                                {% for prop_type in property_types %}
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           name="property_type" 
+                                           value="{{ prop_type }}" 
+                                           id="type{{ forloop.counter }}"
+                                           {% if request.GET.property_type == prop_type %}checked{% endif %}>
+                                    <label class="form-check-label" for="type{{ forloop.counter }}">
+                                        {{ prop_type|default:"Makazi" }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Bedrooms Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Idadi ya Vyumba</h6>
+                            </div>
+                            <div class="bedrooms-filter">
+                                <div class="row g-2">
+                                    {% for beds in "12345"|make_list %}
+                                    <div class="col-4">
+                                        <input type="radio" 
+                                               class="btn-check" 
+                                               name="bedrooms" 
+                                               id="beds{{ beds }}" 
+                                               value="{{ beds }}"
+                                               {% if request.GET.bedrooms == beds %}checked{% endif %}
+                                               autocomplete="off">
+                                        <label class="btn btn-outline-primary w-100" for="beds{{ beds }}">
+                                            {{ beds }} {% if beds == "5" %}+{% endif %}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Advanced Filters -->
+                        <div class="filter-section">
+                            <div class="filter-header">
+                                <h6 class="fw-bold mb-0">Vipimo Vingine</h6>
+                            </div>
+                            <div class="advanced-filters">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           name="is_featured" 
+                                           id="featuredFilter"
+                                           {% if request.GET.is_featured %}checked{% endif %}>
+                                    <label class="form-check-label" for="featuredFilter">
+                                        Makazi Bora Pekee
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           name="is_verified" 
+                                           id="verifiedFilter"
+                                           {% if request.GET.is_verified %}checked{% endif %}>
+                                    <label class="form-check-label" for="verifiedFilter">
+                                        Makazi Yaliyothibitishwa
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Apply Filters Button -->
+                        <div class="sticky-bottom bg-white pt-3" style="bottom: 0;">
+                            <button type="button" class="btn btn-primary w-100 mb-2" id="applyFilters">
+                                <i class="bi bi-check-circle me-2"></i>Tumia Filters
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary w-100" id="resetFilters">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Weka Upya
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Properties Grid -->
+            <div class="col-lg-9">
+                <!-- Results Count -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <p class="mb-0">
+                        <strong>{{ listings.paginator.count }}</strong> makazi yamepatikana
+                        {% if request.GET %}
+                        kwa filters zilizochaguliwa
+                        {% endif %}
+                    </p>
+                    <div class="d-none d-md-block">
+                        <small class="text-muted">
+                            Kuonyesha {{ listings.start_index }}-{{ listings.end_index }} ya {{ listings.paginator.count }}
+                        </small>
+                    </div>
+                </div>
+                
+                {% if listings %}
+                <!-- Properties Grid/List View -->
+                <div id="propertiesContainer" class="property-grid">
+                    {% for listing in listings %}
+                    <div class="listing-card">
+                        <div class="listing-image">
+                            <img src="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}" 
+                                 alt="{{ listing.title }}"
+                                 onerror="this.src='/static/images/default-property.jpg'">
+                            
+                            <div class="listing-badges">
+                                {% if listing.is_featured %}
+                                <span class="listing-badge badge-featured">
+                                    <i class="bi bi-star-fill me-1"></i>Bora
+                                </span>
+                                {% endif %}
+                                
+                                {% if listing.is_verified %}
+                                <span class="listing-badge badge-verified">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Imethibitishwa
+                                </span>
+                                {% endif %}
+                                
+                                <span class="listing-badge badge-type">
+                                    {{ listing.property_type|default:"Makazi" }}
+                                </span>
+                            </div>
+                            
+                            <!-- Favorite Button -->
+                            <button class="btn btn-light btn-sm rounded-circle position-absolute top-0 end-0 m-3 favorite-btn"
+                                    data-listing-id="{{ listing.id }}"
+                                    title="Penda">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="listing-content">
+                            <h3 class="listing-title">{{ listing.title|truncatechars:60 }}</h3>
+                            
+                            <div class="listing-location">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span>{{ listing.location|truncatechars:40 }}</span>
+                            </div>
+                            
+                            <div class="listing-price">
+                                TSh {{ listing.price }}
+                            </div>
+                            
+                            <div class="listing-features">
+                                {% if listing.bedrooms %}
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-door-closed"></i>
+                                    </div>
+                                    <span class="feature-value">{{ listing.bedrooms }}</span>
+                                    <span class="feature-label">Vyumba</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if listing.bathrooms %}
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-droplet"></i>
+                                    </div>
+                                    <span class="feature-value">{{ listing.bathrooms }}</span>
+                                    <span class="feature-label">Bafu</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if listing.area_sqft %}
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-arrows-fullscreen"></i>
+                                    </div>
+                                    <span class="feature-value">{{ listing.area_sqft }}</span>
+                                    <span class="feature-label">Sq. Ft</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <p class="text-muted small mb-3">
+                                {{ listing.description|truncatechars:100 }}
+                            </p>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-clock me-1"></i>
+                                    {{ listing.scraped_at|timesince }} zilizopita
+                                </small>
+                                
+                                <a href="{{ listing.get_absolute_url }}" class="btn btn-primary btn-sm">
+                                    Angalia Maelezo
+                                    <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination -->
+                {% if listings.has_other_pages %}
+                <nav aria-label="Page navigation" class="mt-5">
+                    <ul class="pagination pagination-custom justify-content-center">
+                        {% if listings.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ listings.previous_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for i in listings.paginator.page_range %}
+                            {% if listings.number == i %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ i }}</span>
+                            </li>
+                            {% elif i > listings.number|add:'-3' and i < listings.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ i }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {{ i }}
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if listings.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ listings.next_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                
+                {% else %}
+                <!-- No Results -->
+                <div class="no-results">
+                    <i class="bi bi-house-exclamation display-1 text-muted mb-4"></i>
+                    <h4 class="fw-bold mb-3">Hakuna Makazi Yamepatikana</h4>
+                    <p class="text-muted mb-4">Badilisha filters zako au rudi nyuma</p>
+                    <a href="{% url 'makazi:listings' %}" class="btn btn-primary">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Weka Upya Filters
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+<script>
+    $(document).ready(function() {
+        // View Toggle
+        $('#gridView').click(function() {
+            $(this).addClass('active').removeClass('btn-outline-primary');
+            $('#listView').removeClass('active').addClass('btn-outline-primary');
+            $('#propertiesContainer').removeClass('list-view').addClass('property-grid');
+        });
+        
+        $('#listView').click(function() {
+            $(this).addClass('active').removeClass('btn-outline-primary');
+            $('#gridView').removeClass('active').addClass('btn-outline-primary');
+            $('#propertiesContainer').removeClass('property-grid').addClass('list-view');
+        });
+        
+        // Price Slider
+        $('#priceSlider').slider({
+            range: true,
+            min: 0,
+            max: 100000000,
+            values: [{{ request.GET.min_price|default:0 }}, {{ request.GET.max_price|default:100000000 }}],
+            slide: function(event, ui) {
+                $('#minPrice').val(ui.values[0]);
+                $('#maxPrice').val(ui.values[1]);
+            }
+        });
+        
+        // Update slider when input changes
+        $('#minPrice, #maxPrice').on('change', function() {
+            $('#priceSlider').slider('values', [
+                $('#minPrice').val() || 0,
+                $('#maxPrice').val() || 100000000
+            ]);
+        });
+        
+        // Apply Filters
+        $('#applyFilters').click(function() {
+            const params = new URLSearchParams(window.location.search);
+            
+            // Get all filter values
+            const filters = {
+                search: $('input[name="search"]').val(),
+                location: $('#locationFilter').val(),
+                min_price: $('#minPrice').val(),
+                max_price: $('#maxPrice').val(),
+                property_type: $('input[name="property_type"]:checked').val(),
+                bedrooms: $('input[name="bedrooms"]:checked').val(),
+                is_featured: $('#featuredFilter').is(':checked') ? 'true' : '',
+                is_verified: $('#verifiedFilter').is(':checked') ? 'true' : '',
+                sort: '{{ request.GET.sort }}'
+            };
+            
+            // Update URL parameters
+            for (const [key, value] of Object.entries(filters)) {
+                if (value) {
+                    params.set(key, value);
+                } else {
+                    params.delete(key);
+                }
+            }
+            
+            // Remove page parameter when filters change
+            params.delete('page');
+            
+            // Navigate to filtered page
+            window.location.search = params.toString();
+        });
+        
+        // Reset Filters
+        $('#resetFilters').click(function() {
+            window.location.href = "{% url 'makazi:listings' %}";
+        });
+        
+        // Auto-apply when certain filters change
+        $('#locationFilter, #featuredFilter, #verifiedFilter').change(function() {
+            $('#applyFilters').click();
+        });
+        
+        // Favorite functionality
+        $('.favorite-btn').click(function(e) {
+            e.preventDefault();
+            const btn = $(this);
+            const listingId = btn.data('listing-id');
+            const icon = btn.find('i');
+            
+            // Toggle icon
+            if (icon.hasClass('bi-heart')) {
+                icon.removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+                showToast('Makazi yameongezwa kwenye vipendwa');
+            } else {
+                icon.removeClass('bi-heart-fill text-danger').addClass('bi-heart');
+                showToast('Makazi yameondolewa kwenye vipendwa');
+            }
+            
+            // Save to localStorage
+            let favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
+            if (favorites.includes(listingId)) {
+                favorites = favorites.filter(id => id !== listingId);
+            } else {
+                favorites.push(listingId);
+            }
+            localStorage.setItem('nyumbafasta_favorites', JSON.stringify(favorites));
+        });
+        
+        // Check and update favorite buttons on page load
+        $('.favorite-btn').each(function() {
+            const btn = $(this);
+            const listingId = btn.data('listing-id');
+            const favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
+            
+            if (favorites.includes(listingId)) {
+                btn.find('i').removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+            }
+        });
+        
+        // Toast notification function
+        function showToast(message) {
+            const toast = $(`
+                <div class="toast align-items-center text-white bg-primary border-0" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">${message}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `);
+            
+            const container = $('<div class="toast-container position-fixed bottom-0 end-0 p-3"></div>');
+            container.append(toast);
+            $('body').append(container);
+            
+            const bsToast = new bootstrap.Toast(toast[0]);
+            bsToast.show();
+            
+            toast.on('hidden.bs.toast', function() {
+                container.remove();
+            });
+        }
+        
+        // Form submission
+        $('#searchFilterForm').submit(function(e) {
+            e.preventDefault();
+            $('#applyFilters').click();
+        });
+    });
+</script>
+{% endblock %}
