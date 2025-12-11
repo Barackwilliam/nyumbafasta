@@ -57,9 +57,364 @@
     <!-- Animate.css for animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
-    <!-- Custom CSS -->
+    <!-- Custom CSS with Blue & Yellow Theme -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+
+        /* ===== BLUE & YELLOW COLOR THEME ===== */
+:root {
+    --primary-blue: #4361ee;
+    --primary-blue-dark: #3a56d4;
+    --primary-blue-light: #4cc9f0;
+    --secondary-yellow: #ffd60a;
+    --secondary-yellow-dark: #ffc300;
+    --secondary-yellow-light: #ffea00;
+    --accent-blue: #4895ef;
+    --accent-yellow: #f9c74f;
     
+    /* Neutral colors */
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --gray: #6c757d;
+    --dark-gray: #343a40;
+    --black: #212529;
+}
+
+/* ===== BASE STYLES ===== */
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--dark-gray);
+    background-color: var(--light-gray);
+    transition: all 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+
+.preload {
+    opacity: 0;
+}
+
+/* ===== BLUE BACKGROUND CLASSES ===== */
+.bg-blue {
+    background-color: var(--primary-blue) !important;
+}
+
+.bg-blue-dark {
+    background-color: var(--primary-blue-dark) !important;
+}
+
+.bg-blue-light {
+    background-color: var(--primary-blue-light) !important;
+}
+
+.bg-accent-blue {
+    background-color: var(--accent-blue) !important;
+}
+
+/* ===== YELLOW BACKGROUND CLASSES ===== */
+.bg-yellow {
+    background-color: var(--secondary-yellow) !important;
+}
+
+.bg-yellow-dark {
+    background-color: var(--secondary-yellow-dark) !important;
+}
+
+.bg-yellow-light {
+    background-color: var(--secondary-yellow-light) !important;
+}
+
+.bg-accent-yellow {
+    background-color: var(--accent-yellow) !important;
+}
+
+/* ===== TEXT COLORS ===== */
+.text-blue {
+    color: var(--primary-blue) !important;
+}
+
+.text-blue-dark {
+    color: var(--primary-blue-dark) !important;
+}
+
+.text-blue-light {
+    color: var(--primary-blue-light) !important;
+}
+
+.text-yellow {
+    color: var(--secondary-yellow) !important;
+}
+
+.text-yellow-dark {
+    color: var(--secondary-yellow-dark) !important;
+}
+
+.text-yellow-light {
+    color: var(--secondary-yellow-light) !important;
+}
+
+/* ===== BUTTONS ===== */
+.btn-blue {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    border: none;
+}
+
+.btn-blue:hover {
+    background-color: var(--primary-blue-dark);
+    color: var(--white);
+}
+
+.btn-yellow {
+    background-color: var(--secondary-yellow);
+    color: var(--primary-blue);
+    border: none;
+    font-weight: 600;
+}
+
+.btn-yellow:hover {
+    background-color: var(--secondary-yellow-dark);
+    color: var(--primary-blue-dark);
+}
+
+.btn-outline-blue {
+    border: 2px solid var(--primary-blue);
+    color: var(--primary-blue);
+    background-color: transparent;
+}
+
+.btn-outline-blue:hover {
+    background-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.btn-outline-yellow {
+    border: 2px solid var(--secondary-yellow);
+    color: var(--secondary-yellow);
+    background-color: transparent;
+}
+
+.btn-outline-yellow:hover {
+    background-color: var(--secondary-yellow);
+    color: var(--primary-blue);
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+    box-shadow: 0 2px 10px rgba(67, 97, 238, 0.2);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.nav-link {
+    color: var(--white) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link:hover {
+    color: var(--secondary-yellow) !important;
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    color: var(--secondary-yellow) !important;
+    border-bottom: 2px solid var(--secondary-yellow);
+}
+
+.dropdown-menu {
+    background-color: var(--primary-blue);
+    border: 1px solid var(--secondary-yellow);
+    border-radius: 0.5rem;
+}
+
+.dropdown-item {
+    color: var(--white) !important;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--secondary-yellow) !important;
+    color: var(--primary-blue) !important;
+}
+
+/* ===== SEARCH BAR ===== */
+.input-group .form-control {
+    border: 2px solid var(--secondary-yellow);
+    border-right: none;
+}
+
+.input-group .form-control:focus {
+    border-color: var(--secondary-yellow-dark);
+    box-shadow: 0 0 0 0.25rem rgba(255, 214, 10, 0.25);
+}
+
+.border-yellow {
+    border-color: var(--secondary-yellow) !important;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+    margin-top: auto;
+}
+
+.footer-section h4,
+.footer-section h5 {
+    color: var(--secondary-yellow);
+}
+
+.footer-section a {
+    transition: all 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: var(--secondary-yellow) !important;
+    transform: translateX(5px);
+}
+
+.social-icons .btn {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.social-icons .btn:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 5px 15px rgba(255, 214, 10, 0.3);
+}
+
+/* ===== CARD STYLES ===== */
+.card {
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: var(--white);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(67, 97, 238, 0.2);
+}
+
+.card-title {
+    color: var(--primary-blue);
+    font-weight: 700;
+}
+
+.card-price {
+    color: var(--secondary-yellow);
+    font-weight: 800;
+    font-size: 1.5rem;
+}
+
+/* ===== BADGES ===== */
+.badge-blue {
+    background-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.badge-yellow {
+    background-color: var(--secondary-yellow);
+    color: var(--primary-blue);
+}
+
+/* ===== BORDERS ===== */
+.border-blue {
+    border-color: var(--primary-blue) !important;
+}
+
+.border-yellow {
+    border-color: var(--secondary-yellow) !important;
+}
+
+/* ===== SHADOWS ===== */
+.shadow-blue {
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2) !important;
+}
+
+.shadow-yellow {
+    box-shadow: 0 5px 15px rgba(255, 214, 10, 0.2) !important;
+}
+
+/* ===== HOVER EFFECTS ===== */
+.bg-blue-hover:hover {
+    background-color: var(--secondary-yellow) !important;
+    color: var(--primary-blue) !important;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.rounded-lg {
+    border-radius: 1rem !important;
+}
+
+.rounded-xl {
+    border-radius: 1.5rem !important;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .navbar-collapse {
+        background-color: var(--primary-blue);
+        padding: 1rem;
+        border-radius: 0 0 1rem 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-nav {
+        margin-bottom: 1rem;
+    }
+    
+    .nav-item {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* ===== ACCESSIBILITY ===== */
+.visually-hidden-focusable:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background-color: var(--secondary-yellow);
+    color: var(--primary-blue);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    z-index: 9999;
+}
+    </style>
     <!-- Page-specific CSS -->
     {% block extra_css %}{% endblock %}
     
@@ -85,11 +440,11 @@
     <a href="#main-content" class="visually-hidden-focusable">Skip to content</a>
     
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-blue">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'makazi:home' %}">
-                <i class="bi bi-house-heart-fill me-2"></i>
-                <span class="fw-bold">NyumbaFasta</span>
+            <a style="color: white;" class="navbar-brand" href="{% url 'makazi:home' %}">
+                <i class="bi bi-house-heart-fill me-2 text-white"></i>
+                <span class="fw-bold text-white">    </span>
             </a>
             
             <!-- Mobile Toggle -->
@@ -101,90 +456,96 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'makazi:home' %}">
-                            <i class="bi bi-house-door me-1"></i>Home
+                        <a class="nav-link text-white" href="{% url 'makazi:home' %}">
+                            <i class="bi bi-house-door me-1 text-yellow"></i>Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'makazi:listings' %}">
-                            <i class="bi bi-grid-3x3-gap me-1"></i>All Properties
+                        <a class="nav-link text-white" href="{% url 'makazi:listings' %}">
+                            <i class="bi bi-grid-3x3-gap me-1 text-yellow"></i>All Properties
                         </a>
                     </li>
+                    {% comment %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-geo-alt me-1"></i>Location
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-geo-alt me-1 text-yellow"></i>Location
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu bg-blue">
                             {% for location in popular_locations|slice:":10" %}
                             <li>
-                                <a class="dropdown-item" href="{% url 'makazi:listings' %}?location={{ location.location }}">
+                                <a class="dropdown-item text-white bg-blue-hover" href="{% url 'makazi:listings' %}?location={{ location.location }}">
                                     {{ location.location }}
                                 </a>
                             </li>
                             {% endfor %}
                         </ul>
                     </li>
-                      {% comment %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'makazi:about' %}">
-                            <i class="bi bi-info-circle me-1"></i>About
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'makazi:contact' %}">
-                            <i class="bi bi-telephone me-1"></i>Contact
-                        </a>
-                    </li>
                       {% endcomment %}
+                                 <li class="nav-item">
+    <a class="nav-link text-white" href="{% url 'makazi:listings' %}">
+        <i class="bi bi-house-door me-1 text-yellow"></i>Makazi
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-white" href="">
+        <i class="bi bi-building me-1 text-yellow"></i>Hostels
+    </a>
+</li>
 
+<li class="nav-item">
+    <a class="nav-link text-white" href="">
+        <i class="bi bi-building-check me-1 text-yellow"></i>Apartments
+    </a>
+</li>
 
+<li class="nav-item">
+    <a class="nav-link text-white" href="#">
+        <i class="bi bi-building-fill me-1 text-yellow"></i>Hotels
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-white" 
+       href="https://www.airbnb.com/s/Arusha/homes?place_id=ChIJg3M48ogcNxgRUnFJ7PcHGbw&refinement_paths%5B%5D=%2Fhomes&date_picker_type=CALENDAR&checkin=2025-12-12&checkout=2025-12-14&search_type=HOMEPAGE_CAROUSEL_CLICK">
+        <i class="bi bi-door-open me-1 text-yellow"></i>Airbnb
+    </a>
+</li>
 
-                       <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-info-circle me-1"></i>About
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-telephone me-1"></i>Contact
-                        </a>
-                    </li>
                 </ul>
                 
                 <!-- Search Bar -->
                 <form class="d-flex me-3" action="{% url 'makazi:listings' %}" method="get">
                     <div class="input-group">
-                        <input type="text" class="form-control" 
+                        <input type="text" class="form-control border-yellow" 
                                name="search" placeholder="Search for houses..." 
                                value="{{ request.GET.search }}"
                                aria-label="Search properties">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="bi bi-search"></i>
+                        <button class="btn btn-yellow" type="submit">
+                            <i class="bi bi-search text-blue"></i>
                         </button>
                     </div>
                 </form>
                 
                 <!-- Theme Toggle -->
-                <button class="btn btn-outline-secondary me-2" id="themeToggle" 
+                <button class="btn btn-yellow me-2" id="themeToggle" 
                         aria-label="Toggle theme">
-                    <i class="bi bi-moon"></i>
+                    <i class="bi bi-moon text-blue"></i>
                 </button>
                 
                 <!-- User Menu (if logged in) -->
                 {% if user.is_authenticated %}
                 <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i>
+                    <button class="btn btn-yellow dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle text-blue"></i>
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favorites</a></li>
+                    <ul class="dropdown-menu bg-blue">
+                        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-person me-2 text-yellow"></i>Profile</a></li>
+                        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-heart me-2 text-yellow"></i>Favorites</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-box-arrow-right me-2 text-yellow"></i>Logout</a></li>
                     </ul>
                 </div>
                 {% else %}
-                <a href="#" class="btn btn-outline-primary">Login</a>
+                <a href="#" class="btn btn-yellow text-white">Login</a>
                 {% endif %}
             </div>
         </div>
@@ -196,30 +557,30 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white pt-5">
+    <footer class="bg-blue text-white pt-5">
         <div class="container">
             <div class="row g-4">
                 <!-- Company Info -->
                 <div class="col-lg-4 footer-section">
                     <h4 class="fw-bold mb-4">
-                        <i class="bi bi-house-heart-fill me-2"></i>NyumbaFasta
+                        <i class="bi bi-house-heart-fill me-2 text-yellow"></i>NyumbaFasta
                     </h4>
                     <p class="text-light mb-4">
                         The best idea of living is to live where you love. 
                         We connect people with quality living in Tanzania.
                     </p>
                     <div class="social-icons">
-                        <a href="#" class="btn btn-outline-light me-2" aria-label="Facebook">
-                            <i class="bi bi-facebook"></i>
+                        <a href="#" class="btn btn-yellow me-2" aria-label="Facebook">
+                            <i class="bi bi-facebook text-blue"></i>
                         </a>
-                        <a href="#" class="btn btn-outline-light me-2" aria-label="Twitter">
-                            <i class="bi bi-twitter"></i>
+                        <a href="#" class="btn btn-yellow me-2" aria-label="Twitter">
+                            <i class="bi bi-twitter text-blue"></i>
                         </a>
-                        <a href="#" class="btn btn-outline-light me-2" aria-label="Instagram">
-                            <i class="bi bi-instagram"></i>
+                        <a href="#" class="btn btn-yellow me-2" aria-label="Instagram">
+                            <i class="bi bi-instagram text-blue"></i>
                         </a>
-                        <a href="#" class="btn btn-outline-light" aria-label="WhatsApp">
-                            <i class="bi bi-whatsapp"></i>
+                        <a href="#" class="btn btn-yellow" aria-label="WhatsApp">
+                            <i class="bi bi-whatsapp text-blue"></i>
                         </a>
                     </div>
                 </div>
@@ -229,23 +590,23 @@
                     <h5 class="fw-bold mb-4">Quick Links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <a href="{% url 'makazi:home' %}" class="text-light text-decoration-none">
-                                Home
+                            <a href="{% url 'makazi:home' %}" class="text-white text-decoration-none">
+                                <i class="bi bi-arrow-right me-1 text-yellow"></i>Home
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a href="{% url 'makazi:listings' %}" class="text-light text-decoration-none">
-                                All Properties
+                            <a href="{% url 'makazi:listings' %}" class="text-white text-decoration-none">
+                                <i class="bi bi-arrow-right me-1 text-yellow"></i>All Properties
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a href="{% url 'makazi:about' %}" class="text-light text-decoration-none">
-                                About Us
+                            <a href="#" class="text-white text-decoration-none">
+                                <i class="bi bi-arrow-right me-1 text-yellow"></i>About Us
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a href="{% url 'makazi:contact' %}" class="text-light text-decoration-none">
-                                Contact Us
+                            <a href="#" class="text-white text-decoration-none">
+                                <i class="bi bi-arrow-right me-1 text-yellow"></i>Contact Us
                             </a>
                         </li>
                     </ul>
@@ -258,8 +619,8 @@
                         {% for location in popular_locations|slice:":5" %}
                         <li class="mb-2">
                             <a href="{% url 'makazi:listings' %}?location={{ location.location }}" 
-                               class="text-light text-decoration-none">
-                                <i class="bi bi-geo-alt me-1"></i>{{ location.location }}
+                               class="text-white text-decoration-none">
+                                <i class="bi bi-geo-alt me-1 text-yellow"></i>{{ location.location }}
                             </a>
                         </li>
                         {% endfor %}
@@ -269,39 +630,44 @@
                 <!-- Contact Info -->
                 <div class="col-lg-3 footer-section">
                     <h5 class="fw-bold mb-4">Contact Us</h5>
-                    <ul class="list-unstyled text-light">
+                    <ul class="list-unstyled text-white">
                         <li class="mb-3">
-                            <i class="bi bi-envelope me-2"></i>
+                            <i class="bi bi-envelope me-2 text-yellow"></i>
                             info@nyumbafasta.co.tz
                         </li>
                         <li class="mb-3">
-                            <i class="bi bi-telephone me-2"></i>
+                            <i class="bi bi-telephone me-2 text-yellow"></i>
                             +255 768 123 456
                         </li>
                         <li class="mb-3">
-                            <i class="bi bi-whatsapp me-2"></i>
+                            <i class="bi bi-whatsapp me-2 text-yellow"></i>
                             +255 621 789 012
                         </li>
                         <li class="mb-3">
-                            <i class="bi bi-geo-alt me-2"></i>
+                            <i class="bi bi-geo-alt me-2 text-yellow"></i>
                             Dar es Salaam, Tanzania
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <hr class="my-4">
+            <hr class="my-4 border-yellow">
 
             <!-- Copyright -->
             <div class="row">
                 <div class="col-md-6 text-center text-md-start">
                     <p class="mb-0">
-                        &copy; {% now "Y" %} NyumbaFasta. All rights reserved.
+                        <i class="bi bi-c-circle me-1 text-yellow"></i>
+                        {% now "Y" %} NyumbaFasta. All rights reserved.
                     </p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <a href="#" class="text-light text-decoration-none me-3">Privacy Policy</a>
-                    <a href="#" class="text-light text-decoration-none">Terms of Service</a>
+                    <a href="#" class="text-white text-decoration-none me-3">
+                        <i class="bi bi-shield-check me-1 text-yellow"></i>Privacy Policy
+                    </a>
+                    <a href="#" class="text-white text-decoration-none">
+                        <i class="bi bi-file-text me-1 text-yellow"></i>Terms of Service
+                    </a>
                 </div>
             </div>
         </div>
@@ -339,6 +705,169 @@
             console.error('Error:', e.error);
             // You can send this to your error tracking service
         });
+
+
+
+
+
+        // Coming Soon Modal Handler
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the modal
+    const featureModal = new bootstrap.Modal(document.getElementById('featureComingSoonModal'));
+    const featureTitle = document.getElementById('featureTitle');
+    const featureDescription = document.getElementById('featureDescription');
+    
+    // Define features that are coming soon
+    const comingSoonFeatures = {
+        'hostels': {
+            title: 'Hostels Coming Soon!',
+            description: 'Affordable student and youth accommodations across Tanzania.'
+        },
+        'apartments': {
+            title: 'Apartments Coming Soon!',
+            description: 'Premium apartment listings with modern amenities and great locations.'
+        },
+        'hotels': {
+            title: 'Hotels Coming Soon!',
+            description: 'Short-term stays and hotel accommodations for business and leisure.'
+        }
+    };
+    
+    // Function to show feature modal
+    function showFeatureModal(featureType) {
+        const feature = comingSoonFeatures[featureType];
+        if (feature) {
+            featureTitle.textContent = feature.title;
+            featureDescription.textContent = feature.description;
+            featureModal.show();
+        }
+    }
+    
+    // Attach click events to feature links in navbar
+    const navbarLinks = document.querySelectorAll('.navbar-nav .nav-link');
+    
+    navbarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const linkText = this.textContent.toLowerCase().trim();
+            const href = this.getAttribute('href');
+            
+            // Check if it's an empty link
+            if (!href || href === '#' || href.trim() === '') {
+                e.preventDefault();
+                
+                // Determine which feature was clicked
+                if (linkText.includes('hostel') || this.querySelector('.bi-building')) {
+                    showFeatureModal('hostels');
+                } else if (linkText.includes('apartment') || this.querySelector('.bi-building-check')) {
+                    showFeatureModal('apartments');
+                } else if (linkText.includes('hotel') || this.querySelector('.bi-building-fill')) {
+                    showFeatureModal('hotels');
+                }
+            }
+        });
+    });
+    
+    // Also check on hover for better UX (optional)
+    navbarLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            const href = this.getAttribute('href');
+            if (!href || href === '#' || href.trim() === '') {
+                this.style.cursor = 'pointer';
+                this.title = 'Coming Soon! Click to learn more';
+            }
+        });
+    });
+    
+    // Notify button functionality
+    const notifyBtn = document.querySelector('#featureComingSoonModal .btn-yellow');
+    if (notifyBtn) {
+        notifyBtn.addEventListener('click', function() {
+            // Close the current modal
+            featureModal.hide();
+            
+            // Show a simple alert for now (you can replace with another modal)
+            setTimeout(() => {
+                alert('Thank you for your interest! We\'ll notify you when this feature is available.');
+            }, 300);
+        });
+    }
+});
     </script>
+
+
+
+<!-- Coming Soon Modal -->
+<div class="modal fade" id="featureComingSoonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; border: 2px solid #4361ee;">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);">
+                <h5 class="modal-title text-white fw-bold">
+                    <i class="bi bi-hourglass-split me-2"></i>Feature Coming Soon!
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-4">
+                    <div class="mb-3" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #ffd60a 0%, #ffc300 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-tools fs-1 text-blue"></i>
+                    </div>
+                    <h4 class="fw-bold text-blue mb-2" id="featureTitle"></h4>
+                    <p class="text-muted" id="featureDescription"></p>
+                </div>
+                
+                <div class="alert alert-info border-0" style="background: rgba(67, 97, 238, 0.1); border-radius: 10px;">
+                    <div class="d-flex">
+                        <div class="me-3">
+                            <i class="bi bi-info-circle-fill text-blue"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0">This feature is currently in development and will be available soon. Our team is working hard to bring you the best experience!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-blue" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-yellow">
+                    <i class="bi bi-bell me-1"></i>Notify Me
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-content {
+        animation: modalSlideIn 0.3s ease-out;
+    }
+    
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .text-blue {
+        color: #4361ee !important;
+    }
+    
+    .btn-yellow {
+        background: linear-gradient(135deg, #ffd60a 0%, #ffc300 100%);
+        color: #4361ee;
+        border: none;
+        font-weight: 600;
+    }
+    
+    .btn-outline-blue {
+        color: #4361ee;
+        border: 2px solid #4361ee;
+        background: transparent;
+    }
+</style>
 </body>
 </html>

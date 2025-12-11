@@ -1,583 +1,1026 @@
-<!-- templates/detail.html -->
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}{{ listing.title }} - NyumbaFasta{% endblock %}
 
 {% block extra_css %}
 <style>
-    .property-header {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        padding: 40px 0;
-        margin-top: -20px;
+    :root {
+        --primary-blue: #4361ee;
+        --primary-blue-dark: #3a56d4;
+        --primary-blue-light: #4cc9f0;
+        --secondary-yellow: #ffd60a;
+        --secondary-yellow-dark: #ffc300;
+        --secondary-yellow-light: #ffea00;
+        --white: #ffffff;
+        --light-gray: #f8f9fa;
+        
+        --blue-gradient: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+        --yellow-gradient: linear-gradient(135deg, #ffd60a 0%, #ffc300 100%);
+        --blue-yellow-gradient: linear-gradient(135deg, #4361ee 0%, #ffd60a 100%);
     }
     
-    .property-gallery {
-        border-radius: 16px;
+    /* Property Hero Section */
+    .property-hero {
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(255, 214, 10, 0.05) 100%);
+        padding: 4rem 0 2rem;
+        position: relative;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        margin-bottom: 30px;
+    }
+    
+    .property-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--blue-gradient);
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a {
+        color: var(--primary-blue);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item.active {
+        color: var(--primary-blue-dark);
+        font-weight: 600;
+    }
+    
+    /* Hero Badges */
+    .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .hero-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .badge-type {
+        background: var(--blue-gradient);
+        color: var(--white);
+    }
+    
+    .badge-featured {
+        background: var(--yellow-gradient);
+        color: var(--primary-blue);
+    }
+    
+    .badge-verified {
+        background: var(--white);
+        color: var(--primary-blue);
+        border: 2px solid var(--primary-blue);
+    }
+    
+    /* Gallery Section */
+    .gallery-section {
+        position: relative;
+        margin-top: -50px;
+        z-index: 2;
+    }
+    
+    .main-gallery {
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(67, 97, 238, 0.2);
+        position: relative;
+        height: 500px;
     }
     
     .main-image {
-        height: 500px;
         width: 100%;
+        height: 100%;
         object-fit: cover;
         cursor: zoom-in;
+        transition: transform 0.5s ease;
     }
     
-    .thumbnail-container {
+    .main-image:hover {
+        transform: scale(1.02);
+    }
+    
+    .gallery-controls {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
         gap: 10px;
-        padding: 15px;
-        background: white;
+        z-index: 3;
+    }
+    
+    .gallery-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid var(--primary-blue);
+        color: var(--primary-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-btn:hover {
+        background: var(--primary-blue);
+        color: var(--white);
+        transform: scale(1.1);
+    }
+    
+    .thumbnail-strip {
+        display: flex;
+        gap: 10px;
+        padding: 1rem;
         overflow-x: auto;
+        margin-top: 1rem;
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
     
     .thumbnail {
-        width: 100px;
-        height: 80px;
+        width: 120px;
+        height: 90px;
+        border-radius: 10px;
         object-fit: cover;
-        border-radius: 8px;
         cursor: pointer;
-        border: 2px solid transparent;
-        transition: all 0.3s;
+        border: 3px solid transparent;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
     }
     
     .thumbnail:hover,
     .thumbnail.active {
-        border-color: #667eea;
-        transform: scale(1.05);
-    }
-    
-    .property-info-card {
-        background: white;
-        border-radius: 16px;
-        padding: 30px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        margin-bottom: 30px;
-    }
-    
-    .property-price-badge {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 12px;
-        display: inline-block;
-        font-size: 1.8rem;
-        font-weight: 800;
-        margin-bottom: 20px;
-    }
-    
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 15px;
-        margin: 25px 0;
-    }
-    
-    .feature-box {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        text-align: center;
-        transition: all 0.3s;
-    }
-    
-    .feature-box:hover {
-        background: #667eea;
-        color: white;
+        border-color: var(--secondary-yellow);
         transform: translateY(-5px);
     }
     
+    /* Price Tag */
+    .price-tag {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        background: var(--blue-gradient);
+        color: var(--white);
+        padding: 1rem 2rem;
+        border-radius: 15px;
+        text-align: center;
+        z-index: 3;
+        box-shadow: 0 10px 30px rgba(67, 97, 238, 0.3);
+        animation: pricePulse 2s infinite;
+    }
+    
+    @keyframes pricePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .price-amount {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+    
+    .price-label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    /* Property Details Card */
+    .details-card {
+        background: var(--white);
+        border-radius: 25px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        border: 2px solid rgba(67, 97, 238, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        position: relative;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: var(--blue-gradient);
+        border-radius: 2px;
+    }
+    
+    /* Features Grid */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(67, 97, 238, 0.05);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-item:hover {
+        background: var(--primary-blue);
+        transform: translateY(-5px);
+    }
+    
+    .feature-item:hover .feature-icon,
+    .feature-item:hover .feature-text {
+        color: var(--white);
+    }
+    
     .feature-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--blue-gradient);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
         font-size: 1.5rem;
-        margin-bottom: 10px;
-        color: #667eea;
+        flex-shrink: 0;
     }
     
-    .feature-box:hover .feature-icon {
-        color: white;
+    .feature-text {
+        flex: 1;
     }
     
+    .feature-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+        display: block;
+    }
+    
+    .feature-label {
+        font-size: 0.875rem;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Description */
     .description-box {
         line-height: 1.8;
-        color: #4a5568;
+        color: var(--dark-gray);
+        font-size: 1.1rem;
     }
     
-    .amenities-list {
+    /* Amenities */
+    .amenities-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 10px;
-        margin-top: 20px;
+        gap: 1rem;
+        margin-top: 1.5rem;
     }
     
     .amenity-item {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 8px 0;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: var(--white);
+        border-radius: 10px;
+        border: 1px solid rgba(67, 97, 238, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .amenity-item:hover {
+        border-color: var(--secondary-yellow);
+        transform: translateX(5px);
     }
     
     .amenity-check {
-        color: #48bb78;
+        color: var(--secondary-yellow);
         font-size: 1.2rem;
     }
     
-    .contact-form-card {
+    /* Contact Sidebar */
+    .contact-sidebar {
         position: sticky;
         top: 100px;
-        background: white;
-        border-radius: 16px;
-        padding: 25px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        border: 1px solid #e2e8f0;
     }
     
-    .agent-card {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        border-radius: 12px;
-        padding: 20px;
+    .contact-card {
+        background: var(--white);
+        border-radius: 25px;
+        padding: 2rem;
+        box-shadow: 0 15px 40px rgba(67, 97, 238, 0.15);
+        border: 2px solid rgba(67, 97, 238, 0.2);
+        margin-bottom: 2rem;
+    }
+    
+    .contact-title {
+        background: var(--blue-gradient);
+        color: var(--white);
+        padding: 1rem;
+        border-radius: 15px;
         text-align: center;
-        margin-top: 20px;
+        margin-bottom: 1.5rem;
     }
     
-    .agent-avatar {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin: 0 auto 15px;
-        border: 3px solid white;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    .form-control-custom {
+        border: 2px solid rgba(67, 97, 238, 0.2);
+        border-radius: 12px;
+        padding: 0.875rem 1rem;
+        transition: all 0.3s ease;
     }
     
-    .similar-properties {
-        margin-top: 50px;
-        padding-top: 30px;
-        border-top: 2px solid #e2e8f0;
+    .form-control-custom:focus {
+        border-color: var(--secondary-yellow);
+        box-shadow: 0 0 0 3px rgba(255, 214, 10, 0.2);
+        outline: none;
+    }
+    
+    .btn-submit {
+        background: var(--blue-gradient);
+        color: var(--white);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .btn-submit:hover {
+        background: var(--primary-blue-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+        display: grid;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .quick-action-btn {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-call {
+        background: linear-gradient(135deg, #25D366 0%, #1EAE5A 100%);
+        color: var(--white);
+    }
+    
+    .btn-whatsapp {
+        background: linear-gradient(135deg, #25D366 0%, #1EAE5A 100%);
+        color: var(--white);
+    }
+    
+    .btn-share {
+        background: var(--blue-gradient);
+        color: var(--white);
+    }
+    
+    .btn-favorite {
+        background: var(--yellow-gradient);
+        color: var(--primary-blue);
+    }
+    
+    .quick-action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    
+    /* Property Stats */
+    .stats-card {
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(255, 214, 10, 0.05) 100%);
+        border-radius: 20px;
+        padding: 2rem;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        text-align: center;
+    }
+    
+    .stat-item .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        background: var(--blue-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+    }
+    
+    .stat-item .stat-label {
+        font-size: 0.875rem;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 0.5rem;
+    }
+    
+    /* Similar Properties */
+    .similar-section {
+        margin-top: 4rem;
+        padding-top: 3rem;
+        border-top: 2px solid rgba(67, 97, 238, 0.1);
+    }
+    
+    .similar-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
     }
     
     .similar-card {
-        transition: all 0.3s;
-        border-radius: 12px;
+        background: var(--white);
+        border-radius: 20px;
         overflow: hidden;
-        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        height: 100%;
     }
     
     .similar-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        border-color: #667eea;
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(67, 97, 238, 0.2);
+        border-color: var(--secondary-yellow);
     }
     
-    .map-container {
-        height: 300px;
-        border-radius: 12px;
-        overflow: hidden;
-        margin-top: 20px;
+    .similar-image {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
     }
     
-    .share-buttons {
+    .similar-content {
+        padding: 1.5rem;
+    }
+    
+    .similar-price {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--secondary-yellow);
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Image Modal */
+    .image-modal .modal-content {
+        background: transparent;
+        border: none;
+    }
+    
+    .modal-image {
+        max-width: 100%;
+        max-height: 80vh;
+        border-radius: 15px;
+    }
+    
+    /* Floating Actions */
+    .floating-actions {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
         display: flex;
-        gap: 10px;
-        margin-top: 20px;
+        flex-direction: column;
+        gap: 0.75rem;
+        z-index: 1000;
     }
     
-    .share-btn {
-        width: 40px;
-        height: 40px;
+    .floating-btn {
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: var(--white);
+        font-size: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
         text-decoration: none;
-        transition: transform 0.3s;
     }
     
-    .share-btn:hover {
-        transform: scale(1.1);
-        color: white;
+    .floating-btn:hover {
+        transform: scale(1.1) rotate(5deg);
+        color: var(--white);
     }
     
-    .btn-whatsapp {
-        background: #25D366;
+    .btn-float-whatsapp {
+        background: linear-gradient(135deg, #25D366 0%, #1EAE5A 100%);
     }
     
-    .btn-facebook {
-        background: #1877F2;
+    .btn-float-call {
+        background: var(--blue-gradient);
     }
     
-    .btn-twitter {
-        background: #1DA1F2;
+    .btn-float-share {
+        background: var(--yellow-gradient);
+        color: var(--primary-blue);
     }
     
-    .btn-copy {
-        background: #667eea;
-    }
-    
-    /* Modal for image zoom */
-    .image-modal .modal-dialog {
-        max-width: 90%;
-        margin: 10px auto;
-    }
-    
-    .modal-image {
-        width: 100%;
-        max-height: 80vh;
-        object-fit: contain;
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .gallery-section {
+            margin-top: 0;
+        }
+        
+        .main-gallery {
+            height: 400px;
+        }
+        
+        .price-tag {
+            position: relative;
+            top: auto;
+            right: auto;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-sidebar {
+            position: static;
+            margin-top: 2rem;
+        }
     }
     
     @media (max-width: 768px) {
-        .main-image {
+        .property-hero {
+            padding: 3rem 0 1.5rem;
+        }
+        
+        .main-gallery {
             height: 300px;
         }
         
-        .property-price-badge {
-            font-size: 1.4rem;
-            padding: 12px 20px;
+        .price-amount {
+            font-size: 2rem;
         }
         
         .features-grid {
             grid-template-columns: repeat(2, 1fr);
         }
         
-        .contact-form-card {
-            position: static;
-            margin-top: 30px;
+        .details-card {
+            padding: 1.5rem;
+        }
+        
+        .floating-actions {
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        .floating-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .similar-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Property Header -->
-<div class="property-header">
+<!-- Property Hero Section -->
+<section class="property-hero">
     <div class="container">
+        <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-transparent px-0">
-                <li class="breadcrumb-item"><a href="{% url 'makazi:home' %}" class="text-decoration-none">Home</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'makazi:listings' %}" class="text-decoration-none">All Properties</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ listing.title|truncatechars:40 }}</li>
+            <ol class="breadcrumb breadcrumb-custom mb-3">
+                <li class="breadcrumb-item"><a href="{% url 'makazi:home' %}"><i class="bi bi-house-door me-1"></i>Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'makazi:listings' %}">All Properties</a></li>
+                <li class="breadcrumb-item active">{{ listing.title|truncatechars:30 }}</li>
             </ol>
         </nav>
         
-        <h1 class="fw-bold display-5 mb-3">{{ listing.title }}</h1>
-        <div class="d-flex align-items-center gap-3 flex-wrap">
-            <span class="badge bg-primary">
-                <i class="bi bi-tag me-1"></i>{{ listing.property_type|default:"Property" }}
-            </span>
-            <span class="text-muted">
-                <i class="bi bi-geo-alt-fill me-1"></i>{{ listing.location }}
-            </span>
-            <span class="text-muted">
+        <!-- Property Title -->
+        <h1 class="display-5 fw-bold mb-3 text-blue">{{ listing.title }}</h1>
+        
+        <!-- Location -->
+        <div class="d-flex align-items-center mb-3">
+            <div class="location-badge bg-blue text-white px-3 py-2 rounded-pill">
+                <i class="bi bi-geo-alt-fill me-2"></i>{{ listing.location }}
+            </div>
+            <span class="ms-3 text-muted">
                 <i class="bi bi-clock me-1"></i>Added {{ listing.scraped_at|timesince }} ago
             </span>
         </div>
+        
+        <!-- Hero Badges -->
+        <div class="hero-badges">
+            <span class="hero-badge badge-type">
+                <i class="bi bi-tag"></i>{{ listing.property_type|default:"Property" }}
+            </span>
+            
+            {% if listing.is_featured %}
+            <span class="hero-badge badge-featured">
+                <i class="bi bi-star-fill"></i>Featured
+            </span>
+            {% endif %}
+            
+            {% if listing.is_verified %}
+            <span class="hero-badge badge-verified">
+                <i class="bi bi-check-circle-fill"></i>Verified
+            </span>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<br>
+<!-- Gallery Section -->
+<div class="container gallery-section">
+    <div class="main-gallery">
+        <img src="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}" 
+             id="mainImage" 
+             class="main-image" 
+             alt="{{ listing.title }}"
+             onerror="this.src='/static/images/default-property.jpg'">
+        
+        <div class="price-tag">
+            <div class="price-amount">TSh {{ listing.price|only_digits }}</div>
+            <div class="price-label">Total Price</div>
+        </div>
+        
+        <div class="gallery-controls">
+            <button class="gallery-btn" id="prevImage">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="gallery-btn" id="nextImage">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div class="thumbnail-strip">
+        <!-- Main image as first thumbnail -->
+        <img src="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}" 
+             class="thumbnail active" 
+             data-full="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}"
+             alt="{{ listing.title }} main image"
+             onerror="this.src='/static/images/default-property.jpg'">
+        
+        <!-- African-themed property images -->
+        {% with "https://images.unsplash.com/photo-1558036117-15e82a2c9a9a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80,https://images.unsplash.com/photo-1560185127-6ed189bf02f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80,https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80,https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" as image_urls_string %}
+            {% with image_urls_string.split as image_urls %}
+                {% for image_url in image_urls %}
+                    <img src="{{ image_url }}" 
+                         class="thumbnail" 
+                         data-full="{{ image_url}}"
+                         alt="Property interior image {{ forloop.counter }}"
+                         loading="lazy">
+                {% endfor %}
+            {% endwith %}
+        {% endwith %}
     </div>
 </div>
 
+
+<!-- Main Content -->
 <div class="container py-5">
     <div class="row g-4">
         <!-- Left Column: Property Details -->
         <div class="col-lg-8">
-            <!-- Image Gallery -->
-            <div class="property-gallery">
-                <img src="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}" 
-                     id="mainImage" 
-                     class="main-image"
-                     alt="{{ listing.title }}"
-                     data-bs-toggle="modal" 
-                     data-bs-target="#imageModal"
-                     onerror="this.src='/static/images/default-property.jpg'">
-                
-                <div class="thumbnail-container">
-                    <!-- Main image as first thumbnail -->
-                    <img src="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}" 
-                         class="thumbnail active" 
-                         data-full="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}"
-                         alt="Thumbnail 1"
-                         onerror="this.src='/static/images/default-property.jpg'">
-                    
-                    <!-- Additional image placeholders (in real app, these would be from PropertyImage model) -->
-                    {% for i in "12345"|make_list %}
-                    <img src="https://via.placeholder.com/100x80/667eea/ffffff?text=Image+{{ i }}" 
-                         class="thumbnail" 
-                         data-full="https://via.placeholder.com/800x600/667eea/ffffff?text=Image+{{ i }}"
-                         alt="Thumbnail {{ i|add:'1' }}">
-                    {% endfor %}
-                </div>
-            </div>
-            
-            <!-- Price and Actions -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="property-price-badge">
-                    TSh {{ listing.price }}
-                </div>
-                
-                <div class="share-buttons">
-                    <button class="btn btn-primary me-2 favorite-btn" data-listing-id="{{ listing.id }}">
-                        <i class="bi bi-heart me-1"></i>Save
-                    </button>
-                    
-                    <a href="https://wa.me/?text=Check out this property: {{ request.build_absolute_uri }}" 
-                       target="_blank" 
-                       class="share-btn btn-whatsapp">
-                        <i class="bi bi-whatsapp"></i>
-                    </a>
-                    <button class="share-btn btn-copy" onclick="copyToClipboard()" title="Copy link">
-                        <i class="bi bi-link-45deg"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Property Info Card -->
-            <div class="property-info-card">
-                <h3 class="fw-bold mb-4">Property Details</h3>
+            <!-- Property Details Card -->
+            <div class="details-card">
+                <h2 class="section-title fw-bold">Property Details</h2>
                 
                 <!-- Features Grid -->
                 <div class="features-grid">
                     {% if listing.bedrooms %}
-                    <div class="feature-box">
+                    <div class="feature-item">
                         <div class="feature-icon">
                             <i class="bi bi-door-closed"></i>
                         </div>
-                        <div>
-                            <div class="fw-bold fs-4">{{ listing.bedrooms }}</div>
-                            <div class="text-muted">Bedrooms</div>
+                        <div class="feature-text">
+                            <span class="feature-value">{{ listing.bedrooms }}</span>
+                            <span class="feature-label">Bedrooms</span>
                         </div>
                     </div>
                     {% endif %}
                     
                     {% if listing.bathrooms %}
-                    <div class="feature-box">
+                    <div class="feature-item">
                         <div class="feature-icon">
                             <i class="bi bi-droplet"></i>
                         </div>
-                        <div>
-                            <div class="fw-bold fs-4">{{ listing.bathrooms }}</div>
-                            <div class="text-muted">Bathrooms</div>
+                        <div class="feature-text">
+                            <span class="feature-value">{{ listing.bathrooms }}</span>
+                            <span class="feature-label">Bathrooms</span>
                         </div>
                     </div>
                     {% endif %}
                     
                     {% if listing.area_sqft %}
-                    <div class="feature-box">
+                    <div class="feature-item">
                         <div class="feature-icon">
                             <i class="bi bi-arrows-fullscreen"></i>
                         </div>
-                        <div>
-                            <div class="fw-bold fs-4">{{ listing.area_sqft }}</div>
-                            <div class="text-muted">Square Feet</div>
+                        <div class="feature-text">
+                            <span class="feature-value">{{ listing.area_sqft }}</span>
+                            <span class="feature-label">Square Feet</span>
                         </div>
                     </div>
                     {% endif %}
                     
-                    <div class="feature-box">
+                    <div class="feature-item">
                         <div class="feature-icon">
                             <i class="bi bi-building"></i>
                         </div>
-                        <div>
-                            <div class="fw-bold">{{ listing.property_type|default:"Property" }}</div>
-                            <div class="text-muted">Type</div>
+                        <div class="feature-text">
+                            <span class="feature-value">{{ listing.property_type|default:"Property" }}</span>
+                            <span class="feature-label">Property Type</span>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Description -->
-                <div class="description-box mt-4">
-                    <h5 class="fw-bold mb-3">Description</h5>
-                    <p>{{ listing.description|linebreaks }}</p>
-                </div>
-                
-                <!-- Amenities -->
-                <div class="amenities-section mt-4">
-                    <h5 class="fw-bold mb-3">Amenities & Services</h5>
-                    <div class="amenities-list">
-                        <!-- These would come from Amenity model in real app -->
-                        <div class="amenity-item">
-                            <i class="bi bi-check-circle-fill amenity-check"></i>
-                            <span>National Electricity</span>
-                        </div>
-                        <div class="amenity-item">
-                            <i class="bi bi-check-circle-fill amenity-check"></i>
-                            <span>Piped Water</span>
-                        </div>
-                        <div class="amenity-item">
-                            <i class="bi bi-check-circle-fill amenity-check"></i>
-                            <span>Security</span>
-                        </div>
-                        <div class="amenity-item">
-                            <i class="bi bi-check-circle-fill amenity-check"></i>
-                            <span>Good Roads</span>
-                        </div>
-                        <div class="amenity-item">
-                            <i class="bi bi-check-circle-fill amenity-check"></i>
-                            <span>Parking</span>
-                        </div>
-                        <div class="amenity-item">
-                            <i class="bi bi-check-circle-fill amenity-check"></i>
-                            <span>Safe Environment</span>
-                        </div>
+                <div class="mt-5">
+                    <h3 class="fw-bold mb-4">About This Property</h3>
+                    <div class="description-box">
+                        {{ listing.description|linebreaks }}
                     </div>
                 </div>
                 
-                <!-- Location Map -->
-                <div class="location-section mt-4">
-                    <h5 class="fw-bold mb-3">Location</h5>
-                    <div class="map-container bg-light">
-                        <!-- In real app, integrate Google Maps API -->
-                        <div class="h-100 d-flex align-items-center justify-content-center">
-                            <div class="text-center">
-                                <i class="bi bi-map display-1 text-muted"></i>
-                                <p class="mt-3">{{ listing.location }}</p>
-                                <button class="btn btn-outline-primary">
-                                    <i class="bi bi-geo-alt me-1"></i>View Map
-                                </button>
-                            </div>
+                <!-- Amenities -->
+                <div class="mt-5">
+                    <h3 class="fw-bold mb-4">Amenities & Features</h3>
+                    <div class="amenities-grid">
+                        <div class="amenity-item">
+                            <i class="bi bi-check-circle-fill amenity-check"></i>
+                            <span>24/7 Electricity</span>
+                        </div>
+                        <div class="amenity-item">
+                            <i class="bi bi-check-circle-fill amenity-check"></i>
+                            <span>Clean Water Supply</span>
+                        </div>
+                        <div class="amenity-item">
+                            <i class="bi bi-check-circle-fill amenity-check"></i>
+                            <span>Security System</span>
+                        </div>
+                        <div class="amenity-item">
+                            <i class="bi bi-check-circle-fill amenity-check"></i>
+                            <span>Parking Space</span>
+                        </div>
+                        <div class="amenity-item">
+                            <i class="bi bi-check-circle-fill amenity-check"></i>
+                            <span>Good Road Access</span>
+                        </div>
+                        <div class="amenity-item">
+                            <i class="bi bi-check-circle-fill amenity-check"></i>
+                            <span>Safe Neighborhood</span>
                         </div>
                     </div>
                 </div>
             </div>
             
+            <!-- Location Map -->
+            <div class="details-card">
+                <h3 class="section-title fw-bold">Location</h3>
+                <div class="map-placeholder bg-light rounded-3 p-5 text-center">
+                    <i class="bi bi-map display-1 text-blue mb-3"></i>
+                    <h4 class="fw-bold mb-3">{{ listing.location }}</h4>
+                    <p class="text-muted">This property is located in a prime area with easy access to amenities and transportation.</p>
+                    <button class="btn btn-yellow mt-3">
+                        <i class="bi bi-geo-alt me-2"></i>View on Map
+                    </button>
+                </div>
+            </div>
+            
             <!-- Similar Properties -->
             {% if similar_listings %}
-            <div class="similar-properties">
-                <h3 class="fw-bold mb-4">Similar Properties</h3>
-                <div class="row g-4">
-                    {% for similar in similar_listings %}
-                    <div class="col-md-6">
-                        <a href="{{ similar.get_absolute_url }}" class="text-decoration-none">
-                            <div class="similar-card">
-                                <div class="row g-0">
-                                    <div class="col-5">
-                                        <img src="{{ similar.main_image_url|default:'/static/images/default-property.jpg' }}" 
-                                             class="img-fluid h-100" 
-                                             style="object-fit: cover; min-height: 120px;"
-                                             alt="{{ similar.title }}"
-                                             onerror="this.src='/static/images/default-property.jpg'">
-                                    </div>
-                                    <div class="col-7">
-                                        <div class="p-3">
-                                            <h6 class="fw-bold text-dark">{{ similar.title|truncatechars:40 }}</h6>
-                                            <p class="text-muted small mb-2">
-                                                <i class="bi bi-geo-alt me-1"></i>{{ similar.location|truncatechars:25 }}
-                                            </p>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="text-primary fw-bold">TSh {{ similar.price }}</span>
-                                                <span class="badge bg-light text-dark">
-                                                    <i class="bi bi-door-closed me-1"></i>{{ similar.bedrooms|default:"-" }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+            <div class="similar-section">
+                <h3 class="section-title fw-bold">Similar Properties</h3>
+                <div class="similar-grid">
+                    {% for similar in similar_listings|slice:":3" %}
+                    <a href="{{ similar.get_absolute_url }}" class="text-decoration-none">
+                        <div class="similar-card">
+                            <img src="{{ similar.main_image_url|default:'/static/images/default-property.jpg' }}" 
+                                 class="similar-image" 
+                                 alt="{{ similar.title }}"
+                                 onerror="this.src='/static/images/default-property.jpg'">
+                            <div class="similar-content">
+                                <h5 class="fw-bold mb-2">{{ similar.title|truncatechars:40 }}</h5>
+                                <p class="text-blue mb-2">
+                                    <i class="bi bi-geo-alt me-1"></i>{{ similar.location|truncatechars:25 }}
+                                </p>
+                                <div class="similar-price">TSh {{ similar.price|only_digits }}</div>
+                                {% if similar.bedrooms %}
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-blue text-white">
+                                        <i class="bi bi-door-closed me-1"></i>{{ similar.bedrooms }} Bedrooms
+                                    </span>
                                 </div>
+                                {% endif %}
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
         </div>
         
-        <!-- Right Column: Contact Form -->
+        <!-- Right Column: Contact Sidebar -->
         <div class="col-lg-4">
-            <div class="contact-form-card">
-                <h4 class="fw-bold mb-4">Contact About This Property</h4>
-                
-                {% if message_sent %}
-                <div class="alert alert-success" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    Your message has been sent successfully! We will contact you soon.
+            <div class="contact-sidebar">
+                <!-- Contact Card -->
+                <div class="contact-card">
+                    <div class="contact-title">
+                        <h4 class="fw-bold mb-0">Contact Owner</h4>
+                    </div>
+                    
+                    {% if message_sent %}
+                    <div class="alert alert-success border-0 rounded-3 mb-4">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Your message has been sent successfully!
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <input type="text" 
+                                   class="form-control form-control-custom" 
+                                   name="name" 
+                                   placeholder="Your Full Name"
+                                   required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <input type="tel" 
+                                   class="form-control form-control-custom" 
+                                   name="phone" 
+                                   placeholder="Phone Number"
+                                   required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <input type="email" 
+                                   class="form-control form-control-custom" 
+                                   name="email" 
+                                   placeholder="Email Address"
+                                   required>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <textarea class="form-control form-control-custom" 
+                                      name="message" 
+                                      rows="4" 
+                                      placeholder="Your message..."
+                                      required>I'm interested in this property: {{ listing.title }}</textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-submit">
+                            <i class="bi bi-send me-2"></i>Send Message
+                        </button>
+                    </form>
                 </div>
-                {% endif %}
                 
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" class="form-control" name="name" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" name="phone" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" name="email" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Message</label>
-                        <textarea class="form-control" name="message" rows="4" required>
-I'm interested in learning more about this property: {{ listing.title }}
-                        </textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-send me-2"></i>Send Message
-                    </button>
-                </form>
-                
-                <!-- Quick Contact -->
-                <div class="mt-4 pt-4 border-top">
-                    <h6 class="fw-bold mb-3">Quick Contact</h6>
-                    <div class="d-grid gap-2">
-                        <a href="tel:+255768123456" class="btn btn-success">
-                            <i class="bi bi-telephone me-2"></i>Call Now
+                <!-- Quick Actions -->
+                <div class="contact-card">
+                    <h4 class="fw-bold mb-4">Quick Actions</h4>
+                    <div class="quick-actions">
+                        <a href="tel:+255768123456" class="quick-action-btn btn-call">
+                            <i class="bi bi-telephone fs-4"></i>
+                            <div>
+                                <div class="fw-bold">Call Now</div>
+                                <small>+255 768 123 456</small>
+                            </div>
                         </a>
-                        <a href="https://wa.me/255768123456?text=I%20have%20questions%20about%20the%20property%20{{ listing.title|urlencode }}" 
+                        
+                        <a href="https://wa.me/255768123456?text=I'm interested in this property: {{ listing.title|urlencode }}" 
                            target="_blank" 
-                           class="btn btn-whatsapp">
-                            <i class="bi bi-whatsapp me-2"></i>WhatsApp
+                           class="quick-action-btn btn-whatsapp">
+                            <i class="bi bi-whatsapp fs-4"></i>
+                            <div>
+                                <div class="fw-bold">WhatsApp</div>
+                                <small>Instant Message</small>
+                            </div>
                         </a>
+                        
+                        <button class="quick-action-btn btn-share" id="shareBtn">
+                            <i class="bi bi-share fs-4"></i>
+                            <div>
+                                <div class="fw-bold">Share</div>
+                                <small>Property Link</small>
+                            </div>
+                        </button>
+                        
+                        <button class="quick-action-btn btn-favorite" id="favoriteBtn" data-listing-id="{{ listing.id }}">
+                            <i class="bi {% if listing.id|stringformat:'s' in favorites %}bi-heart-fill{% else %}bi-heart{% endif %} fs-4"></i>
+                            <div>
+                                <div class="fw-bold">Save</div>
+                                <small>To Favorites</small>
+                            </div>
+                        </button>
                     </div>
                 </div>
                 
                 <!-- Property Stats -->
-                <div class="mt-4 pt-4 border-top">
-                    <h6 class="fw-bold mb-3">Property Statistics</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <i class="bi bi-eye me-2 text-primary"></i>
-                            <span class="text-muted">Views:</span>
-                            <strong class="float-end">1,234</strong>
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-heart me-2 text-danger"></i>
-                            <span class="text-muted">Saved:</span>
-                            <strong class="float-end">89</strong>
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-share me-2 text-success"></i>
-                            <span class="text-muted">Shared:</span>
-                            <strong class="float-end">45</strong>
-                        </li>
-                        <li>
-                            <i class="bi bi-calendar me-2 text-info"></i>
-                            <span class="text-muted">Added:</span>
-                            <strong class="float-end">{{ listing.scraped_at|date:"d/m/Y" }}</strong>
-                        </li>
-                    </ul>
+                <div class="stats-card">
+                    <h4 class="fw-bold mb-4">Property Stats</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">1,234</div>
+                            <div class="stat-label">Views</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">89</div>
+                            <div class="stat-label">Saves</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">45</div>
+                            <div class="stat-label">Shares</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">{{ listing.scraped_at|date:"d M" }}</div>
+                            <div class="stat-label">Listed</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Floating Actions -->
+<div class="floating-actions">
+    <a href="https://wa.me/255768123456?text=I'm interested in this property: {{ listing.title|urlencode }}" 
+       target="_blank" 
+       class="floating-btn btn-float-whatsapp"
+       title="Message on WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+    <a href="tel:+255768123456" 
+       class="floating-btn btn-float-call"
+       title="Call Now">
+        <i class="bi bi-telephone"></i>
+    </a>
+    <button class="floating-btn btn-float-share" 
+            id="floatShareBtn"
+            title="Share Property">
+        <i class="bi bi-share"></i>
+    </button>
+</div>
+
 <!-- Image Modal -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0 bg-transparent">
             <div class="modal-header border-0">
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-0">
+            <div class="modal-body text-center p-0">
                 <img id="modalImage" class="modal-image" src="" alt="">
             </div>
         </div>
@@ -587,91 +1030,148 @@ I'm interested in learning more about this property: {{ listing.title }}
 
 {% block extra_js %}
 <script>
-    $(document).ready(function() {
-        // Image gallery functionality
-        $('.thumbnail').click(function() {
-            const fullImageUrl = $(this).data('full');
-            $('#mainImage').attr('src', fullImageUrl);
-            $('#modalImage').attr('src', fullImageUrl);
+document.addEventListener('DOMContentLoaded', function() {
+    // Image Gallery
+    const mainImage = document.getElementById('mainImage');
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const modalImage = document.getElementById('modalImage');
+    const prevBtn = document.getElementById('prevImage');
+    const nextBtn = document.getElementById('nextImage');
+    
+    let currentImageIndex = 0;
+    
+    // Thumbnail click
+    thumbnails.forEach((thumb, index) => {
+        thumb.addEventListener('click', function() {
+            const fullImage = this.dataset.full;
+            mainImage.src = fullImage;
+            modalImage.src = fullImage;
             
             // Update active thumbnail
-            $('.thumbnail').removeClass('active');
-            $(this).addClass('active');
-        });
-        
-        // Image modal
-        $('#mainImage').click(function() {
-            $('#modalImage').attr('src', $(this).attr('src'));
-        });
-        
-        // Favorite button
-        $('.favorite-btn').click(function() {
-            const btn = $(this);
-            const listingId = btn.data('listing-id');
-            const icon = btn.find('i');
+            thumbnails.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
             
-            // Toggle icon
-            if (icon.hasClass('bi-heart')) {
-                icon.removeClass('bi-heart').addClass('bi-heart-fill');
-                btn.removeClass('btn-primary').addClass('btn-danger');
-                showToast('Property added to favorites');
-            } else {
-                icon.removeClass('bi-heart-fill').addClass('bi-heart');
-                btn.removeClass('btn-danger').addClass('btn-primary');
-                showToast('Property removed from favorites');
-            }
-            
-            // Save to localStorage
-            let favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
-            if (favorites.includes(listingId)) {
-                favorites = favorites.filter(id => id !== listingId);
-            } else {
-                favorites.push(listingId);
-            }
-            localStorage.setItem('nyumbafasta_favorites', JSON.stringify(favorites));
+            currentImageIndex = index;
         });
-        
-        // Check if property is already favorited
-        const listingId = {{ listing.id }};
-        const favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
-        if (favorites.includes(listingId.toString())) {
-            $('.favorite-btn i').removeClass('bi-heart').addClass('bi-heart-fill');
-            $('.favorite-btn').removeClass('btn-primary').addClass('btn-danger');
-        }
-        
-        // Copy link to clipboard
-        window.copyToClipboard = function() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(function() {
-                showToast('Link copied successfully!');
-            });
+    });
+    
+    // Gallery navigation
+    prevBtn.addEventListener('click', function() {
+        currentImageIndex = (currentImageIndex - 1 + thumbnails.length) % thumbnails.length;
+        thumbnails[currentImageIndex].click();
+    });
+    
+    nextBtn.addEventListener('click', function() {
+        currentImageIndex = (currentImageIndex + 1) % thumbnails.length;
+        thumbnails[currentImageIndex].click();
+    });
+    
+    // Image modal
+    mainImage.addEventListener('click', function() {
+        modalImage.src = this.src;
+        const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+        imageModal.show();
+    });
+    
+    // Share functionality
+    function shareProperty() {
+        const shareData = {
+            title: '{{ listing.title }}',
+            text: 'Check out this property on NyumbaFasta',
+            url: window.location.href
         };
         
-        // Toast notification function
-        function showToast(message) {
-            const toast = $(`
-                <div class="toast align-items-center text-white bg-primary border-0" role="alert">
-                    <div class="d-flex">
-                        <div class="toast-body">${message}</div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                    </div>
-                </div>
-            `);
-            
-            const container = $('<div class="toast-container position-fixed bottom-0 end-0 p-3"></div>');
-            container.append(toast);
-            $('body').append(container);
-            
-            const bsToast = new bootstrap.Toast(toast[0]);
-            bsToast.show();
-            
-            toast.on('hidden.bs.toast', function() {
-                container.remove();
+        if (navigator.share) {
+            navigator.share(shareData);
+        } else {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showToast('Link copied to clipboard!', 'success');
             });
         }
+    }
+    
+    document.getElementById('shareBtn').addEventListener('click', shareProperty);
+    document.getElementById('floatShareBtn').addEventListener('click', shareProperty);
+    
+    // Favorite functionality
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    favoriteBtn.addEventListener('click', function() {
+        const listingId = this.dataset.listingId;
+        const icon = this.querySelector('i');
         
-        // Form auto-focus
-        $('input[name="name"]').focus();
+        // Toggle favorite
+        if (icon.classList.contains('bi-heart')) {
+            icon.classList.remove('bi-heart');
+            icon.classList.add('bi-heart-fill');
+            showToast('Added to favorites', 'success');
+        } else {
+            icon.classList.remove('bi-heart-fill');
+            icon.classList.add('bi-heart');
+            showToast('Removed from favorites', 'warning');
+        }
+        
+        // Update localStorage
+        let favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
+        if (favorites.includes(listingId)) {
+            favorites = favorites.filter(id => id !== listingId);
+        } else {
+            favorites.push(listingId);
+        }
+        localStorage.setItem('nyumbafasta_favorites', JSON.stringify(favorites));
     });
+    
+    // Toast notification
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type} border-0`;
+        toast.setAttribute('role', 'alert');
+        
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi ${type === 'success' ? 'bi-check-circle' : type === 'warning' ? 'bi-exclamation-circle' : 'bi-info-circle'} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        
+        const container = document.createElement('div');
+        container.className = 'toast-container position-fixed top-0 end-0 p-3';
+        container.appendChild(toast);
+        document.body.appendChild(container);
+        
+        const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+        bsToast.show();
+        
+        toast.addEventListener('hidden.bs.toast', () => container.remove());
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+            prevBtn.click();
+        } else if (e.key === 'ArrowRight') {
+            nextBtn.click();
+        } else if (e.key === 'Escape') {
+            const imageModal = bootstrap.Modal.getInstance(document.getElementById('imageModal'));
+            if (imageModal) imageModal.hide();
+        }
+    });
+    
+    // Smooth scroll to sections
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    });
+});
 </script>
 {% endblock %}
