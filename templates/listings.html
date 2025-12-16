@@ -1,3 +1,4 @@
+<!-- templates/listings.html -->
 {% extends 'base.html' %}
 {% load static %}
 {% load widget_tweaks %}
@@ -27,6 +28,45 @@
         --blue-yellow-gradient: linear-gradient(135deg, #4361ee 0%, #ffd60a 100%);
     }
     
+    /* Common Styles */
+    .btn-blue {
+        background: var(--blue-gradient);
+        color: white;
+        border: none;
+    }
+    
+    .btn-yellow {
+        background: var(--yellow-gradient);
+        color: var(--primary-blue);
+        border: none;
+    }
+    
+    .btn-outline-blue {
+        border: 1px solid var(--primary-blue);
+        color: var(--primary-blue);
+    }
+    
+    .btn-outline-blue:hover {
+        background: var(--primary-blue);
+        color: white;
+    }
+    
+    .text-blue {
+        color: var(--primary-blue) !important;
+    }
+    
+    .bg-blue {
+        background: var(--primary-blue) !important;
+    }
+    
+    .bg-yellow {
+        background: var(--secondary-yellow) !important;
+    }
+    
+    .border-blue {
+        border-color: var(--primary-blue) !important;
+    }
+    
     /* Page Header */
     .page-header {
         background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(255, 214, 10, 0.05) 100%);
@@ -48,57 +88,14 @@
         background: var(--blue-gradient);
     }
     
-    .header-stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-        margin-top: 1.5rem;
-    }
-    
-    .stat-card {
-        background: var(--white);
-        border-radius: 12px;
-        padding: 1rem;
-        text-align: center;
-        box-shadow: 0 3px 10px rgba(67, 97, 238, 0.1);
-        border: 1px solid rgba(67, 97, 238, 0.1);
-        transition: all 0.3s ease;
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.15);
-    }
-    
-    .stat-icon {
-        width: 40px;
-        height: 40px;
-        background: var(--blue-gradient);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 0.75rem;
-        color: var(--white);
-        font-size: 1.25rem;
-    }
-    
-    .stat-number {
-        font-size: 1.5rem;
-        font-weight: 700;
-        background: var(--blue-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        line-height: 1;
-        margin-bottom: 0.25rem;
-    }
-    
-    .stat-label {
-        font-size: 0.75rem;
-        color: var(--gray);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+    /* Typing Animation */
+    #typing-text {
+        border-right: 3px solid var(--primary-blue);
+        padding-right: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        display: inline-block;
+        min-height: 1.2em;
     }
     
     /* Filters Sidebar */
@@ -124,13 +121,6 @@
         border-bottom: none;
         margin-bottom: 0;
         padding-bottom: 0;
-    }
-    
-    .filter-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0.75rem;
     }
     
     .filter-title {
@@ -175,11 +165,6 @@
         font-size: 0.8rem;
     }
     
-    .filter-tag a:hover {
-        opacity: 0.8;
-    }
-    
-    /* Quick Location Badges */
     .location-badges {
         display: flex;
         flex-wrap: wrap;
@@ -204,36 +189,33 @@
         transform: translateY(-1px);
     }
     
-    /* Price Range Slider */
-    .price-slider {
-        margin: 1rem 0;
+    /* Price Slider */
+    .noUi-target {
+        background: #f0f0f0;
+        border-radius: 4px;
+        border: none;
+        box-shadow: none;
     }
     
-    .price-inputs {
-        display: flex;
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
+    .noUi-connect {
+        background: var(--blue-gradient);
     }
     
-    .price-input {
-        flex: 1;
+    .noUi-handle {
+        width: 18px !important;
+        height: 18px !important;
+        background: var(--white);
+        border: 2px solid var(--primary-blue);
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        cursor: pointer;
     }
     
-    .price-input input {
-        border: 1px solid rgba(67, 97, 238, 0.2);
-        border-radius: 6px;
-        padding: 0.375rem;
-        width: 100%;
-        text-align: center;
-        font-size: 0.85rem;
+    .noUi-handle:before, .noUi-handle:after {
+        display: none;
     }
     
-    .price-input input:focus {
-        outline: none;
-        border-color: var(--secondary-yellow);
-    }
-    
-    /* Property Cards - COMPACT Design */
+    /* Property Cards */
     .property-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -262,6 +244,7 @@
         position: relative;
         height: 150px;
         overflow: hidden;
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
     }
     
     .property-image img {
@@ -269,10 +252,6 @@
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
-    }
-    
-    .property-card:hover .property-image img {
-        transform: scale(1.05);
     }
     
     .property-badges {
@@ -336,15 +315,6 @@
         transform: scale(1.1);
     }
     
-    .favorite-btn.active {
-        background: var(--primary-blue);
-        color: var(--white);
-    }
-    
-    .favorite-btn.active i {
-        color: var(--secondary-yellow);
-    }
-    
     .property-content {
         padding: 1rem;
         display: flex;
@@ -362,25 +332,6 @@
     .property-title a {
         color: var(--dark-gray);
         text-decoration: none;
-        transition: color 0.3s ease;
-    }
-    
-    .property-title a:hover {
-        color: var(--primary-blue);
-    }
-    
-    .property-location {
-        display: flex;
-        align-items: center;
-        gap: 0.375rem;
-        margin-bottom: 0.75rem;
-        color: var(--primary-blue);
-        font-size: 0.8rem;
-    }
-    
-    .property-location i {
-        color: var(--secondary-yellow);
-        font-size: 0.8rem;
     }
     
     .property-price {
@@ -420,24 +371,6 @@
         font-size: 0.8rem;
     }
     
-    .feature-details {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .feature-value {
-        font-weight: 700;
-        color: var(--dark-gray);
-        font-size: 0.85rem;
-    }
-    
-    .feature-label {
-        font-size: 0.65rem;
-        color: var(--gray);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
     .property-footer {
         margin-top: auto;
         display: flex;
@@ -445,19 +378,6 @@
         align-items: center;
         padding-top: 0.75rem;
         border-top: 1px solid rgba(67, 97, 238, 0.1);
-    }
-    
-    .property-time {
-        font-size: 0.7rem;
-        color: var(--gray);
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
-    
-    .property-time i {
-        color: var(--secondary-yellow);
-        font-size: 0.7rem;
     }
     
     .view-details-btn {
@@ -475,13 +395,6 @@
         transition: all 0.3s ease;
     }
     
-    .view-details-btn:hover {
-        background: var(--primary-blue-dark);
-        color: var(--white);
-        transform: translateY(-1px);
-        box-shadow: 0 3px 10px rgba(67, 97, 238, 0.3);
-    }
-    
     /* List View */
     .property-grid.list-view {
         grid-template-columns: 1fr;
@@ -497,11 +410,6 @@
         width: 200px;
         height: 150px;
         flex-shrink: 0;
-    }
-    
-    .property-grid.list-view .property-content {
-        flex-grow: 1;
-        padding: 0.75rem;
     }
     
     /* Toolbar */
@@ -534,52 +442,10 @@
         font-size: 0.9rem;
     }
     
-    .view-toggle-btn:hover {
-        background: rgba(67, 97, 238, 0.1);
-        border-color: var(--primary-blue);
-    }
-    
     .view-toggle-btn.active {
         background: var(--primary-blue);
         color: var(--white);
         border-color: var(--primary-blue);
-    }
-    
-    /* Pagination */
-    .pagination-custom .page-item .page-link {
-        color: var(--primary-blue);
-        border: 1px solid rgba(67, 97, 238, 0.2);
-        margin: 0 0.125rem;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.85rem;
-    }
-    
-    .pagination-custom .page-item.active .page-link {
-        background: var(--blue-gradient);
-        color: var(--white);
-        border-color: var(--primary-blue);
-    }
-    
-    .pagination-custom .page-item .page-link:hover {
-        background: rgba(67, 97, 238, 0.1);
-        border-color: var(--primary-blue);
-    }
-    
-    /* No Results */
-    .no-results {
-        background: var(--white);
-        border-radius: 15px;
-        padding: 2rem 1rem;
-        text-align: center;
-        border: 1px dashed rgba(67, 97, 238, 0.2);
-    }
-    
-    .no-results-icon {
-        font-size: 3rem;
-        color: rgba(67, 97, 238, 0.2);
-        margin-bottom: 1rem;
     }
     
     /* Quick Actions */
@@ -624,72 +490,6 @@
     .btn-whatsapp {
         background: #25D366;
     }
-    
-    /* Responsive */
-    @media (max-width: 1200px) {
-        .property-grid {
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-        }
-    }
-    
-    @media (max-width: 992px) {
-        .header-stats {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-        }
-        
-        .filters-sidebar {
-            position: static;
-            margin-bottom: 1.5rem;
-            max-height: none;
-        }
-    }
-    
-    @media (max-width: 768px) {
-        .page-header {
-            padding: 1rem 0.75rem;
-            border-radius: 10px;
-        }
-        
-        .property-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .property-grid.list-view .property-card {
-            flex-direction: column;
-        }
-        
-        .property-grid.list-view .property-image {
-            width: 100%;
-            height: 150px;
-        }
-        
-        .quick-actions {
-            bottom: 15px;
-            right: 15px;
-        }
-        
-        .quick-action-btn {
-            width: 36px;
-            height: 36px;
-            font-size: 0.9rem;
-        }
-    }
-    
-    @media (max-width: 576px) {
-        .header-stats {
-            grid-template-columns: 1fr;
-        }
-        
-        .property-features {
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-        
-        .toolbar-card {
-            padding: 0.75rem;
-        }
-    }
 </style>
 {% endblock %}
 
@@ -699,66 +499,10 @@
         <!-- Page Header -->
         <div class="page-header">
             <div class="text-center mb-3">
-                <br>
                 <!-- Typing Text Animation -->
                 <h1 class="display-6 fw-bold text-blue mb-2">
                     <span id="typing-text"></span>
                 </h1>
-                <style>
-                    #typing-text {
-                        border-right: 3px solid var(--primary-blue);
-                        padding-right: 5px;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        display: inline-block;
-                        min-height: 1.2em;
-                    }
-                </style>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const phrases = [
-                            "Find Your Perfect Property",
-                            "Discover Affordable Homes",
-                            "Browse Luxury Apartments",
-                            "Explore Hostels & Rentals",
-                            "Secure Your Next Residence"
-                        ];
-
-                        let currentPhrase = 0;
-                        let currentChar = 0;
-                        let isDeleting = false;
-                        const speed = 100;
-
-                        function typeEffect() {
-                            const textElement = document.getElementById("typing-text");
-                            const phrase = phrases[currentPhrase];
-
-                            if (!isDeleting) {
-                                textElement.textContent = phrase.substring(0, currentChar + 1);
-                                currentChar++;
-
-                                if (currentChar === phrase.length) {
-                                    isDeleting = true;
-                                    setTimeout(typeEffect, 1500);
-                                    return;
-                                }
-                            } else {
-                                textElement.textContent = phrase.substring(0, currentChar - 1);
-                                currentChar--;
-
-                                if (currentChar === 0) {
-                                    isDeleting = false;
-                                    currentPhrase = (currentPhrase + 1) % phrases.length;
-                                }
-                            }
-
-                            setTimeout(typeEffect, isDeleting ? 50 : speed);
-                        }
-
-                        typeEffect();
-                    });
-                </script>
-                
                 <p class="text-muted small">Browse through our collection of verified properties across Tanzania</p>
             </div>
             
@@ -770,38 +514,36 @@
                             <form action="{% url 'makazi:listings' %}" method="get" class="row g-2">
                                 <!-- Region/Province Selection -->
                                 <div class="col-md-3">
-                                    <select class="form-select border-blue form-select-sm" name="region" id="regionSelect">
+                                    <select class="form-select border-blue form-select-sm" name="location" id="regionSelect">
                                         <option value="">Choose Region</option>
-                                        <option value="dar es salaam">Dar es Salaam</option>
-                                        <option value="arusha">Arusha</option>
-                                        <option value="mwanza">Mwanza</option>
-                                        <option value="mbeya">Mbeya</option>
-                                        <option value="dodoma">Dodoma</option>
-                                        <option value="tanga">Tanga</option>
-                                        <option value="morogoro">Morogoro</option>
-                                        <option value="zanzibar">Zanzibar</option>
-                                        <option value="kigoma">Kigoma</option>
-                                        <option value="kagera">Kagera</option>
-                                    </select>
-                                </div>
-                                
-                                <!-- District Selection -->
-                                <div class="col-md-3">
-                                    <select class="form-select border-blue form-select-sm" name="district" id="districtSelect" disabled>
-                                        <option value="">Choose District</option>
+                                        {% for loc in locations %}
+                                        <option value="{{ loc }}" {% if request.GET.location == loc %}selected{% endif %}>
+                                            {{ loc }}
+                                        </option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 
                                 <!-- Property Type -->
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <select class="form-select border-blue form-select-sm" name="property_type">
                                         <option value="">Property Type</option>
-                                        <option value="house">House</option>
-                                        <option value="apartment">Apartment</option>
-                                        <option value="room">Room</option>
-                                        <option value="plot">Plot</option>
-                                        <option value="commercial">Commercial</option>
-                                        <option value="land">Land</option>
+                                        {% for prop_type in property_types %}
+                                        <option value="{{ prop_type }}" {% if request.GET.property_type == prop_type %}selected{% endif %}>
+                                            {{ prop_type|title }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <!-- Bedrooms -->
+                                <div class="col-md-2">
+                                    <select class="form-select border-blue form-select-sm" name="bedrooms">
+                                        <option value="">Bedrooms</option>
+                                        <option value="1" {% if request.GET.bedrooms == '1' %}selected{% endif %}>1 Bedroom</option>
+                                        <option value="2" {% if request.GET.bedrooms == '2' %}selected{% endif %}>2 Bedrooms</option>
+                                        <option value="3" {% if request.GET.bedrooms == '3' %}selected{% endif %}>3 Bedrooms</option>
+                                        <option value="4" {% if request.GET.bedrooms == '4' %}selected{% endif %}>4+ Bedrooms</option>
                                     </select>
                                 </div>
                                 
@@ -809,11 +551,11 @@
                                 <div class="col-md-2">
                                     <select class="form-select border-blue form-select-sm" name="price_range">
                                         <option value="">Price Range</option>
-                                        <option value="0-500000">Under 500K</option>
-                                        <option value="500000-1000000">500K - 1M</option>
-                                        <option value="1000000-5000000">1M - 5M</option>
-                                        <option value="5000000-10000000">5M - 10M</option>
-                                        <option value="10000000+">10M+</option>
+                                        <option value="0-500000" {% if request.GET.price_range == '0-500000' %}selected{% endif %}>Under 500K</option>
+                                        <option value="500000-1000000" {% if request.GET.price_range == '500000-1000000' %}selected{% endif %}>500K - 1M</option>
+                                        <option value="1000000-5000000" {% if request.GET.price_range == '1000000-5000000' %}selected{% endif %}>1M - 5M</option>
+                                        <option value="5000000-10000000" {% if request.GET.price_range == '5000000-10000000' %}selected{% endif %}>5M - 10M</option>
+                                        <option value="10000000+" {% if request.GET.price_range == '10000000+' %}selected{% endif %}>10M+</option>
                                     </select>
                                 </div>
                                 
@@ -826,16 +568,6 @@
                             </form>
                         </div>
                     </div>
-                </div>
-            </div>
-
-        </div>
-        
-        <!-- Map View -->
-        <div id="mapContainer" class="mb-3" style="display: none;">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-0">
-                    <div id="propertyMap" style="height: 400px; border-radius: 12px;"></div>
                 </div>
             </div>
         </div>
@@ -882,45 +614,34 @@
                         <div class="filter-section">
                             <div class="filter-title">
                                 <i class="bi bi-search"></i>
-                                <span>Search</span>
+                                <span>Search Keywords</span>
                             </div>
                             <div class="input-group input-group-sm">
                                 <input type="text" 
                                        class="form-control border-blue" 
                                        id="searchInput" 
                                        placeholder="Search properties..."
-                                       value="{{ request.GET.search }}">
+                                       value="{{ request.GET.q }}">
                                 <button class="btn btn-blue" type="button" id="searchButton">
                                     <i class="bi bi-arrow-right"></i>
                                 </button>
                             </div>
                         </div>
                         
-                        <!-- Region & District -->
+                        <!-- Location -->
                         <div class="filter-section">
                             <div class="filter-title">
                                 <i class="bi bi-map"></i>
                                 <span>Location</span>
                             </div>
                             
-                            <!-- Region Selection -->
-                            <select class="form-select border-blue mb-2 form-select-sm" id="regionFilter">
-                                <option value="">All Regions</option>
-                                <option value="dar es salaam" {% if request.GET.region == 'dar es salaam' %}selected{% endif %}>Dar es Salaam</option>
-                                <option value="arusha" {% if request.GET.region == 'arusha' %}selected{% endif %}>Arusha</option>
-                                <option value="mwanza" {% if request.GET.region == 'mwanza' %}selected{% endif %}>Mwanza</option>
-                                <option value="mbeya" {% if request.GET.region == 'mbeya' %}selected{% endif %}>Mbeya</option>
-                                <option value="dodoma" {% if request.GET.region == 'dodoma' %}selected{% endif %}>Dodoma</option>
-                                <option value="tanga" {% if request.GET.region == 'tanga' %}selected{% endif %}>Tanga</option>
-                                <option value="morogoro" {% if request.GET.region == 'morogoro' %}selected{% endif %}>Morogoro</option>
-                                <option value="zanzibar" {% if request.GET.region == 'zanzibar' %}selected{% endif %}>Zanzibar</option>
-                                <option value="kigoma" {% if request.GET.region == 'kigoma' %}selected{% endif %}>Kigoma</option>
-                                <option value="kagera" {% if request.GET.region == 'kagera' %}selected{% endif %}>Kagera</option>
-                            </select>
-                            
-                            <!-- District Selection -->
-                            <select class="form-select border-blue mb-2 form-select-sm" id="districtFilter" disabled>
-                                <option value="">All Districts</option>
+                            <select class="form-select border-blue mb-2 form-select-sm" id="locationFilter">
+                                <option value="">All Locations</option>
+                                {% for loc in locations %}
+                                <option value="{{ loc }}" {% if request.GET.location == loc %}selected{% endif %}>
+                                    {{ loc }}
+                                </option>
+                                {% endfor %}
                             </select>
                             
                             <div class="filter-title">
@@ -963,20 +684,35 @@
                                 <i class="bi bi-grid"></i>
                                 <span>Property Type</span>
                             </div>
-                            <div class="d-flex flex-wrap gap-1">
+                            <div class="d-flex flex-column gap-1">
                                 {% for prop_type in property_types %}
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" 
+                                <div class="form-check">
+                                    <input class="form-check-input property-type-checkbox" 
                                            type="checkbox" 
                                            name="property_type" 
                                            value="{{ prop_type }}" 
                                            id="type{{ forloop.counter }}"
                                            {% if request.GET.property_type == prop_type %}checked{% endif %}>
                                     <label class="form-check-label small" for="type{{ forloop.counter }}">
-                                        {{ prop_type|default:"All" }}
+                                        {{ prop_type|title|default:"All" }}
                                     </label>
                                 </div>
                                 {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Bedrooms -->
+                        <div class="filter-section">
+                            <div class="filter-title">
+                                <i class="bi bi-door-closed"></i>
+                                <span>Bedrooms</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-sm btn-outline-blue bedroom-btn" data-beds="">All</button>
+                                <button type="button" class="btn btn-sm btn-outline-blue bedroom-btn" data-beds="1">1</button>
+                                <button type="button" class="btn btn-sm btn-outline-blue bedroom-btn" data-beds="2">2</button>
+                                <button type="button" class="btn btn-sm btn-outline-blue bedroom-btn" data-beds="3">3</button>
+                                <button type="button" class="btn btn-sm btn-outline-blue bedroom-btn" data-beds="4">4+</button>
                             </div>
                         </div>
                         
@@ -988,24 +724,40 @@
                             </div>
                             <div class="d-flex flex-column gap-1">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="featuredCheck">
+                                    <input class="form-check-input" type="checkbox" id="featuredCheck" {% if request.GET.is_featured %}checked{% endif %}>
                                     <label class="form-check-label small" for="featuredCheck">
                                         Featured Properties
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="verifiedCheck">
+                                    <input class="form-check-input" type="checkbox" id="verifiedCheck" {% if request.GET.is_verified %}checked{% endif %}>
                                     <label class="form-check-label small" for="verifiedCheck">
                                         Verified Only
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="imagesCheck">
+                                    <input class="form-check-input" type="checkbox" id="imagesCheck" {% if request.GET.has_images %}checked{% endif %}>
                                     <label class="form-check-label small" for="imagesCheck">
-                                        With Images
+                                        With Images Only
                                     </label>
                                 </div>
                             </div>
+                        </div>
+                        
+                        <!-- Sort Options -->
+                        <div class="filter-section">
+                            <div class="filter-title">
+                                <i class="bi bi-sort-down"></i>
+                                <span>Sort By</span>
+                            </div>
+                            <select class="form-select border-blue form-select-sm" id="sortSelect">
+                                <option value="-scraped_at" {% if request.GET.sort == '-scraped_at' %}selected{% endif %}>Newest First</option>
+                                <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>Price: Low to High</option>
+                                <option value="-price" {% if request.GET.sort == '-price' %}selected{% endif %}>Price: High to Low</option>
+                                <option value="-bedrooms" {% if request.GET.sort == '-bedrooms' %}selected{% endif %}>Most Bedrooms</option>
+                                <option value="bedrooms" {% if request.GET.sort == 'bedrooms' %}selected{% endif %}>Fewest Bedrooms</option>
+                                <option value="-area_sqft" {% if request.GET.sort == '-area_sqft' %}selected{% endif %}>Largest Area</option>
+                            </select>
                         </div>
                         
                         <!-- Action Buttons -->
@@ -1047,22 +799,17 @@
                                     <button class="view-toggle-btn" id="listView" title="List View">
                                         <i class="bi bi-list-task"></i>
                                     </button>
-                                    <button class="view-toggle-btn" id="mapViewBtn" title="Map View">
-                                        <i class="bi bi-map"></i>
-                                    </button>
                                 </div>
                                 
-                                <!-- Sort Dropdown -->
+                                <!-- Results per page -->
                                 <div class="dropdown">
                                     <button class="btn btn-outline-blue dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
-                                        <i class="bi bi-sort-down me-1"></i>Sort
+                                        <i class="bi bi-table me-1"></i>Per Page
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item small" href="?sort=-scraped_at">Newest First</a></li>
-                                        <li><a class="dropdown-item small" href="?sort=price">Price: Low to High</a></li>
-                                        <li><a class="dropdown-item small" href="?sort=-price">Price: High to Low</a></li>
-                                        <li><a class="dropdown-item small" href="?sort=-bedrooms">Most Bedrooms</a></li>
-                                        <li><a class="dropdown-item small" href="?sort=bedrooms">Fewest Bedrooms</a></li>
+                                        <li><a class="dropdown-item small" href="?{% for key,value in request.GET.items %}{% if key != 'page' and key != 'per_page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}per_page=12">12</a></li>
+                                        <li><a class="dropdown-item small" href="?{% for key,value in request.GET.items %}{% if key != 'page' and key != 'per_page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}per_page=24">24</a></li>
+                                        <li><a class="dropdown-item small" href="?{% for key,value in request.GET.items %}{% if key != 'page' and key != 'per_page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}per_page=48">48</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -1076,9 +823,16 @@
                     <div class="property-card">
                         <!-- Property Image -->
                         <div class="property-image">
-                            <img src="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}" 
+                            {% if listing.main_image_url %}
+                            <img src="{{ listing.main_image_url }}" 
                                  alt="{{ listing.title }}"
-                                 loading="lazy">
+                                 loading="lazy"
+                                 onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%)'">
+                            {% else %}
+                            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
+                                <i class="bi bi-house" style="font-size: 2rem;"></i>
+                            </div>
+                            {% endif %}
                             
                             <!-- Badges -->
                             <div class="property-badges">
@@ -1089,7 +843,7 @@
                                 <span class="property-badge badge-verified">Verified</span>
                                 {% endif %}
                                 <span class="property-badge badge-type">
-                                    {{ listing.property_type|default:"Property" }}
+                                    {{ listing.property_type|default:"Property"|title }}
                                 </span>
                             </div>
                             
@@ -1116,7 +870,7 @@
                             
                             <!-- Price -->
                             <div class="property-price">
-                                TSh {{ listing.price|only_digits }}
+                                TSh {{ listing.digits_price|default:listing.price }}
                             </div>
                             
                             <!-- Features -->
@@ -1171,27 +925,26 @@
                             </div>
                         </div>
                     </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="no-results">
+                            <div class="no-results-icon">
+                                <i class="bi bi-house-exclamation"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2 text-blue small">No Properties Found</h4>
+                            <p class="text-muted mb-3 small">Try adjusting your filters or check back later</p>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                <button class="btn btn-blue btn-sm" id="clearAllFilters">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>Clear Filters
+                                </button>
+                                <a href="{% url 'makazi:home' %}" class="btn btn-outline-blue btn-sm">
+                                    <i class="bi bi-house me-1"></i>Browse Home
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
-                
-                <!-- No Results -->
-                {% if not listings %}
-                <div class="no-results">
-                    <div class="no-results-icon">
-                        <i class="bi bi-house-exclamation"></i>
-                    </div>
-                    <h4 class="fw-bold mb-2 text-blue small">No Properties Found</h4>
-                    <p class="text-muted mb-3 small">Try adjusting your filters or check back later</p>
-                    <div class="d-flex flex-wrap gap-2 justify-content-center">
-                        <a href="{% url 'makazi:listings' %}" class="btn btn-blue btn-sm">
-                            <i class="bi bi-arrow-clockwise me-1"></i>Clear Filters
-                        </a>
-                        <a href="{% url 'makazi:home' %}" class="btn btn-outline-blue btn-sm">
-                            <i class="bi bi-house me-1"></i>Browse Home
-                        </a>
-                    </div>
-                </div>
-                {% endif %}
                 
                 <!-- Pagination -->
                 {% if listings.has_other_pages %}
@@ -1249,148 +1002,98 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""/>
+<!-- noUiSlider CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css">
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""></script>
+<!-- noUiSlider JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize variables
-    let map = null;
     const propertiesContainer = document.getElementById('propertiesContainer');
-    const mapContainer = document.getElementById('mapContainer');
+    let currentBedrooms = '{{ request.GET.bedrooms|default:"" }}';
     
     // View Toggle
     const gridViewBtn = document.getElementById('gridView');
     const listViewBtn = document.getElementById('listView');
-    const mapViewBtn = document.getElementById('mapViewBtn');
     
-    // Toggle between views
     gridViewBtn.addEventListener('click', function() {
         this.classList.add('active');
         listViewBtn.classList.remove('active');
-        mapViewBtn.classList.remove('active');
         propertiesContainer.classList.remove('list-view');
-        mapContainer.style.display = 'none';
-        propertiesContainer.style.display = 'grid';
     });
     
     listViewBtn.addEventListener('click', function() {
         this.classList.add('active');
         gridViewBtn.classList.remove('active');
-        mapViewBtn.classList.remove('active');
         propertiesContainer.classList.add('list-view');
-        mapContainer.style.display = 'none';
-        propertiesContainer.style.display = 'grid';
     });
     
-    mapViewBtn.addEventListener('click', function() {
-        this.classList.add('active');
-        gridViewBtn.classList.remove('active');
-        listViewBtn.classList.remove('active');
-        propertiesContainer.style.display = 'none';
-        mapContainer.style.display = 'block';
-        
-        // Initialize map if not already done
-        if (!map) {
-            initMap();
+    // Initialize active bedrooms button
+    document.querySelectorAll('.bedroom-btn').forEach(btn => {
+        if (btn.dataset.beds === currentBedrooms) {
+            btn.classList.remove('btn-outline-blue');
+            btn.classList.add('btn-blue', 'text-white');
         }
-    });
-    
-    // Initialize Leaflet map
-    function initMap() {
-        map = L.map('propertyMap').setView([-6.7924, 39.2083], 13);
         
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-        
-        // Add markers for properties (if coordinates available)
-        {% for listing in listings %}
-        {% if listing.latitude and listing.longitude %}
-        const marker{{ forloop.counter }} = L.marker([{{ listing.latitude }}, {{ listing.longitude }}])
-            .addTo(map)
-            .bindPopup(`
-                <div style="min-width: 200px;">
-                    <img src="{{ listing.main_image_url|default:'/static/images/default-property.jpg' }}" 
-                         style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
-                    <h6 style="font-weight: 600; margin-bottom: 5px; font-size: 0.9rem;">{{ listing.title|truncatechars:40 }}</h6>
-                    <p style="color: #666; font-size: 0.75rem; margin-bottom: 5px;">
-                        <i class="bi bi-geo-alt"></i> {{ listing.location }}
-                    </p>
-                    <div style="font-weight: 700; color: #4361ee; margin-bottom: 10px; font-size: 1rem;">
-                        TSh {{ listing.price|only_digits }}
-                    </div>
-                    <a href="{{ listing.get_absolute_url }}" 
-                       style="background: #4361ee; color: white; padding: 4px 12px; border-radius: 5px; text-decoration: none; font-size: 0.75rem;">
-                        View Details
-                    </a>
-                </div>
-            `);
-        {% endif %}
-        {% endfor %}
-    }
-    
-    // Region & District Selection Logic
-    const regionFilter = document.getElementById('regionFilter');
-    const districtFilter = document.getElementById('districtFilter');
-    const regionSelect = document.getElementById('regionSelect');
-    const districtSelect = document.getElementById('districtSelect');
-    
-    // Districts data for each region
-    const districtsData = {
-        'dar es salaam': ['Ilala', 'Kinondoni', 'Temeke', 'Ubungo', 'Kigamboni'],
-        'arusha': ['Arusha City', 'Arumeru', 'Karatu', 'Monduli', 'Longido'],
-        'mwanza': ['Ilemela', 'Nyamagana', 'Misungwi', 'Kwimba', 'Magu'],
-        'mbeya': ['Mbeya City', 'Mbeya Rural', 'Rungwe', 'Kyela', 'Mbarali'],
-        'dodoma': ['Dodoma City', 'Dodoma Rural', 'Kondoa', 'Mpwapwa', 'Kongwa'],
-        'tanga': ['Tanga City', 'Muheza', 'Korogwe', 'Handeni', 'Kilindi'],
-        'morogoro': ['Morogoro Urban', 'Morogoro Rural', 'Mvomero', 'Kilosa', 'Gairo'],
-        'zanzibar': ['Mjini Magharibi', 'Kaskazini Unguja', 'Kusini Unguja', 'Kaskazini Pemba', 'Kusini Pemba'],
-        'kigoma': ['Kigoma Urban', 'Kigoma Rural', 'Kibondo', 'Kakonko', 'Kasulu'],
-        'kagera': ['Bukoba Urban', 'Bukoba Rural', 'Muleba', 'Karagwe', 'Biharamulo']
-    };
-    
-    // Function to populate districts
-    function populateDistricts(region, targetElement) {
-        targetElement.innerHTML = '<option value="">All Districts</option>';
-        
-        if (region && districtsData[region]) {
-            targetElement.disabled = false;
-            districtsData[region].forEach(district => {
-                const option = document.createElement('option');
-                option.value = district.toLowerCase();
-                option.textContent = district;
-                targetElement.appendChild(option);
+        btn.addEventListener('click', function() {
+            // Reset all buttons
+            document.querySelectorAll('.bedroom-btn').forEach(b => {
+                b.classList.remove('btn-blue', 'text-white');
+                b.classList.add('btn-outline-blue');
             });
+            
+            // Activate clicked button
+            this.classList.remove('btn-outline-blue');
+            this.classList.add('btn-blue', 'text-white');
+            
+            // Update current bedrooms
+            currentBedrooms = this.dataset.beds;
+        });
+    });
+    
+    // Typing Animation
+    const phrases = [
+        "Find Your Perfect Property",
+        "Discover Affordable Homes",
+        "Browse Luxury Apartments",
+        "Explore Hostels & Rentals",
+        "Secure Your Next Residence"
+    ];
+
+    let currentPhrase = 0;
+    let currentChar = 0;
+    let isDeleting = false;
+    const speed = 100;
+
+    function typeEffect() {
+        const textElement = document.getElementById("typing-text");
+        const phrase = phrases[currentPhrase];
+
+        if (!isDeleting) {
+            textElement.textContent = phrase.substring(0, currentChar + 1);
+            currentChar++;
+
+            if (currentChar === phrase.length) {
+                isDeleting = true;
+                setTimeout(typeEffect, 1500);
+                return;
+            }
         } else {
-            targetElement.disabled = true;
+            textElement.textContent = phrase.substring(0, currentChar - 1);
+            currentChar--;
+
+            if (currentChar === 0) {
+                isDeleting = false;
+                currentPhrase = (currentPhrase + 1) % phrases.length;
+            }
         }
+
+        setTimeout(typeEffect, isDeleting ? 50 : speed);
     }
-    
-    // Event listeners for region selection
-    if (regionFilter) {
-        regionFilter.addEventListener('change', function() {
-            populateDistricts(this.value, districtFilter);
-        });
-    }
-    
-    if (regionSelect) {
-        regionSelect.addEventListener('change', function() {
-            populateDistricts(this.value, districtSelect);
-        });
-        
-        // Initialize district if region is already selected
-        if (regionSelect.value) {
-            populateDistricts(regionSelect.value, districtSelect);
-        }
-    }
+
+    typeEffect();
     
     // Price Slider
     const priceSlider = document.getElementById('priceSlider');
@@ -1411,20 +1114,34 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Update price labels
     function updatePriceLabels() {
-        minPriceLabel.textContent = formatPrice(parseInt(minPriceInput.value) || 0);
-        maxPriceLabel.textContent = formatPrice(parseInt(maxPriceInput.value) || 100000000);
+        const minPrice = parseInt(minPriceInput.value) || 0;
+        const maxPrice = parseInt(maxPriceInput.value) || 100000000;
+        
+        minPriceLabel.textContent = formatPrice(minPrice);
+        maxPriceLabel.textContent = formatPrice(maxPrice);
     }
     
-    // Initialize price slider if available
-    if (priceSlider && typeof noUiSlider !== 'undefined') {
+    // Initialize price slider
+    if (priceSlider) {
+        const minPrice = parseInt(minPriceInput.value) || 0;
+        const maxPrice = parseInt(maxPriceInput.value) || 100000000;
+        
         noUiSlider.create(priceSlider, {
-            start: [parseInt(minPriceInput.value) || 0, parseInt(maxPriceInput.value) || 100000000],
+            start: [minPrice, maxPrice],
             connect: true,
             range: {
                 'min': 0,
                 'max': 100000000
             },
-            step: 100000
+            step: 100000,
+            format: {
+                to: function(value) {
+                    return Math.round(value);
+                },
+                from: function(value) {
+                    return parseInt(value);
+                }
+            }
         });
         
         priceSlider.noUiSlider.on('update', function(values) {
@@ -1445,51 +1162,79 @@ document.addEventListener('DOMContentLoaded', function() {
     updatePriceLabels();
     
     // Filter functionality
-    document.getElementById('applyFilters').addEventListener('click', applyFilters);
-    document.getElementById('searchButton').addEventListener('click', applyFilters);
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') applyFilters();
-    });
+    const applyFiltersBtn = document.getElementById('applyFilters');
+    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.getElementById('searchInput');
+    const locationFilter = document.getElementById('locationFilter');
+    const sortSelect = document.getElementById('sortSelect');
+    
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', applyFilters);
+    }
+    
+    if (searchButton) {
+        searchButton.addEventListener('click', applyFilters);
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') applyFilters();
+        });
+    }
     
     function applyFilters() {
-        const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams();
         
         // Get filter values
         const filters = {
-            search: document.getElementById('searchInput').value,
-            region: regionFilter ? regionFilter.value : '',
-            district: districtFilter ? districtFilter.value : '',
-            min_price: document.getElementById('minPrice').value,
-            max_price: document.getElementById('maxPrice').value,
-            property_type: document.querySelector('input[name="property_type"]:checked')?.value || '',
-            featured: document.getElementById('featuredCheck')?.checked ? 'true' : '',
-            verified: document.getElementById('verifiedCheck')?.checked ? 'true' : '',
-            with_images: document.getElementById('imagesCheck')?.checked ? 'true' : '',
-            sort: '{{ request.GET.sort }}'
+            q: searchInput.value.trim(),
+            location: locationFilter ? locationFilter.value : '',
+            min_price: minPriceInput.value || '',
+            max_price: maxPriceInput.value || '',
+            bedrooms: currentBedrooms || '',
+            property_type: document.querySelector('.property-type-checkbox:checked')?.value || '',
+            is_featured: document.getElementById('featuredCheck')?.checked ? 'true' : '',
+            is_verified: document.getElementById('verifiedCheck')?.checked ? 'true' : '',
+            has_images: document.getElementById('imagesCheck')?.checked ? 'true' : '',
+            sort: sortSelect ? sortSelect.value : ''
         };
         
-        // Update URL parameters
+        // Add only non-empty filters
         Object.entries(filters).forEach(([key, value]) => {
             if (value) {
                 params.set(key, value);
-            } else {
-                params.delete(key);
             }
         });
         
-        // Remove page parameter
-        params.delete('page');
+        // Add existing GET parameters (except page)
+        const currentParams = new URLSearchParams(window.location.search);
+        for (const [key, value] of currentParams) {
+            if (key !== 'page' && !params.has(key) && value) {
+                params.set(key, value);
+            }
+        }
         
         // Navigate to filtered page
-        window.location.search = params.toString();
+        window.location.href = `${window.location.pathname}?${params.toString()}`;
     }
     
     // Reset filters
-    document.getElementById('resetFilters').addEventListener('click', function() {
-        if (confirm('Reset all filters?')) {
+    const resetFiltersBtn = document.getElementById('resetFilters');
+    const clearAllFiltersBtn = document.getElementById('clearAllFilters');
+    
+    if (resetFiltersBtn) {
+        resetFiltersBtn.addEventListener('click', function() {
+            if (confirm('Reset all filters?')) {
+                window.location.href = "{% url 'makazi:listings' %}";
+            }
+        });
+    }
+    
+    if (clearAllFiltersBtn) {
+        clearAllFiltersBtn.addEventListener('click', function() {
             window.location.href = "{% url 'makazi:listings' %}";
-        }
-    });
+        });
+    }
     
     // Favorite functionality
     document.querySelectorAll('.favorite-btn').forEach(button => {
@@ -1548,8 +1293,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Toast notification function
     function showToast(message, type = 'success') {
+        // Remove existing toasts
+        const existingToasts = document.querySelectorAll('.toast-container');
+        existingToasts.forEach(toast => toast.remove());
+        
+        // Create toast element
         const toast = document.createElement('div');
-        toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'blue' : 'danger'} border-0`;
+        toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'primary' : 'danger'} border-0`;
         toast.setAttribute('role', 'alert');
         
         toast.innerHTML = `
@@ -1573,24 +1323,16 @@ document.addEventListener('DOMContentLoaded', function() {
         toast.addEventListener('hidden.bs.toast', () => container.remove());
     }
     
-    // Lazy loading images
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    const src = img.dataset.src;
-                    if (src) {
-                        img.src = src;
-                        img.removeAttribute('data-src');
-                    }
-                    observer.unobserve(img);
-                }
-            });
+    // Image error handling
+    document.querySelectorAll('.property-image img').forEach(img => {
+        img.addEventListener('error', function() {
+            this.style.display = 'none';
+            const placeholder = document.createElement('div');
+            placeholder.style.cssText = 'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white;';
+            placeholder.innerHTML = '<i class="bi bi-house" style="font-size: 2rem;"></i>';
+            this.parentElement.appendChild(placeholder);
         });
-        
-        document.querySelectorAll('img[data-src]').forEach(img => imageObserver.observe(img));
-    }
+    });
 });
 </script>
 {% endblock %}

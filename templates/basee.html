@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
@@ -516,20 +515,16 @@ footer {
                 <!-- Search Bar -->
                 <form class="d-flex me-3" action="{% url 'makazi:listings' %}" method="get">
                     <div class="input-group">
-
-                               <input type="text" 
-                                       class="form-control border-yellow" 
-                                       id="searchInput" 
-                                       placeholder="Search properties..."
-                                       value="{{ request.GET.q }}">
-
-
-                                <button class="btn btn-yellow" type="button" id="searchButton">
-                                    <i class="bi bi-arrow-right"></i>
-                                </button>
-    
+                        <input type="text" class="form-control border-yellow" 
+                               name="search" placeholder="Search for houses..." 
+                               value="{{ request.GET.search }}"
+                               aria-label="Search properties">
+                        <button class="btn btn-yellow" type="submit">
+                            <i class="bi bi-search text-blue"></i>
+                        </button>
                     </div>
                 </form>
+                
                 <!-- Theme Toggle -->
                 <button class="btn btn-yellow me-2" id="themeToggle" 
                         aria-label="Toggle theme">

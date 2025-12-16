@@ -25,28 +25,36 @@ class Scrape_MakaziListing(models.Model):
     area_sqft = models.IntegerField(null=True, blank=True, db_index=True)
     is_featured = models.BooleanField(default=False, db_index=True)
     is_verified = models.BooleanField(default=False, db_index=True)
-
+    
     @property
-    def digits_price(self):
-        """
-        Rudisha digits tu (0-9) kutoka kwenye field price.
-        Mfano: "Tsh 350,000 /=" -> "350000"
-        """
+    def numeric_price(self):
+        """Extract numeric price for filtering and sorting"""
         if not self.price:
-            return ''
+            return 0
+        
         try:
-            return re.sub(r'[^0-9]', '', str(self.price))
-        except Exception:
-            # defensive: ili avoid crash kama price ni kitu kisichotarajiwa
-            return ''
+            # Remove all non-digit characters
+            price_str = re.sub(r'[^\d]', '', str(self.price))
+            if price_str:
+                return int(price_str)
+            return 0
+        except (ValueError, TypeError):
+            return 0
+    
+    def save(self, *args, **kwargs):
+        # Auto-extract price digits on save
+        if self.price and not self.digits_price:
+            self.digits_price = re.sub(r'[^0-9]', '', str(self.price))
+        super().save(*args, **kwargs)
     
     class Meta:
+        # Add indexes for better performance
         indexes = [
-            models.Index(fields=['title', 'location', 'description']),
+            models.Index(fields=['title', 'location']),
             models.Index(fields=['property_type']),
             models.Index(fields=['bedrooms']),
-            models.Index(fields=['price']),
             models.Index(fields=['is_featured']),
+            models.Index(fields=['is_verified']),
             models.Index(fields=['scraped_at']),
         ]
         ordering = ['-scraped_at']
