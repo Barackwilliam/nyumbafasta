@@ -473,3 +473,211 @@ def dashboard(request):
     
     return render(request, 'dashboard.html', {'stats': stats})
 
+
+
+
+
+
+
+# makazi/views.py - Ongeza baada ya dashboard function
+from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
+from django.db.models import Q, Count, Avg
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Apartment, ApartmentBooking, ApartmentReview
+from .forms import ApartmentFilterForm, ApartmentBookingForm, ApartmentReviewForm
+
+def apartments_list(request):
+    """List all apartments with filtering"""
+    apartments = Apartment.objects.filter(is_available=True)
+    
+    # Initialize filter form
+    filter_form = ApartmentFilterForm(request.GET)
+    
+    # Apply filters if form is valid
+    if filter_form.is_valid():
+        data = filter_form.cleaned_data
+        
+        # Location filter
+        if data.get('location'):
+            apartments = apartments.filter(
+                Q(location__icontains=data['location']) |
+                Q(address__icontains=data['location'])
+            )
+        
+        # Apartment type filter
+        if data.get('apartment_type'):
+            apartments = apartments.filter(apartment_type=data['apartment_type'])
+        
+        # Price range filter
+        if data.get('min_price'):
+            apartments = apartments.filter(price_per_month__gte=data['min_price'])
+        
+        if data.get('max_price'):
+            apartments = apartments.filter(price_per_month__lte=data['max_price'])
+        
+        # Bedrooms filter
+        if data.get('bedrooms'):
+            if data['bedrooms'] == '4':
+                apartments = apartments.filter(bedrooms__gte=4)
+            else:
+                try:
+                    bedrooms = int(data['bedrooms'])
+                    apartments = apartments.filter(bedrooms=bedrooms)
+                except ValueError:
+                    pass
+        
+        # Amenities filter
+        if data.get('amenities'):
+            for amenity in data['amenities']:
+                apartments = apartments.filter(amenities__contains=amenity)
+    
+    # Sorting
+    sort_by = request.GET.get('sort', '-created_at')
+    valid_sorts = ['price_per_month', '-price_per_month', 'created_at', '-created_at', 
+                   'bedrooms', '-bedrooms', 'area_sqft', '-area_sqft']
+    
+    if sort_by in valid_sorts:
+        apartments = apartments.order_by(sort_by)
+    else:
+        apartments = apartments.order_by('-created_at')
+    
+    # Get featured apartments
+    featured_apartments = apartments.filter(is_featured=True)[:3]
+    
+    # Get popular locations
+    popular_locations = Apartment.objects.values('location').annotate(
+        count=Count('id')
+    ).order_by('-count')[:10]
+    
+    # Pagination
+    paginator = Paginator(apartments, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'apartments': page_obj,
+        'featured_apartments': featured_apartments,
+        'filter_form': filter_form,
+        'popular_locations': popular_locations,
+        'total_apartments': apartments.count(),
+        'sort_by': sort_by,
+    }
+    
+    return render(request, 'apartments/list.html', context)
+
+def apartment_detail(request, pk):
+    """Apartment detail page with booking form"""
+    apartment = get_object_or_404(Apartment, pk=pk, is_available=True)
+    
+    # Get similar apartments
+    similar_apartments = Apartment.objects.filter(
+        Q(location__icontains=apartment.location) |
+        Q(apartment_type=apartment.apartment_type)
+    ).exclude(id=apartment.id).filter(is_available=True).order_by('?')[:4]
+    
+    # Get reviews
+    reviews = apartment.reviews.filter(is_approved=True).order_by('-created_at')[:10]
+    average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+    
+    # Booking form
+    booking_form = ApartmentBookingForm()
+    
+    # Review form
+    review_form = ApartmentReviewForm()
+    
+    # Calculate dates for booking
+    import datetime
+    min_date = datetime.date.today().isoformat()
+    max_date = (datetime.date.today() + datetime.timedelta(days=365)).isoformat()
+    
+    # Calculate total price breakdown
+    total_price = apartment.get_total_price()
+    
+    if request.method == 'POST':
+        if 'book_now' in request.POST:
+            booking_form = ApartmentBookingForm(request.POST)
+            if booking_form.is_valid():
+                booking = booking_form.save(commit=False)
+                booking.apartment = apartment
+                booking.monthly_rent = apartment.price_per_month
+                booking.security_deposit_paid = apartment.security_deposit
+                booking.maintenance_fee_paid = apartment.maintenance_fee
+                booking.check_out_date = booking.check_in_date + datetime.timedelta(days=30 * booking.duration_months)
+                booking.total_amount = booking.calculate_total_amount()
+                
+                booking.save()
+                messages.success(request, 'Booking request submitted successfully! We will contact you shortly.')
+                return redirect('makazi:apartment_detail', pk=apartment.pk)
+        
+        elif 'submit_review' in request.POST:
+            review_form = ApartmentReviewForm(request.POST)
+            if review_form.is_valid():
+                review = review_form.save(commit=False)
+                review.apartment = apartment
+                review.save()
+                messages.success(request, 'Review submitted for approval. Thank you!')
+                return redirect('makazi:apartment_detail', pk=apartment.pk)
+    
+    context = {
+        'apartment': apartment,
+        'similar_apartments': similar_apartments,
+        'reviews': reviews,
+        'average_rating': average_rating,
+        'booking_form': booking_form,
+        'review_form': review_form,
+        'min_date': min_date,
+        'max_date': max_date,
+        'total_price': total_price,
+    }
+    
+    return render(request, 'apartments/detail.html', context)
+
+@login_required
+def my_bookings(request):
+    """View user's bookings"""
+    bookings = ApartmentBooking.objects.filter(customer_email=request.user.email).order_by('-booking_date')
+    
+    context = {
+        'bookings': bookings,
+    }
+    
+    return render(request, 'apartments/my_bookings.html', context)
+
+def apartment_search(request):
+    """Search apartments API"""
+    query = request.GET.get('q', '')
+    location = request.GET.get('location', '')
+    
+    apartments = Apartment.objects.filter(is_available=True)
+    
+    if query:
+        apartments = apartments.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(location__icontains=query)
+        )
+    
+    if location:
+        apartments = apartments.filter(location__icontains=location)
+    
+    # Limit results
+    apartments = apartments[:10]
+    
+    data = []
+    for apartment in apartments:
+        data.append({
+            'id': apartment.id,
+            'title': apartment.title,
+            'location': apartment.location,
+            'price': float(apartment.price_per_month),
+            'type': apartment.get_apartment_type_display(),
+            'bedrooms': apartment.bedrooms,
+            'image': apartment.main_image.url if apartment.main_image else '',
+            'url': f"/apartments/{apartment.id}/"
+        })
+    
+    return JsonResponse({'apartments': data})
+
+# Ongeza URLs za apartments kwenye urls.py

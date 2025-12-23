@@ -1,0 +1,468 @@
+<!-- templates/apartments/my_bookings.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Bookings - NyumbaFasta{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bookings-hero {
+        background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(67, 97, 238, 0.7)),
+                    url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3');
+        background-size: cover;
+        background-position: center;
+        padding: 120px 0 60px;
+        color: white;
+        text-align: center;
+    }
+    
+    .booking-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .booking-status {
+        display: inline-block;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+    
+    .status-pending {
+        background: #ffd60a;
+        color: #4361ee;
+    }
+    
+    .status-confirmed {
+        background: #10b981;
+        color: white;
+    }
+    
+    .status-cancelled {
+        background: #ef4444;
+        color: white;
+    }
+    
+    .status-completed {
+        background: #4361ee;
+        color: white;
+    }
+    
+    .booking-image {
+        width: 100%;
+        height: 180px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .booking-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .booking-dates {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .date-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .date-item:last-child {
+        border-bottom: none;
+    }
+    
+    .price-breakdown {
+        background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 15px;
+    }
+    
+    .total-price {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+    
+    .no-bookings {
+        text-align: center;
+        padding: 60px 20px;
+    }
+    
+    .no-bookings-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 2.5rem;
+    }
+    
+    .booking-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+    
+    .stats-number {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+    
+    @media (max-width: 768px) {
+        .bookings-hero {
+            padding: 100px 0 40px;
+        }
+        
+        .booking-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bookings-hero">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-3">My Bookings</h1>
+        <p class="lead">Manage and track all your apartment bookings in one place</p>
+    </div>
+</section>
+
+<!-- Bookings List -->
+<section class="py-5">
+    <div class="container">
+        {% if bookings %}
+        <!-- Stats Section -->
+        {% with confirmed_count=0 pending_count=0 total_spent=0 %}
+            {% for booking in bookings %}
+                {% if booking.status == 'confirmed' %}
+                    {% with confirmed_count=confirmed_count|add:1 %}
+                    {% endwith %}
+                {% elif booking.status == 'pending' %}
+                    {% with pending_count=pending_count|add:1 %}
+                    {% endwith %}
+                {% endif %}
+                {% if booking.status == 'confirmed' or booking.status == 'completed' %}
+                    {% with total_spent=total_spent|add:booking.total_amount %}
+                    {% endwith %}
+                {% endif %}
+            {% endfor %}
+            
+            <div class="row mb-5">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="stats-number text-blue">{{ bookings|length }}</div>
+                        <div class="text-muted">Total Bookings</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="stats-number text-success">
+                            {% with count=0 %}
+                                {% for booking in bookings %}
+                                    {% if booking.status == 'confirmed' %}
+                                        {% with count=count|add:1 %}
+                                        {% endwith %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ count }}
+                            {% endwith %}
+                        </div>
+                        <div class="text-muted">Confirmed</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="stats-number text-warning">
+                            {% with count=0 %}
+                                {% for booking in bookings %}
+                                    {% if booking.status == 'pending' %}
+                                        {% with count=count|add:1 %}
+                                        {% endwith %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ count }}
+                            {% endwith %}
+                        </div>
+                        <div class="text-muted">Pending</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="stats-number text-primary">
+                            TSh 
+                            {% with total=0 %}
+                                {% for booking in bookings %}
+                                    {% if booking.status == 'confirmed' or booking.status == 'completed' %}
+                                        {% with total=total|add:booking.total_amount %}
+                                        {% endwith %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ total|floatformat:0 }}
+                            {% endwith %}
+                        </div>
+                        <div class="text-muted">Total Spent</div>
+                    </div>
+                </div>
+            </div>
+        {% endwith %}
+        
+        <!-- Bookings Grid -->
+        <div class="row">
+            {% for booking in bookings %}
+            <div class="col-lg-6 mb-4">
+                <div class="booking-card">
+                    <div class="row">
+                        <!-- Apartment Info -->
+                        <div class="col-md-5">
+                            <div class="booking-image">
+                                {% if booking.apartment.main_image %}
+                                    <img src="{{ booking.apartment.main_image.url }}" alt="{{ booking.apartment.title }}">
+                                {% else %}
+                                    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%); 
+                                         display: flex; align-items: center; justify-content: center; color: white;">
+                                        <i class="bi bi-building fs-2"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mt-3">
+                                <span class="booking-status status-{{ booking.status }}">
+                                    {{ booking.get_status_display|upper }}
+                                </span>
+                                {% if booking.payment_status %}
+                                <span class="badge bg-success ms-2">
+                                    <i class="bi bi-check-circle me-1"></i> Paid
+                                </span>
+                                {% else %}
+                                <span class="badge bg-warning ms-2">
+                                    <i class="bi bi-clock me-1"></i> Pending
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Booking Details -->
+                        <div class="col-md-7">
+                            <h5 class="mb-2">{{ booking.apartment.title }}</h5>
+                            <p class="text-muted mb-3">
+                                <i class="bi bi-geo-alt me-1"></i>{{ booking.apartment.location }}
+                            </p>
+                            
+                            <!-- Dates -->
+                            <div class="booking-dates">
+                                <div class="date-item">
+                                    <span>Check-in:</span>
+                                    <strong>{{ booking.check_in_date|date:"M d, Y" }}</strong>
+                                </div>
+                                <div class="date-item">
+                                    <span>Check-out:</span>
+                                    <strong>{{ booking.check_out_date|date:"M d, Y" }}</strong>
+                                </div>
+                                <div class="date-item">
+                                    <span>Duration:</span>
+                                    <strong>{{ booking.duration_months }} month(s)</strong>
+                                </div>
+                                <div class="date-item">
+                                    <span>Guests:</span>
+                                    <strong>{{ booking.number_of_guests }} person(s)</strong>
+                                </div>
+                            </div>
+                            
+                            <!-- Price -->
+                            <div class="price-breakdown">
+                                <div class="total-price">
+                                    TSh {{ booking.total_amount|floatformat:0 }}
+                                </div>
+                                <div class="small opacity-90">
+                                    Total amount for {{ booking.duration_months }} month(s)
+                                </div>
+                            </div>
+                            
+                            <!-- Actions -->
+                            <div class="booking-actions">
+                                {% if booking.status == 'pending' %}
+                                <a href="{% url 'makazi:apartment_detail' booking.apartment.pk %}" 
+                                   class="btn btn-yellow flex-grow-1">
+                                    <i class="bi bi-pencil me-1"></i> Modify
+                                </a>
+                                <button class="btn btn-outline-blue flex-grow-1" 
+                                        onclick="cancelBooking({{ booking.id }})">
+                                    <i class="bi bi-x-circle me-1"></i> Cancel
+                                </button>
+                                {% elif booking.status == 'confirmed' %}
+                                <a href="#" class="btn btn-yellow flex-grow-1">
+                                    <i class="bi bi-download me-1"></i> Download Invoice
+                                </a>
+                                <a href="{% url 'makazi:apartment_detail' booking.apartment.pk %}" 
+                                   class="btn btn-outline-blue flex-grow-1">
+                                    <i class="bi bi-eye me-1"></i> View Apartment
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Special Requests -->
+                    {% if booking.special_requests %}
+                    <div class="mt-3 pt-3 border-top">
+                        <h6 class="mb-2">Special Requests:</h6>
+                        <p class="mb-0 text-muted">{{ booking.special_requests }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Contact Info -->
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mb-2">Your Details:</h6>
+                                <p class="mb-1">
+                                    <i class="bi bi-person me-1"></i>{{ booking.customer_name }}
+                                </p>
+                                <p class="mb-1">
+                                    <i class="bi bi-envelope me-1"></i>{{ booking.customer_email }}
+                                </p>
+                                <p class="mb-0">
+                                    <i class="bi bi-telephone me-1"></i>{{ booking.customer_phone }}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-2">Booking Info:</h6>
+                                <p class="mb-1">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    Booked: {{ booking.booking_date|date:"M d, Y" }}
+                                </p>
+                                {% if booking.confirmation_date %}
+                                <p class="mb-0">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Confirmed: {{ booking.confirmation_date|date:"M d, Y" }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% else %}
+        <!-- No Bookings -->
+        <div class="no-bookings">
+            <div class="no-bookings-icon">
+                <i class="bi bi-calendar-x"></i>
+            </div>
+            <h3 class="mb-3">No Bookings Yet</h3>
+            <p class="text-muted mb-4">You haven't made any apartment bookings yet.</p>
+            <a href="{% url 'makazi:apartments_list' %}" class="btn btn-blue btn-lg">
+                <i class="bi bi-search me-2"></i>Browse Apartments
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Upcoming Bookings -->
+{% with upcoming_bookings=bookings|dictsort:"check_in_date" %}
+    {% for booking in upcoming_bookings %}
+        {% if booking.status == 'confirmed' and booking.check_in_date >= now %}
+            {% if forloop.first %}
+            <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                <div class="container">
+                    <h2 class="mb-4">Upcoming Check-ins</h2>
+                    <div class="row">
+            {% endif %}
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ booking.apartment.title }}</h6>
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-geo-alt me-1"></i>{{ booking.apartment.location }}
+                        </p>
+                        <div class="alert alert-info border-0 py-2 mb-3">
+                            <i class="bi bi-calendar-check me-1"></i>
+                            Check-in: {{ booking.check_in_date|date:"M d, Y" }}
+                        </div>
+                        <a href="{% url 'makazi:apartment_detail' booking.apartment.pk %}" 
+                           class="btn btn-sm btn-outline-blue w-100">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% if forloop.last %}
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endwith %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function cancelBooking(bookingId) {
+        if (confirm('Are you sure you want to cancel this booking?')) {
+            // In a real application, this would be an API call
+            alert('Booking cancellation feature will be implemented soon!');
+            // Example: fetch(`/bookings/${bookingId}/cancel/`, {method: 'POST'})
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         if (data.success) {
+            //             location.reload();
+            //         }
+            //     });
+        }
+    }
+    
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltips.forEach(tooltip => {
+            new bootstrap.Tooltip(tooltip);
+        });
+    });
+</script>
+{% endblock %}

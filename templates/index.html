@@ -21,7 +21,7 @@
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-        padding: 180px 0 120px;
+        padding: 100px 0 40px;
         color: white;
         position: relative;
         overflow: hidden;
@@ -34,29 +34,29 @@
         bottom: -2px;
         left: 0;
         right: 0;
-        height: 150px;
+        height: 80px;
         background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
         background-size: cover;
         background-repeat: no-repeat;
     }
     
     .hero-title {
-        font-size: 3.5rem;
+        font-size: 2.5rem;
         font-weight: 800;
         background: var(--yellow-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         line-height: 1.2;
         text-shadow: 0 2px 20px rgba(255, 214, 10, 0.3);
     }
     
     .hero-subtitle {
-        font-size: 1.25rem;
+        font-size: 1rem;
         color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 2.5rem;
-        max-width: 700px;
+        margin-bottom: 1.5rem;
+        max-width: 600px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -65,25 +65,346 @@
     .search-card {
         background: rgba(255, 255, 255, 0.98);
         backdrop-filter: blur(20px);
-        border-radius: 25px;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
-        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        padding: 1.5rem;
         border: 1px solid rgba(255, 255, 255, 0.2);
         position: relative;
         z-index: 1;
+        margin-bottom: 20px;
     }
     
-    .search-card::before {
+    /* Featured Properties Section */
+    .featured-section {
+        background: var(--light-bg);
+        padding: 40px 0;
+    }
+    
+    .featured-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 0 15px;
+    }
+    
+    .featured-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+        position: relative;
+        padding-left: 15px;
+    }
+    
+    .featured-title::before {
         content: '';
         position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        background: var(--blue-yellow-gradient);
-        border-radius: 27px;
-        z-index: -1;
-        opacity: 0.1;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 5px;
+        height: 30px;
+        background: var(--blue-gradient);
+        border-radius: 3px;
+    }
+    
+    /* Featured Properties Grid */
+    .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 25px;
+        padding: 0 15px;
+    }
+    
+    .featured-property-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .featured-property-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .featured-image-container {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .featured-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .featured-property-card:hover .featured-image-container img {
+        transform: scale(1.05);
+    }
+    
+    .featured-badges {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 2;
+    }
+    
+    .featured-badge {
+        background: var(--blue-gradient);
+        color: white;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 3px 10px rgba(67, 97, 238, 0.3);
+    }
+    
+    .featured-badge.verified {
+        background: linear-gradient(135deg, #10b981 0%, #0da271 100%);
+    }
+    
+    .featured-badge.hot {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff4d00 100%);
+    }
+    
+    .featured-price-tag {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px 15px;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #ff6b35;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .featured-content {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .featured-content h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #2c3e50;
+        line-height: 1.4;
+    }
+    
+    .featured-location {
+        color: #4361ee;
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .featured-description {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 15px;
+        flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .featured-features {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+    
+    .featured-feature {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.8rem;
+        color: #666;
+    }
+    
+    .featured-feature i {
+        color: #4361ee;
+        font-size: 0.9rem;
+    }
+    
+    .featured-action {
+        margin-top: 15px;
+    }
+    
+    .view-details-btn {
+        background: var(--blue-gradient);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .view-details-btn:hover {
+        background: linear-gradient(135deg, #3a56d4 0%, #4361ee 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    /* Image Placeholder */
+    .featured-image-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        padding: 20px;
+    }
+    
+    .featured-image-placeholder i {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        opacity: 0.8;
+    }
+    
+    /* Latest Listings */
+    .latest-section {
+        padding: 40px 0;
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 0 15px;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+        position: relative;
+        padding-left: 15px;
+    }
+    
+    .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 5px;
+        height: 30px;
+        background: var(--blue-gradient);
+        border-radius: 3px;
+    }
+    
+    /* Property Cards */
+    .property-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .property-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .property-image {
+        position: relative;
+        height: 180px;
+        overflow: hidden;
+    }
+    
+    .property-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .property-card:hover .property-image img {
+        transform: scale(1.05);
+    }
+    
+    .property-content {
+        padding: 20px;
+    }
+    
+    .property-price {
+        color: #ff6b35;
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+    
+    .property-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #2c3e50;
+    }
+    
+    .property-location {
+        color: #666;
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .property-description {
+        color: #777;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .property-features {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
     }
     
     /* Region Select */
@@ -95,18 +416,18 @@
         background: var(--blue-gradient);
         color: white;
         border: none;
-        border-radius: 12px 0 0 12px;
-        padding-left: 20px;
+        border-radius: 10px 0 0 10px;
+        padding-left: 15px;
     }
     
     .region-select-container .form-control {
         border: 2px solid #e9ecef;
         border-left: none;
-        border-radius: 0 12px 12px 0;
+        border-radius: 0 10px 10px 0;
         transition: all 0.3s ease;
-        height: 56px;
+        height: 50px;
         padding: 0.75rem 1rem;
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
     
     .region-select-container .form-control:focus {
@@ -115,18 +436,18 @@
         outline: none;
     }
     
-    /* Modern Region Dropdown */
+    /* Region Dropdown */
     .region-dropdown {
         position: absolute;
         top: 100%;
         left: 0;
         right: 0;
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
         border: 2px solid #4361ee;
         z-index: 1050;
-        max-height: 400px;
+        max-height: 350px;
         overflow-y: auto;
         display: none;
         margin-top: 5px;
@@ -149,7 +470,7 @@
     }
     
     .region-group {
-        padding: 10px 0;
+        padding: 8px 0;
         border-bottom: 1px solid #e9ecef;
     }
     
@@ -158,30 +479,31 @@
     }
     
     .region-header {
-        padding: 12px 20px;
+        padding: 10px 15px;
         background: #f8f9fa;
         color: #4361ee;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 1px;
         border-left: 3px solid #ffd60a;
     }
     
     .region-option {
-        padding: 12px 20px;
+        padding: 10px 15px;
         cursor: pointer;
         transition: all 0.2s ease;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         color: #333;
         text-decoration: none;
+        font-size: 0.9rem;
     }
     
     .region-option:hover {
         background: rgba(67, 97, 238, 0.1);
-        padding-left: 25px;
+        padding-left: 20px;
         color: #333;
         text-decoration: none;
     }
@@ -192,242 +514,16 @@
     }
     
     .region-option .flag {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
         background: linear-gradient(45deg, #4361ee, #ffd60a);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.7rem;
+        font-size: 0.6rem;
         color: white;
         font-weight: bold;
-    }
-    
-    /* Cards */
-    .category-card {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border: none;
-        overflow: hidden;
-        border-radius: 20px;
-        background: white;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        height: 100%;
-    }
-    
-    .category-card:hover {
-        transform: translateY(-15px) scale(1.02);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-    }
-    
-    .property-card {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 2px solid transparent;
-        overflow: hidden;
-        border-radius: 20px;
-        background: white;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-        height: 100%;
-        position: relative;
-    }
-    
-    .property-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        border-color: #4361ee;
-    }
-    
-    .property-badge {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        background: var(--blue-gradient);
-        color: white;
-        padding: 8px 20px;
-        border-radius: 25px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        z-index: 2;
-    }
-    
-    /* Stats */
-    .stat-card {
-        background: var(--dark-blue-gradient);
-        color: white;
-        border-radius: 20px;
-        padding: 2.5rem 1.5rem;
-        height: 100%;
-        transition: transform 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-    
-    .stat-card:nth-child(2) {
-        background: var(--blue-gradient);
-    }
-    
-    .stat-card:nth-child(3) {
-        background: var(--yellow-gradient);
-        color: #4361ee;
-    }
-    
-    .stat-card:nth-child(4) {
-        background: var(--blue-yellow-gradient);
-        color: white;
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-10px);
-    }
-    
-    /* Features */
-    .feature-icon {
-        width: 90px;
-        height: 90px;
-        background: var(--blue-gradient);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 25px;
-        box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
-        transition: all 0.3s ease;
-    }
-    
-    .category-card:hover .feature-icon {
-        transform: scale(1.1) rotate(5deg);
-        box-shadow: 0 20px 40px rgba(67, 97, 238, 0.4);
-        background: var(--yellow-gradient);
-    }
-    
-    /* Location Cards */
-    .location-card {
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 20px;
-        overflow: hidden;
-        position: relative;
-        height: 250px;
-        color: white;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        display: block;
-        text-decoration: none !important;
-    }
-    
-    .location-card img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .location-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-        text-decoration: none !important;
-    }
-    
-    .location-card:hover img {
-        transform: scale(1.15);
-    }
-    
-    .location-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-        padding: 30px 25px 25px;
-    }
-    
-    .location-overlay h6 {
-        font-size: 1.25rem;
-        margin-bottom: 5px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        color: white !important;
-    }
-    
-    /* CTA Section */
-    .cta-section {
-        background: var(--dark-blue-gradient);
-        color: white;
-        padding: 100px 0;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .section-title {
-        position: relative;
-        display: inline-block;
-        margin-bottom: 1.5rem;
-    }
-    
-    .section-title::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 4px;
-        background: var(--blue-gradient);
-        border-radius: 2px;
-    }
-    
-    /* Property Image */
-    .property-img-container {
-        position: relative;
-        overflow: hidden;
-        height: 220px;
-        border-radius: 15px 15px 0 0;
-    }
-    
-    .property-img-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-    
-    .property-card:hover .property-img-container img {
-        transform: scale(1.1);
-    }
-    
-    /* Image Placeholder */
-    .img-placeholder {
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-    }
-    
-    .img-placeholder i {
-        font-size: 3rem;
-        opacity: 0.8;
-    }
-    
-    /* Custom Scrollbar */
-    .region-dropdown::-webkit-scrollbar {
-        width: 8px;
-    }
-    
-    .region-dropdown::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 4px;
-    }
-    
-    .region-dropdown::-webkit-scrollbar-thumb {
-        background: #4361ee;
-        border-radius: 4px;
-    }
-    
-    .region-dropdown::-webkit-scrollbar-thumb:hover {
-        background: #3a56d4;
     }
     
     /* Buttons */
@@ -436,12 +532,15 @@
         color: #4361ee;
         font-weight: 600;
         border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
         transition: all 0.3s ease;
+        font-size: 0.9rem;
     }
     
     .btn-yellow:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(255, 214, 10, 0.3);
+        box-shadow: 0 8px 20px rgba(255, 214, 10, 0.3);
         color: #4361ee;
     }
     
@@ -450,76 +549,90 @@
         color: white;
         border: none;
         font-weight: 600;
+        padding: 10px 25px;
+        border-radius: 8px;
         transition: all 0.3s ease;
+        font-size: 0.9rem;
     }
     
     .btn-blue:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
         color: white;
-    }
-    
-    /* Text Colors */
-    .text-blue {
-        color: #4361ee !important;
-    }
-    
-    .text-yellow {
-        color: #ffd60a !important;
-    }
-    
-    .bg-blue {
-        background: #4361ee !important;
-    }
-    
-    .bg-yellow {
-        background: #ffd60a !important;
     }
     
     /* Responsive */
     @media (max-width: 768px) {
         .hero-section {
-            padding: 120px 0 80px;
+            padding: 80px 0 30px;
             background-attachment: scroll;
         }
         
         .hero-title {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
         }
         
         .hero-subtitle {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
         }
         
         .search-card {
-            padding: 1.5rem;
+            padding: 1.2rem;
             margin: 0 10px;
         }
         
-        .stat-card {
-            padding: 1.5rem 1rem;
-            margin-bottom: 1rem;
+        .featured-grid {
+            grid-template-columns: 1fr;
+            padding: 0 10px;
         }
         
-        .location-card {
-            height: 200px;
+        .featured-header {
+            padding: 0 10px;
         }
         
-        .property-card {
-            margin-bottom: 1.5rem;
+        .section-header {
+            padding: 0 10px;
+        }
+        
+        .featured-title,
+        .section-title {
+            font-size: 1.5rem;
+        }
+        
+        .featured-image-container {
+            height: 180px;
         }
     }
     
-    /* Toast Notification */
-    .toast-container {
-        z-index: 9999;
+    @media (min-width: 768px) and (max-width: 992px) {
+        .featured-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
     
-    .custom-toast {
-        background: var(--blue-gradient);
-        color: white;
-        border-radius: 10px;
-        border: none;
+    @media (min-width: 992px) {
+        .featured-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    /* Custom Scrollbar */
+    .region-dropdown::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .region-dropdown::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    
+    .region-dropdown::-webkit-scrollbar-thumb {
+        background: #4361ee;
+        border-radius: 3px;
+    }
+    
+    .region-dropdown::-webkit-scrollbar-thumb:hover {
+        background: #3a56d4;
     }
 </style>
 {% endblock %}
@@ -724,7 +837,6 @@
                                 <option value="apartment">Apartment</option>
                                 <option value="room">Room</option>
                                 <option value="plot">Plot</option>
-                                <option value="commercial">Commercial</option>
                             </select>
                         </div>
                         
@@ -752,64 +864,106 @@
     </div>
 </section>
 
-<!-- 
-<section class="py-5" style="background: var(--light-bg);">
+<!-- Featured Properties -->
+<section class="featured-section">
     <div class="container">
-        <h2 class="section-title fw-bold text-center mb-5">Property Categories</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="category-card text-center p-5">
-                    <div class="feature-icon">
-                        <i class="bi bi-house-door text-white fs-2"></i>
+        <div class="featured-header">
+            <h2 class="featured-title">Featured Properties</h2>
+            <a href="{% url 'makazi:listings' %}?is_featured=true" class="btn btn-blue">
+                View All Featured <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+        
+        <div class="featured-grid">
+            {% for listing in featured_listings %}
+            <div class="featured-property-card" onclick="window.location.href='{{ listing.get_absolute_url }}'" style="cursor: pointer;">
+                <div class="featured-image-container">
+                    {% if listing.main_image_url %}
+                        <img src="{{ listing.main_image_url }}" 
+                             alt="{{ listing.title }}"
+                             loading="lazy">
+                    {% else %}
+                        <div class="featured-image-placeholder">
+                            <i class="bi bi-house"></i>
+                            <small>No Image Available</small>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="featured-badges">
+                        <div class="featured-badge">FEATURED</div>
+                        {% if listing.is_verified %}
+                        <div class="featured-badge verified">VERIFIED</div>
+                        {% endif %}
+                        {% if listing.scraped_at|date:"U" > now|date:"U"|add:"-259200" %}
+                        <div class="featured-badge hot">NEW</div>
+                        {% endif %}
                     </div>
-                    <h5 class="fw-bold mt-4 mb-3">Makazi</h5>
-                    <p class="text-muted mb-4">Family homes, bungalows, and permanent residences</p>
-                    <a href="#" 
-                       class="btn btn-blue">
-                        View Houses <i class="bi bi-arrow-right"></i>
-                    </a>
+                    
+                    <div class="featured-price-tag">
+                        {% if listing.price %}
+                            {{ listing.price }}
+                        {% else %}
+                            Price on Request
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="featured-content">
+                    <h4>{{ listing.title|truncatechars:60 }}</h4>
+                    
+                    <div class="featured-location">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>{{ listing.location|truncatechars:40 }}</span>
+                    </div>
+                    
+                    
+                    
+                    <div class="featured-features">
+                        {% if listing.bedrooms %}
+                        <div class="featured-feature">
+                            <i class="bi bi-door-closed-fill"></i>
+                            <span>{{ listing.bedrooms }} Bed</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if listing.bathrooms %}
+                        <div class="featured-feature">
+                            <i class="bi bi-droplet-fill"></i>
+                            <span>{{ listing.bathrooms }} Bath</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if listing.area_sqft %}
+                        <div class="featured-feature">
+                            <i class="bi bi-arrows-fullscreen"></i>
+                            <span>{{ listing.area_sqft }} sqft</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="featured-action">
+                        <button class="view-details-btn">
+                            <i class="bi bi-eye-fill"></i> View Full Details
+                        </button>
+                    </div>
                 </div>
             </div>
-            
-            <div class="col-md-4">
-                <div class="category-card text-center p-5">
-                    <div class="feature-icon">
-                        <i class="bi bi-building text-white fs-2"></i>
-                    </div>
-                    <h5 class="fw-bold mt-4 mb-3">Apartments</h5>
-                    <p class="text-muted mb-4">Flats and rental rooms in urban areas</p>
-                    <a href="#" 
-                       class="btn btn-blue">
-                        View Apartments <i class="bi bi-arrow-right"></i>
-                    </a>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>No featured properties available at the moment.
                 </div>
             </div>
-            
-            <div class="col-md-4">
-                <div class="category-card text-center p-5">
-                    <div class="feature-icon">
-                        <i class="bi bi-map text-white fs-2"></i>
-                    </div>
-                    <h5 class="fw-bold mt-4 mb-3">Plots & Land</h5>
-                    <p class="text-muted mb-4">Construction plots and farmlands</p>
-                    <a href="#" 
-                       class="btn btn-blue">
-                        View Plots <i class="bi bi-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
-</section> -->
+</section>
 
 <!-- Latest Listings -->
-<section class="py-5">
+<section class="latest-section">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <div>
-                <h2 class="section-title fw-bold">Recently Added</h2>
-                <p class="text-muted">Newly listed properties</p>
-            </div>
+        <div class="section-header">
+            <h2 class="section-title">Recently Added Properties</h2>
             <a href="{% url 'makazi:listings' %}" class="btn btn-blue">
                 View All <i class="bi bi-arrow-right ms-2"></i>
             </a>
@@ -817,69 +971,59 @@
         
         <div class="row">
             {% for listing in latest_listings %}
-            <div class="col-lg-6 mb-4">
-                <div class="property-card h-100">
-                    <div class="row g-0 h-100">
-                        <div class="col-md-5 position-relative">
-                            <div class="property-img-container">
-                                {% if listing.main_image_url %}
-                                    <img src="{{ listing.main_image_url }}" 
-                                         alt="{{ listing.title }}"
-                                         class="img-fluid h-100"
-                                         style="object-fit: cover;">
-                                {% else %}
-                                    <div class="img-placeholder h-100">
-                                        <i class="bi bi-house"></i>
-                                    </div>
-                                {% endif %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="property-card" onclick="window.location.href='{{ listing.get_absolute_url }}'">
+                    <div class="property-image">
+                        {% if listing.main_image_url %}
+                            <img src="{{ listing.main_image_url }}" 
+                                 alt="{{ listing.title }}"
+                                 loading="lazy">
+                        {% else %}
+                            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%); 
+                                 display: flex; align-items: center; justify-content: center; color: white;">
+                                <i class="bi bi-house fs-2"></i>
                             </div>
-                            {% if listing.property_type %}
-                            <div class="property-badge">{{ listing.property_type|title }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="property-content">
+                        <div class="property-price">
+                            {% if listing.price %}
+                                {{ listing.price }}
+                            {% else %}
+                                Price on Request
                             {% endif %}
                         </div>
-                        <div class="col-md-7">
-                            <div class="p-4 h-100 d-flex flex-column">
-                                <div>
-                                    <h6 class="fw-bold mb-2">{{ listing.title|truncatechars:50 }}</h6>
-                                    <p class="text-blue mb-3">
-                                        <i class="bi bi-geo-alt me-1"></i>{{ listing.location|truncatechars:30 }}
-                                    </p>
-                                    <p class="small text-muted mb-4">
-                                        {{ listing.get_short_description|default:listing.description|truncatechars:120 }}
-                                    </p>
-                                </div>
-                                
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <span class="text-yellow fw-bold fs-5">
-                                            {% if listing.digits_price %}
-                                                TSh {{ listing.digits_price|floatformat:0 }}
-                                            {% else %}
-                                                TSh {{ listing.price }}
-                                            {% endif %}
-                                        </span>
-                                        {% if listing.bedrooms %}
-                                        <span class="badge bg-blue text-white px-3 py-2">
-                                            <i class="bi bi-door-closed me-1"></i>{{ listing.bedrooms }} Bed
-                                        </span>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">
-                                            <i class="bi bi-clock me-1"></i>{{ listing.scraped_at|timesince }} ago
-                                        </small>
-                                        <div class="d-flex gap-2">
-                                            <button class="btn btn-outline-yellow btn-sm favorite-btn" data-listing-id="{{ listing.id }}">
-                                                <i class="bi bi-heart"></i>
-                                            </button>
-                                            <a href="{{ listing.get_absolute_url }}" class="btn btn-yellow btn-sm">
-                                                View <i class="bi bi-arrow-right ms-1"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        
+                        <h5 class="property-title">{{ listing.title|truncatechars:50 }}</h5>
+                        
+                        <div class="property-location">
+                            <i class="bi bi-geo-alt"></i>
+                            <span>{{ listing.location|truncatechars:30 }}</span>
+                        </div>
+                        
+                        <p class="property-description">
+                            {{ listing.description|truncatechars:100|default:"No description available" }}
+                        </p>
+                        
+                        <div class="property-features">
+                            {% if listing.bedrooms %}
+                            <small class="text-muted">
+                                <i class="bi bi-door-closed text-blue"></i> {{ listing.bedrooms }} Bed
+                            </small>
+                            {% endif %}
+                            
+                            {% if listing.bathrooms %}
+                            <small class="text-muted">
+                                <i class="bi bi-droplet text-blue"></i> {{ listing.bathrooms }} Bath
+                            </small>
+                            {% endif %}
+                            
+                            {% if listing.property_type %}
+                            <small class="text-muted">
+                                <i class="bi bi-tag text-blue"></i> {{ listing.property_type|title }}
+                            </small>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -895,111 +1039,26 @@
     </div>
 </section>
 
-<!-- Featured Listings -->
-{% if featured_listings %}
+<!-- Popular Locations -->
+{% if popular_locations %}
 <section class="py-5" style="background: var(--light-bg);">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <div>
-                <h2 class="section-title fw-bold">Featured Properties</h2>
-                <p class="text-muted">Premium selections</p>
-            </div>
-            <a href="{% url 'makazi:listings' %}?is_featured=true" class="btn btn-blue">
-                View All Featured <i class="bi bi-arrow-right ms-2"></i>
-            </a>
+        <div class="section-header">
+            <h2 class="section-title">Popular Locations</h2>
         </div>
         
         <div class="row">
-            {% for listing in featured_listings %}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="property-card h-100">
-                    <div class="position-relative">
-                        <div class="property-img-container">
-                            {% if listing.main_image_url %}
-                                <img src="{{ listing.main_image_url }}" 
-                                     alt="{{ listing.title }}"
-                                     class="img-fluid w-100"
-                                     style="height: 220px; object-fit: cover;">
-                            {% else %}
-                                <div class="img-placeholder" style="height: 220px;">
-                                    <i class="bi bi-house"></i>
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="property-badge">Featured</div>
-                        {% if listing.is_verified %}
-                        <div class="position-absolute top-0 end-0 m-3">
-                            <span class="badge bg-success">
-                                <i class="bi bi-check-circle me-1"></i>Verified
-                            </span>
-                        </div>
-                        {% endif %}
-                    </div>
-                    <div class="p-4 d-flex flex-column h-100">
-                        <div>
-                            <h6 class="fw-bold mb-2">{{ listing.title|truncatechars:40 }}</h6>
-                            <p class="text-blue mb-3">
-                                <i class="bi bi-geo-alt me-1"></i>{{ listing.location|truncatechars:25 }}
-                            </p>
-                            <p class="small text-muted mb-4">
-                                {{ listing.get_short_description|default:listing.description|truncatechars:100 }}
-                            </p>
-                        </div>
-                        
-                        <div class="mt-auto">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="text-yellow fw-bold">
-                                    {% if listing.digits_price %}
-                                        TSh {{ listing.digits_price|floatformat:0 }}
-                                    {% else %}
-                                        TSh {{ listing.price }}
-                                    {% endif %}
-                                </span>
-                                <div>
-                                    {% if listing.bedrooms %}
-                                    <span class="badge bg-blue text-white me-1">
-                                        <i class="bi bi-door-closed"></i> {{ listing.bedrooms }}
-                                    </span>
-                                    {% endif %}
-                                    {% if listing.bathrooms %}
-                                    <span class="badge bg-blue text-white">
-                                        <i class="bi bi-droplet"></i> {{ listing.bathrooms }}
-                                    </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a href="{{ listing.get_absolute_url }}" class="btn btn-yellow btn-sm w-100">
-                                    View Details <i class="bi bi-arrow-right ms-1"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Popular Locations -->
-{% if popular_locations %}
-<section class="py-5">
-    <div class="container">
-        <h2 class="section-title fw-bold text-center mb-5">Popular Locations</h2>
-        <div class="row g-4">
             {% for location in popular_locations %}
             {% if location.location %}
-            <div class="col-lg-3 col-md-4 col-6">
-                <a href="{% url 'makazi:listings' %}?location={{ location.location }}" class="location-card">
-                    <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%); display: flex; align-items: center; justify-content: center; color: white;">
-                        <i class="bi bi-geo-alt fs-1"></i>
-                    </div>
-                    <div class="location-overlay">
-                        <h6 class="fw-bold mb-1">{{ location.location }}</h6>
-                        <small>{{ location.count }} Properties</small>
+            <div class="col-lg-2 col-md-4 col-6 mb-3">
+                <a href="{% url 'makazi:listings' %}?location={{ location.location }}" 
+                   class="d-block text-decoration-none">
+                    <div class="text-center p-3 bg-white rounded shadow-sm">
+                        <div class="mb-2">
+                            <i class="bi bi-geo-alt-fill fs-3 text-blue"></i>
+                        </div>
+                        <h6 class="mb-1 text-dark">{{ location.location|truncatechars:15 }}</h6>
+                        <small class="text-muted">{{ location.count }} Properties</small>
                     </div>
                 </a>
             </div>
@@ -1011,12 +1070,12 @@
 {% endif %}
 
 <!-- Call to Action -->
-<section class="cta-section">
+<section class="py-5" style="background: var(--dark-blue-gradient);">
     <div class="container">
         <div class="row justify-content-center text-center">
-            <div class="col-lg-8 position-relative">
-                <h2 class="fw-bold mb-4 display-5">Have a Property to Sell or Rent?</h2>
-                <p class="lead mb-5 opacity-90">Contact us today and list your property to reach thousands of potential buyers or tenants</p>
+            <div class="col-lg-8">
+                <h2 class="fw-bold mb-4 text-white">Have a Property to Sell or Rent?</h2>
+                <p class="lead mb-5 text-white opacity-90">Contact us today and list your property to reach thousands of potential buyers or tenants</p>
                 <a href="{% url 'makazi:contact' %}" class="btn btn-yellow btn-lg px-5 py-3 fw-bold">
                     <i class="bi bi-whatsapp me-2"></i>Contact Us Now
                 </a>
@@ -1033,8 +1092,6 @@
         const regionDropdown = document.getElementById('regionDropdown');
         const regionOptions = document.querySelectorAll('.region-option');
         const searchForm = document.getElementById('searchForm');
-        const propertyTypeSelect = document.getElementById('propertyType');
-        const bedroomsSelect = document.getElementById('bedrooms');
         
         // Toggle dropdown when clicking input
         regionInput.addEventListener('focus', function() {
@@ -1062,9 +1119,6 @@
                 
                 // Close dropdown
                 regionDropdown.classList.remove('show');
-                
-                // Show toast notification
-                showToast(`Location set to: ${value}`);
             });
         });
         
@@ -1156,128 +1210,36 @@
             }
         });
         
-        // Property favorite functionality
-        const favoriteButtons = document.querySelectorAll('.favorite-btn');
-        favoriteButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const listingId = this.dataset.listingId;
-                const icon = this.querySelector('i');
-                
-                if (icon.classList.contains('bi-heart')) {
-                    icon.className = 'bi bi-heart-fill text-yellow';
-                    saveToFavorites(listingId);
-                    showToast('Added to favorites');
-                } else {
-                    icon.className = 'bi bi-heart';
-                    removeFromFavorites(listingId);
-                    showToast('Removed from favorites');
+        // Make property cards clickable
+        document.querySelectorAll('.featured-property-card, .property-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('view-details-btn') && 
+                    e.target.tagName !== 'BUTTON' && 
+                    e.target.tagName !== 'A') {
+                    window.location.href = this.getAttribute('onclick')?.match(/'(.*?)'/)?.[1] || 
+                                         this.querySelector('a')?.href || 
+                                         '#';
                 }
             });
         });
         
-        // Check initial favorite status
-        favoriteButtons.forEach(button => {
-            const listingId = button.dataset.listingId;
-            const favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
-            if (favorites.includes(listingId)) {
-                button.querySelector('i').className = 'bi bi-heart-fill text-yellow';
-            }
-        });
-        
-        // Handle image errors (safer approach)
+        // Handle image errors
         document.querySelectorAll('img').forEach(img => {
             img.addEventListener('error', function() {
-                // Replace broken image with placeholder
                 const parent = this.parentElement;
-                const placeholder = document.createElement('div');
-                placeholder.className = 'img-placeholder';
-                placeholder.style.cssText = this.style.cssText;
-                placeholder.innerHTML = '<i class="bi bi-house"></i>';
-                
-                parent.replaceChild(placeholder, this);
+                if (parent.classList.contains('featured-image-container')) {
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'featured-image-placeholder';
+                    placeholder.innerHTML = '<i class="bi bi-house"></i><small>No Image Available</small>';
+                    parent.replaceChild(placeholder, this);
+                } else {
+                    const placeholder = document.createElement('div');
+                    placeholder.style.cssText = 'width: 100%; height: 100%; background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%); display: flex; align-items: center; justify-content: center; color: white;';
+                    placeholder.innerHTML = '<i class="bi bi-house fs-2"></i>';
+                    parent.replaceChild(placeholder, this);
+                }
             });
         });
-        
-        function saveToFavorites(listingId) {
-            let favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
-            if (!favorites.includes(listingId)) {
-                favorites.push(listingId);
-                localStorage.setItem('nyumbafasta_favorites', JSON.stringify(favorites));
-            }
-        }
-        
-        function removeFromFavorites(listingId) {
-            let favorites = JSON.parse(localStorage.getItem('nyumbafasta_favorites') || '[]');
-            favorites = favorites.filter(id => id !== listingId);
-            localStorage.setItem('nyumbafasta_favorites', JSON.stringify(favorites));
-        }
-        
-        // Toast notification function
-        function showToast(message) {
-            // Remove existing toasts
-            const existingToasts = document.querySelectorAll('.toast-container');
-            existingToasts.forEach(toast => toast.remove());
-            
-            // Create toast element
-            const toast = document.createElement('div');
-            toast.className = 'toast custom-toast';
-            toast.setAttribute('role', 'alert');
-            toast.setAttribute('aria-live', 'assertive');
-            toast.setAttribute('aria-atomic', 'true');
-            
-            toast.innerHTML = `
-                <div class="toast-header border-0" style="background: var(--blue-gradient); color: white;">
-                    <strong class="me-auto">
-                        <i class="bi bi-bell-fill text-yellow me-2"></i>Notification
-                    </strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-                </div>
-                <div class="toast-body bg-white text-dark">
-                    <i class="bi bi-check-circle-fill text-success me-2"></i>${message}
-                </div>
-            `;
-            
-            // Add to container
-            const container = document.createElement('div');
-            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-            container.appendChild(toast);
-            document.body.appendChild(container);
-            
-            // Initialize and show toast
-            const bsToast = new bootstrap.Toast(toast, { 
-                delay: 3000,
-                animation: true
-            });
-            bsToast.show();
-            
-            // Remove after hide
-            toast.addEventListener('hidden.bs.toast', function () {
-                container.remove();
-            });
-        }
-        
-        // Search form enhancement
-        if (searchForm) {
-            searchForm.addEventListener('submit', function(e) {
-                // Remove empty values before submitting
-                const inputs = this.querySelectorAll('input, select');
-                inputs.forEach(input => {
-                    if (!input.value || input.value === '') {
-                        if (input.name) {
-                            // Remove the empty parameter
-                            const regex = new RegExp(`(${input.name}=[^&]*&?)`, 'g');
-                            const action = this.getAttribute('action');
-                            if (action.includes('?')) {
-                                const newAction = action.replace(regex, '');
-                                this.setAttribute('action', newAction.replace(/&$/, ''));
-                            }
-                        }
-                    }
-                });
-            });
-        }
     });
 </script>
 {% endblock %}

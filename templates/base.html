@@ -494,7 +494,7 @@ footer {
 </li>
 
 <li class="nav-item">
-    <a class="nav-link text-white" href="">
+    <a class="nav-link text-white" href="{% url 'makazi:apartments_list' %}">
         <i class="bi bi-building-check me-1 text-yellow"></i>Apartments
     </a>
 </li>
@@ -537,21 +537,22 @@ footer {
                 </button>
                 
                 <!-- User Menu (if logged in) -->
-                {% if user.is_authenticated %}
-                <div class="dropdown">
-                    <button class="btn btn-yellow dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle text-blue"></i>
-                    </button>
-                    <ul class="dropdown-menu bg-blue">
-                        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-person me-2 text-yellow"></i>Profile</a></li>
-                        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-heart me-2 text-yellow"></i>Favorites</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-box-arrow-right me-2 text-yellow"></i>Logout</a></li>
-                    </ul>
-                </div>
-                {% else %}
-                <a href="#" class="btn btn-yellow text-white">Login</a>
-                {% endif %}
+{% if user.is_authenticated %}
+<div class="dropdown">
+    <button class="btn btn-yellow dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        <i class="bi bi-person-circle text-blue"></i>
+    </button>
+    <ul class="dropdown-menu bg-blue">
+        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-person me-2 text-yellow"></i>Profile</a></li>
+        <li><a class="dropdown-item text-white bg-blue-hover" href="{% url 'makazi:my_bookings' %}"><i class="bi bi-calendar-check me-2 text-yellow"></i>My Bookings</a></li>
+        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-heart me-2 text-yellow"></i>Favorites</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-box-arrow-right me-2 text-yellow"></i>Logout</a></li>
+    </ul>
+</div>
+{% else %}
+<a href="#" class="btn btn-yellow text-white">Login</a>
+{% endif %}
             </div>
         </div>
     </nav>
@@ -728,10 +729,10 @@ document.addEventListener('DOMContentLoaded', function() {
             title: 'Hostels Coming Soon!',
             description: 'Affordable student and youth accommodations across Tanzania.'
         },
-        'apartments': {
-            title: 'Apartments Coming Soon!',
-            description: 'Premium apartment listings with modern amenities and great locations.'
-        },
+        // 'apartments': {
+        //     title: 'Apartments Coming Soon!',
+        //     description: 'Premium apartment listings with modern amenities and great locations.'
+        // },
         'hotels': {
             title: 'Hotels Coming Soon!',
             description: 'Short-term stays and hotel accommodations for business and leisure.'
