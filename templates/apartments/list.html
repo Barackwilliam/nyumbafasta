@@ -383,7 +383,7 @@
                         </div>
                         
                         <div class="apartment-price">
-                            TSh {{ apartment.price_per_month|floatformat:0 }}<small>/month</small>
+                            TSh {{ apartment.price_per_month|floatformat:0 }}<small>/Day</small>
                         </div>
                         
                         {% if apartment.amenities %}
@@ -408,21 +408,6 @@
                             {% endif %}
                         </div>
                         {% endif %}
-                        
-                        <div class="apartment-features">
-                            <div class="apartment-feature">
-                                <i class="bi bi-door-closed"></i>
-                                <span>{{ apartment.bedrooms }} Bed</span>
-                            </div>
-                            <div class="apartment-feature">
-                                <i class="bi bi-droplet"></i>
-                                <span>{{ apartment.bathrooms }} Bath</span>
-                            </div>
-                            <div class="apartment-feature">
-                                <i class="bi bi-arrows-fullscreen"></i>
-                                <span>{{ apartment.area_sqft }} sqft</span>
-                            </div>
-                        </div>
                         
                         <a href="{% url 'makazi:apartment_detail' apartment.pk %}" class="view-details-btn">
                             <i class="bi bi-eye me-1"></i> View Details
@@ -504,7 +489,7 @@
                                     <span>{{ apartment.location }}</span>
                                 </div>
                                 <div class="apartment-price">
-                                    TSh {{ apartment.price_per_month|floatformat:0 }}/month
+                                    TSh {{ apartment.price_per_month|floatformat:0 }}/Day
                                 </div>
                                 <a href="{% url 'makazi:apartment_detail' apartment.pk %}" class="view-details-btn">
                                     Book Now

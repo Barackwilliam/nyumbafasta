@@ -1002,9 +1002,6 @@
                             <span>{{ listing.location|truncatechars:30 }}</span>
                         </div>
                         
-                        <p class="property-description">
-                            {{ listing.description|truncatechars:100|default:"No description available" }}
-                        </p>
                         
                         <div class="property-features">
                             {% if listing.bedrooms %}
@@ -1039,35 +1036,6 @@
     </div>
 </section>
 
-<!-- Popular Locations -->
-{% if popular_locations %}
-<section class="py-5" style="background: var(--light-bg);">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Popular Locations</h2>
-        </div>
-        
-        <div class="row">
-            {% for location in popular_locations %}
-            {% if location.location %}
-            <div class="col-lg-2 col-md-4 col-6 mb-3">
-                <a href="{% url 'makazi:listings' %}?location={{ location.location }}" 
-                   class="d-block text-decoration-none">
-                    <div class="text-center p-3 bg-white rounded shadow-sm">
-                        <div class="mb-2">
-                            <i class="bi bi-geo-alt-fill fs-3 text-blue"></i>
-                        </div>
-                        <h6 class="mb-1 text-dark">{{ location.location|truncatechars:15 }}</h6>
-                        <small class="text-muted">{{ location.count }} Properties</small>
-                    </div>
-                </a>
-            </div>
-            {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
 
 <!-- Call to Action -->
 <section class="py-5" style="background: var(--dark-blue-gradient);">

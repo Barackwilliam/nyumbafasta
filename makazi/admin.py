@@ -99,6 +99,10 @@ class ContactMessageAdmin(admin.ModelAdmin):
 #     disapprove_reviews.short_description = "Disapprove selected reviews"
 
 
+
+
+
+
 # makazi/admin.py
 from django.contrib import admin
 from django import forms

@@ -1,0 +1,908 @@
+<!-- templates/apartments/detail.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ apartment.title }} - NyumbaFasta{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Apartment Detail Styles */
+    .apartment-detail-hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)),
+                    url('{% if apartment.main_image %}{{ apartment.main_image.url }}{% else %}https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3{% endif %}');
+        background-size: cover;
+        background-position: center;
+        padding: 150px 0 80px;
+        color: white;
+    }
+    
+    .main-image-container {
+        height: 500px;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    
+    .main-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .thumbnail-images {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .thumbnail {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .thumbnail:hover,
+    .thumbnail.active {
+        border-color: #4361ee;
+        transform: scale(1.05);
+    }
+    
+    .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .booking-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 100px;
+    }
+    
+    .price-display {
+        background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+    
+    .monthly-price {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+    
+    .price-details {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .amenity-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(67, 97, 238, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: #4361ee;
+        font-size: 1.2rem;
+    }
+    
+    .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .review-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+    
+    .rating-stars {
+        color: #ffd60a;
+    }
+    
+    .availability-badge {
+        background: #10b981;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .calendar-container {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .payment-breakdown {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .payment-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .payment-item.total {
+        border-top: 2px solid #4361ee;
+        border-bottom: none;
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #4361ee;
+    }
+    
+    .booking-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        position: relative;
+    }
+    
+    .booking-steps::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: #dee2e6;
+        z-index: 1;
+    }
+    
+    .step {
+        text-align: center;
+        position: relative;
+        z-index: 2;
+        flex: 1;
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border: 2px solid #dee2e6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-weight: 700;
+        color: #666;
+    }
+    
+    .step.active .step-number {
+        background: #4361ee;
+        border-color: #4361ee;
+        color: white;
+    }
+    
+    .step-label {
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .step.active .step-label {
+        color: #4361ee;
+        font-weight: 600;
+    }
+    
+    /* Similar Apartments */
+    .similar-apartment-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+    
+    .similar-apartment-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .similar-image {
+        height: 150px;
+        overflow: hidden;
+    }
+    
+    .similar-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .similar-content {
+        padding: 15px;
+    }
+    
+    .similar-price {
+        color: #ff6b35;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .apartment-detail-hero {
+            padding: 120px 0 40px;
+        }
+        
+        .main-image-container {
+            height: 300px;
+        }
+        
+        .booking-card {
+            position: static;
+            margin-top: 30px;
+        }
+        
+        .booking-steps {
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .booking-steps::before {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="apartment-detail-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'makazi:apartments_list' %}" class="text-white">Apartments</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'makazi:apartments_list' %}?location={{ apartment.location }}" class="text-white">{{ apartment.location }}</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">{{ apartment.title }}</li>
+                    </ol>
+                </nav>
+                
+                <h1 class="display-5 fw-bold mb-3">{{ apartment.title }}</h1>
+                
+                <div class="d-flex align-items-center gap-4 mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-geo-alt-fill me-2"></i>
+                        <span>{{ apartment.location }}</span>
+                    </div>
+                    {% if apartment.is_verified %}
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i> Verified
+                    </span>
+                    {% endif %}
+                    {% if apartment.is_available %}
+                    <span class="availability-badge">
+                        <i class="bi bi-check-circle me-1"></i> Available Now
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <div class="d-flex gap-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-door-closed me-2"></i>
+                        <span>{{ apartment.bedrooms }} Bedrooms</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-droplet me-2"></i>
+                        <span>{{ apartment.bathrooms }} Bathrooms</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-arrows-fullscreen me-2"></i>
+                        <span>{{ apartment.area_sqft }} sqft</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Left Column: Images & Details -->
+            <div class="col-lg-8">
+                <!-- Main Image -->
+                <div class="main-image-container">
+                    {% if apartment.main_image %}
+                        <img src="{{ apartment.main_image.url }}" 
+                             alt="{{ apartment.title }}" 
+                             id="mainImage">
+                    {% else %}
+                        <div class="no-image-placeholder" style="height: 100%;">
+                            <i class="bi bi-building fs-1"></i>
+                            <p>No Image Available</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Thumbnail Images -->
+                {% with images=apartment.get_all_images %}
+                {% if images|length > 1 %}
+                <div class="thumbnail-images">
+                    {% for image_url in images %}
+                    <div class="thumbnail {% if forloop.first %}active{% endif %}" 
+                         onclick="changeMainImage('{{ image_url }}', this)">
+                        <img src="{{ image_url }}" alt="Apartment image {{ forloop.counter }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+                
+                <!-- Apartment Details -->
+                <div class="row mb-5">
+                    <div class="col-md-8">
+                        <h3 class="mb-4">About This Apartment</h3>
+                        <p class="lead">{{ apartment.description }}</p>
+                        
+                        <!-- Key Features -->
+                        <div class="mt-4">
+                            <h5 class="mb-3">Key Features</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <div class="amenity-icon">
+                                            <i class="bi bi-house-door"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Property Type</h6>
+                                            <p class="mb-0">{{ apartment.get_apartment_type_display }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <div class="amenity-icon">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Available From</h6>
+                                            <p class="mb-0">{{ apartment.available_from|date:"F d, Y" }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <div class="amenity-icon">
+                                            <i class="bi bi-building"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Floor</h6>
+                                            <p class="mb-0">Floor {{ apartment.floor_number }} of {{ apartment.total_floors }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <div class="amenity-icon">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Total Rooms</h6>
+                                            <p class="mb-0">{{ apartment.total_rooms }} Rooms</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Amenities -->
+                        {% if apartment.amenities %}
+                        <div class="mt-4">
+                            <h5 class="mb-3">Amenities</h5>
+                            <div class="row">
+                                {% for amenity in apartment.amenities %}
+                                <div class="col-md-4 col-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        {% if amenity == 'wifi' %}
+                                        <i class="bi bi-wifi text-blue me-2"></i>
+                                        <span>Wi-Fi</span>
+                                        {% elif amenity == 'parking' %}
+                                        <i class="bi bi-p-square text-blue me-2"></i>
+                                        <span>Parking</span>
+                                        {% elif amenity == 'pool' %}
+                                        <i class="bi bi-water text-blue me-2"></i>
+                                        <span>Swimming Pool</span>
+                                        {% elif amenity == 'gym' %}
+                                        <i class="bi bi-activity text-blue me-2"></i>
+                                        <span>Gym</span>
+                                        {% elif amenity == 'security' %}
+                                        <i class="bi bi-shield-check text-blue me-2"></i>
+                                        <span>24/7 Security</span>
+                                        {% elif amenity == 'elevator' %}
+                                        <i class="bi bi-arrow-up-circle text-blue me-2"></i>
+                                        <span>Elevator</span>
+                                        {% elif amenity == 'ac' %}
+                                        <i class="bi bi-snow text-blue me-2"></i>
+                                        <span>Air Conditioning</span>
+                                        {% elif amenity == 'heating' %}
+                                        <i class="bi bi-thermometer-sun text-blue me-2"></i>
+                                        <span>Heating</span>
+                                        {% elif amenity == 'laundry' %}
+                                        <i class="bi bi-tsunami text-blue me-2"></i>
+                                        <span>Laundry Facilities</span>
+                                        {% elif amenity == 'balcony' %}
+                                        <i class="bi bi-door-open text-blue me-2"></i>
+                                        <span>Balcony</span>
+                                        {% elif amenity == 'garden' %}
+                                        <i class="bi bi-flower2 text-blue me-2"></i>
+                                        <span>Garden</span>
+                                        {% elif amenity == 'playground' %}
+                                        <i class="bi bi-emoji-smile text-blue me-2"></i>
+                                        <span>Playground</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Location -->
+                        <div class="mt-4">
+                            <h5 class="mb-3">Location</h5>
+                            <p><i class="bi bi-geo-alt text-blue me-2"></i>{{ apartment.address }}</p>
+                            
+                            {% if apartment.latitude and apartment.longitude %}
+                            <div id="map" style="height: 300px; border-radius: 10px; overflow: hidden;"></div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Reviews -->
+                        <div class="mt-5">
+                            <h5 class="mb-4">Tenant Reviews</h5>
+                            
+                            <!-- Average Rating -->
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="me-3">
+                                    <div class="display-4 fw-bold">{{ average_rating|floatformat:1 }}</div>
+                                    <div class="rating-stars">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= average_rating %}
+                                            <i class="bi bi-star-fill"></i>
+                                            {% elif forloop.counter|add:"-0.5" <= average_rating %}
+                                            <i class="bi bi-star-half"></i>
+                                            {% else %}
+                                            <i class="bi bi-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <small class="text-muted">Based on {{ reviews|length }} reviews</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Review Form -->
+                            <div class="mb-4">
+                                <button class="btn btn-blue" type="button" data-bs-toggle="collapse" data-bs-target="#reviewForm">
+                                    <i class="bi bi-pencil-square me-2"></i>Write a Review
+                                </button>
+                                
+                                <div class="collapse mt-3" id="reviewForm">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="submit_review" value="1">
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        {{ review_form.reviewer_name }}
+                                                        {% if review_form.reviewer_name.errors %}
+                                                        <div class="text-danger small">{{ review_form.reviewer_name.errors }}</div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        {{ review_form.reviewer_email }}
+                                                        {% if review_form.reviewer_email.errors %}
+                                                        <div class="text-danger small">{{ review_form.reviewer_email.errors }}</div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">Rating</label>
+                                                    {{ review_form.rating }}
+                                                    {% if review_form.rating.errors %}
+                                                    <div class="text-danger small">{{ review_form.rating.errors }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    {{ review_form.title }}
+                                                    {% if review_form.title.errors %}
+                                                    <div class="text-danger small">{{ review_form.title.errors }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    {{ review_form.comment }}
+                                                    {% if review_form.comment.errors %}
+                                                    <div class="text-danger small">{{ review_form.comment.errors }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-yellow">
+                                                    Submit Review
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Reviews List -->
+                            {% if reviews %}
+                            <div class="review-list">
+                                {% for review in reviews %}
+                                <div class="review-card">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <h6 class="mb-1">{{ review.reviewer_name }}</h6>
+                                            <div class="rating-stars">
+                                                {% for i in "12345" %}
+                                                    {% if forloop.counter <= review.rating %}
+                                                    <i class="bi bi-star-fill"></i>
+                                                    {% else %}
+                                                    <i class="bi bi-star"></i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <span class="ms-2 text-muted">{{ review.created_at|date:"M d, Y" }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <h6 class="mb-2">{{ review.title }}</h6>
+                                    <p class="mb-0">{{ review.comment }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>No reviews yet. Be the first to review this apartment!
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Booking Card -->
+            <div class="col-lg-4">
+                <div class="booking-card">
+                    <!-- Booking Steps -->
+                    <div class="booking-steps mb-4">
+                        <div class="step active">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Select Dates</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Enter Details</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Confirm Booking</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Price Display -->
+                    <div class="price-display text-center">
+                        <div class="monthly-price">
+                            TSh {{ apartment.price_per_month|floatformat:0 }}
+                        </div>
+                        <div class="price-details">per month</div>
+                    </div>
+                    
+                    <!-- Payment Breakdown -->
+                    <div class="payment-breakdown mb-4">
+                        <h6 class="mb-3">Payment Breakdown</h6>
+                        <div class="payment-item">
+                            <span>Monthly Rent:</span>
+                            <span>TSh {{ apartment.price_per_month|floatformat:0 }}</span>
+                        </div>
+                        {% if apartment.security_deposit > 0 %}
+                        <div class="payment-item">
+                            <span>Security Deposit:</span>
+                            <span>TSh {{ apartment.security_deposit|floatformat:0 }}</span>
+                        </div>
+                        {% endif %}
+                        {% if apartment.maintenance_fee > 0 %}
+                        <div class="payment-item">
+                            <span>Maintenance Fee:</span>
+                            <span>TSh {{ apartment.maintenance_fee|floatformat:0 }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="payment-item total">
+                            <span>Total for 1 month:</span>
+                            <span>TSh {{ total_price|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Booking Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="book_now" value="1">
+                        
+                        <div class="calendar-container mb-4">
+                            <h6 class="mb-3">Select Check-in Date</h6>
+                            {{ booking_form.check_in_date }}
+                            {% if booking_form.check_in_date.errors %}
+                            <div class="text-danger small mt-2">{{ booking_form.check_in_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Duration (Months)</label>
+                            {{ booking_form.duration_months }}
+                            {% if booking_form.duration_months.errors %}
+                            <div class="text-danger small mt-2">{{ booking_form.duration_months.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Number of Guests</label>
+                            {{ booking_form.number_of_guests }}
+                            {% if booking_form.number_of_guests.errors %}
+                            <div class="text-danger small mt-2">{{ booking_form.number_of_guests.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Your Full Name</label>
+                            {{ booking_form.customer_name }}
+                            {% if booking_form.customer_name.errors %}
+                            <div class="text-danger small mt-2">{{ booking_form.customer_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            {{ booking_form.customer_email }}
+                            {% if booking_form.customer_email.errors %}
+                            <div class="text-danger small mt-2">{{ booking_form.customer_email.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            {{ booking_form.customer_phone }}
+                            {% if booking_form.customer_phone.errors %}
+                            <div class="text-danger small mt-2">{{ booking_form.customer_phone.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Special Requests (Optional)</label>
+                            {{ booking_form.special_requests }}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-yellow w-100 py-3 fw-bold">
+                            <i class="bi bi-calendar-check me-2"></i>Book Now
+                        </button>
+                        
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check me-1"></i>
+                                Secure booking · No booking fees
+                            </small>
+                        </div>
+                    </form>
+                    
+                    <!-- Contact Owner -->
+                    <div class="mt-4 pt-4 border-top">
+                        <h6 class="mb-3">Contact Property Manager</h6>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-person-circle text-blue me-2"></i>
+                            <span>{{ apartment.owner_name }}</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-telephone text-blue me-2"></i>
+                            <a href="tel:{{ apartment.owner_phone }}" class="text-decoration-none">
+                                {{ apartment.owner_phone }}
+                            </a>
+                        </div>
+                        {% if apartment.owner_email %}
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-envelope text-blue me-2"></i>
+                            <a href="mailto:{{ apartment.owner_email }}" class="text-decoration-none">
+                                {{ apartment.owner_email }}
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Similar Apartments -->
+                {% if similar_apartments %}
+                <div class="mt-4">
+                    <h5 class="mb-3">Similar Apartments</h5>
+                    {% for similar in similar_apartments %}
+                    <div class="similar-apartment-card">
+                        <a href="{% url 'makazi:apartment_detail' similar.pk %}" class="text-decoration-none text-dark">
+                            <div class="similar-image">
+                                {% if similar.main_image %}
+                                    <img src="{{ similar.main_image.url }}" alt="{{ similar.title }}">
+                                {% else %}
+                                    <div style="height: 100%; background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%); 
+                                         display: flex; align-items: center; justify-content: center; color: white;">
+                                        <i class="bi bi-building"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="similar-content">
+                                <h6 class="mb-2">{{ similar.title|truncatechars:30 }}</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="similar-price">
+                                        TSh {{ similar.price_per_month|floatformat:0 }}
+                                    </span>
+                                    <span class="badge bg-blue">
+                                        {{ similar.bedrooms }} Bed
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Messages -->
+{% if messages %}
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    {% for message in messages %}
+    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} text-white">
+            <strong class="me-auto">
+                <i class="bi bi-check-circle me-2"></i>Success
+            </strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">
+            {{ message }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Change main image when thumbnail is clicked
+    function changeMainImage(imageUrl, element) {
+        document.getElementById('mainImage').src = imageUrl;
+        
+        // Remove active class from all thumbnails
+        document.querySelectorAll('.thumbnail').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        
+        // Add active class to clicked thumbnail
+        element.classList.add('active');
+    }
+    
+    // Initialize date picker restrictions
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkInInput = document.querySelector('input[name="check_in_date"]');
+        if (checkInInput) {
+            // Set min date to today
+            const today = new Date().toISOString().split('T')[0];
+            checkInInput.min = today;
+            
+            // Set max date to 1 year from today
+            const maxDate = new Date();
+            maxDate.setFullYear(maxDate.getFullYear() + 1);
+            checkInInput.max = maxDate.toISOString().split('T')[0];
+        }
+        
+        // Calculate and display total price dynamically
+        const durationInput = document.querySelector('input[name="duration_months"]');
+        const monthlyRent = {{ apartment.price_per_month }};
+        const securityDeposit = {{ apartment.security_deposit }};
+        const maintenanceFee = {{ apartment.maintenance_fee }};
+        
+        function updateTotalPrice() {
+            const duration = parseInt(durationInput.value) || 1;
+            const total = (monthlyRent * duration) + securityDeposit + maintenanceFee;
+            
+            // Update display if exists
+            const totalDisplay = document.querySelector('.payment-item.total span:last-child');
+            if (totalDisplay) {
+                totalDisplay.textContent = 'TSh ' + total.toLocaleString('en-US');
+            }
+        }
+        
+        if (durationInput) {
+            durationInput.addEventListener('input', updateTotalPrice);
+            updateTotalPrice(); // Initial calculation
+        }
+    });
+    
+    // Load map if coordinates exist
+    {% if apartment.latitude and apartment.longitude %}
+    function initMap() {
+        const location = { 
+            lat: {{ apartment.latitude }}, 
+            lng: {{ apartment.longitude }} 
+        };
+        
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: location,
+            mapTypeId: 'roadmap',
+            styles: [
+                {
+                    featureType: "poi",
+                    elementType: "labels",
+                    stylers: [{ visibility: "off" }]
+                }
+            ]
+        });
+        
+        const marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            title: "{{ apartment.title }}"
+        });
+        
+        const infoWindow = new google.maps.InfoWindow({
+            content: `<h6>${"{{ apartment.title|escapejs }}"}</h6>
+                     <p>${"{{ apartment.address|escapejs }}"}</p>`
+        });
+        
+        marker.addListener("click", () => {
+            infoWindow.open(map, marker);
+        });
+    }
+    
+    // Load Google Maps API
+    function loadGoogleMaps() {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+    
+    // Load maps when needed
+    window.addEventListener('load', loadGoogleMaps);
+    {% endif %}
+</script>
+{% endblock %}

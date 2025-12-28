@@ -6,38 +6,45 @@
 
 {% block extra_css %}
 <style>
-    /* Apartment Detail Styles */
+    /* ===== MAIN STYLES ===== */
     .apartment-detail-hero {
-        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)),
+        background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)),
                     url('{% if apartment.main_image %}{{ apartment.main_image.url }}{% else %}https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3{% endif %}');
         background-size: cover;
         background-position: center;
-        padding: 150px 0 80px;
+        padding: 100px 0 60px;
         color: white;
     }
     
     .main-image-container {
-        height: 500px;
+        height: 400px;
         border-radius: 15px;
         overflow: hidden;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
     
     .main-image-container img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .main-image-container img:hover {
+        transform: scale(1.03);
     }
     
     .thumbnail-images {
         display: flex;
         gap: 10px;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
     }
     
     .thumbnail {
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
         border-radius: 10px;
         overflow: hidden;
         cursor: pointer;
@@ -48,7 +55,7 @@
     .thumbnail:hover,
     .thumbnail.active {
         border-color: #4361ee;
-        transform: scale(1.05);
+        transform: scale(1.1);
     }
     
     .thumbnail img {
@@ -60,34 +67,46 @@
     .booking-card {
         background: white;
         border-radius: 15px;
-        padding: 30px;
+        padding: 25px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         position: sticky;
-        top: 100px;
+        top: 90px;
+        border: 1px solid #e9ecef;
     }
     
     .price-display {
         background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
         color: white;
         padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        text-align: center;
     }
     
     .monthly-price {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         font-weight: 800;
         margin-bottom: 5px;
     }
     
-    .price-details {
-        font-size: 0.9rem;
-        opacity: 0.9;
+    .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-item:hover {
+        transform: translateX(5px);
+        background: #e9ecef;
     }
     
     .amenity-icon {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
         background: rgba(67, 97, 238, 0.1);
         border-radius: 10px;
         display: flex;
@@ -98,179 +117,288 @@
         font-size: 1.2rem;
     }
     
-    .feature-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 10px;
-    }
+    /* ===== ADS MODULES STYLES ===== */
     
-    .review-card {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-    }
-    
-    .rating-stars {
-        color: #ffd60a;
-    }
-    
-    .availability-badge {
-        background: #10b981;
+    /* MODULE 1: Premium Banner */
+    .premium-ad-module {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
         color: white;
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-    
-    .calendar-container {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    }
-    
-    .payment-breakdown {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-    
-    .payment-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 0;
-        border-bottom: 1px solid #dee2e6;
-    }
-    
-    .payment-item.total {
-        border-top: 2px solid #4361ee;
-        border-bottom: none;
-        font-weight: 700;
-        font-size: 1.2rem;
-        color: #4361ee;
-    }
-    
-    .booking-steps {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 30px;
         position: relative;
+        overflow: hidden;
+        isolation: isolate;
     }
     
-    .booking-steps::before {
+    .premium-ad-module::before {
         content: '';
         position: absolute;
-        top: 25px;
-        left: 10%;
-        right: 10%;
-        height: 2px;
-        background: #dee2e6;
+        top: -50%;
+        right: -50%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        z-index: -1;
+    }
+    
+    .premium-ad-module::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -30%;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        z-index: -1;
+    }
+    
+    .premium-ad-module .typed-text {
+        color: #ffd700;
+        font-weight: 700;
+        min-height: 32px;
+    }
+    
+    .premium-ad-module .cursor {
+        display: inline-block;
+        width: 3px;
+        background-color: white;
+        animation: blink 1s infinite;
+        margin-left: 2px;
+    }
+    
+    /* MODULE 2: Advertising Slider */
+    .slider-ad-module {
+        position: relative;
+        height: 280px;
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 30px 0;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        box-shadow: 0 20px 60px rgba(30, 60, 114, 0.4);
+        isolation: isolate;
+    }
+    
+    .ad-slide {
+        position: absolute;
+        inset: 0;
+        padding: 30px;
+        color: #fff;
+        opacity: 0;
+        transform: translateX(40px);
+        transition: all 0.8s ease;
         z-index: 1;
     }
     
-    .step {
-        text-align: center;
-        position: relative;
+    .ad-slide.active {
+        opacity: 1;
+        transform: translateX(0);
         z-index: 2;
-        flex: 1;
     }
     
-    .step-number {
-        width: 50px;
-        height: 50px;
-        background: white;
-        border: 2px solid #dee2e6;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 10px;
+    .ad-slide .ad-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 12px;
         font-weight: 700;
-        color: #666;
+        margin-bottom: 15px;
+        backdrop-filter: blur(10px);
     }
     
-    .step.active .step-number {
-        background: #4361ee;
-        border-color: #4361ee;
-        color: white;
+    .ad-slide h4 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 15px;
     }
     
-    .step-label {
-        font-size: 0.9rem;
-        color: #666;
+    .ad-slide .typing {
+        min-height: 50px;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 25px;
     }
     
-    .step.active .step-label {
-        color: #4361ee;
-        font-weight: 600;
+    .ad-slide .typing span::after {
+        content: "▍";
+        animation: blink 1s infinite;
     }
     
-    /* Similar Apartments */
-    .similar-apartment-card {
-        background: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    .ad-slide .ad-btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #fff, #e0e7ff);
+        color: #1e3c72;
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-decoration: none;
         transition: all 0.3s ease;
-        margin-bottom: 20px;
     }
     
-    .similar-apartment-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    .ad-slide .ad-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
     
-    .similar-image {
-        height: 150px;
+    /* MODULE 3: Sidebar Ads */
+    .sidebar-ad-module {
+        background: white;
+        border-radius: 12px;
         overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+        transition: transform 0.3s ease;
+        isolation: isolate;
     }
     
-    .similar-image img {
+    .sidebar-ad-module:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+    
+    .sidebar-ad-module.premium {
+        border: 2px solid #ffd700;
+        position: relative;
+    }
+    
+    .sidebar-ad-module .ad-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ffd700;
+        color: #000;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        z-index: 2;
+    }
+    
+    .sidebar-ad-module .ad-image {
+        height: 180px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .sidebar-ad-module .ad-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform 0.5s ease;
     }
     
-    .similar-content {
-        padding: 15px;
+    .sidebar-ad-module:hover .ad-image img {
+        transform: scale(1.05);
     }
     
-    .similar-price {
-        color: #ff6b35;
+    .sidebar-ad-module .ad-content {
+        padding: 20px;
+    }
+    
+    .sidebar-ad-module .ad-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #2d3748;
+    }
+    
+    .sidebar-ad-module .ad-description {
+        font-size: 0.9rem;
+        color: #718096;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+    
+    .sidebar-ad-module .ad-price {
+        color: #10b981;
         font-weight: 700;
         font-size: 1.2rem;
     }
     
-    /* Responsive */
+    /* MODULE 4: Sponsored Ads */
+    .sponsored-ad-module {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin: 20px 0;
+        border: 2px dashed #4361ee;
+        isolation: isolate;
+    }
+    
+    .sponsored-ad-module .sponsor-label {
+        font-size: 0.8rem;
+        color: #4361ee;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    
+    .sponsored-ad-module .sponsor-text {
+        font-size: 1rem;
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+    
+    /* ===== ANIMATIONS ===== */
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .pulse-animation {
+        animation: pulse 3s infinite;
+    }
+    
+    .float-animation {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
         .apartment-detail-hero {
-            padding: 120px 0 40px;
+            padding: 80px 0 30px;
         }
         
         .main-image-container {
-            height: 300px;
+            height: 250px;
         }
         
         .booking-card {
             position: static;
-            margin-top: 30px;
+            margin-top: 25px;
         }
         
-        .booking-steps {
-            flex-direction: column;
-            gap: 20px;
+        .slider-ad-module {
+            height: 250px;
         }
         
-        .booking-steps::before {
-            display: none;
+        .premium-ad-module {
+            padding: 20px;
+        }
+        
+        .ad-slide {
+            padding: 20px;
+        }
+        
+        .ad-slide h4 {
+            font-size: 1.3rem;
         }
     }
 </style>
@@ -290,9 +418,9 @@
                     </ol>
                 </nav>
                 
-                <h1 class="display-5 fw-bold mb-3">{{ apartment.title }}</h1>
+                <h1 class="fw-bold mb-2">{{ apartment.title }}</h1>
                 
-                <div class="d-flex align-items-center gap-4 mb-4">
+                <div class="d-flex align-items-center gap-4 mb-3">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-geo-alt-fill me-2"></i>
                         <span>{{ apartment.location }}</span>
@@ -303,25 +431,10 @@
                     </span>
                     {% endif %}
                     {% if apartment.is_available %}
-                    <span class="availability-badge">
-                        <i class="bi bi-check-circle me-1"></i> Available Now
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i> Available
                     </span>
                     {% endif %}
-                </div>
-                
-                <div class="d-flex gap-3">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-door-closed me-2"></i>
-                        <span>{{ apartment.bedrooms }} Bedrooms</span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-droplet me-2"></i>
-                        <span>{{ apartment.bathrooms }} Bathrooms</span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-arrows-fullscreen me-2"></i>
-                        <span>{{ apartment.area_sqft }} sqft</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -329,7 +442,7 @@
 </section>
 
 <!-- Main Content -->
-<section class="py-5">
+<section class="py-4">
     <div class="container">
         <div class="row">
             <!-- Left Column: Images & Details -->
@@ -341,9 +454,10 @@
                              alt="{{ apartment.title }}" 
                              id="mainImage">
                     {% else %}
-                        <div class="no-image-placeholder" style="height: 100%;">
+                        <div class="d-flex flex-column align-items-center justify-content-center text-white" 
+                             style="height: 100%; background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);">
                             <i class="bi bi-building fs-1"></i>
-                            <p>No Image Available</p>
+                            <p class="mt-2">No Image Available</p>
                         </div>
                     {% endif %}
                 </div>
@@ -361,10 +475,11 @@
                 </div>
                 {% endif %}
                 {% endwith %}
+               
                 
                 <!-- Apartment Details -->
-                <div class="row mb-5">
-                    <div class="col-md-8">
+                <div class="row mb-4">
+                    <div class="col-12">
                         <h3 class="mb-4">About This Apartment</h3>
                         <p class="lead">{{ apartment.description }}</p>
                         
@@ -397,417 +512,374 @@
                                 <div class="col-md-6">
                                     <div class="feature-item">
                                         <div class="amenity-icon">
-                                            <i class="bi bi-building"></i>
+                                            <i class="bi bi-door-closed"></i>
                                         </div>
                                         <div>
-                                            <h6 class="mb-1">Floor</h6>
-                                            <p class="mb-0">Floor {{ apartment.floor_number }} of {{ apartment.total_floors }}</p>
+                                            <h6 class="mb-1">Bedrooms</h6>
+                                            <p class="mb-0">{{ apartment.bedrooms }} Bedrooms</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="feature-item">
                                         <div class="amenity-icon">
-                                            <i class="bi bi-people"></i>
+                                            <i class="bi bi-droplet"></i>
                                         </div>
                                         <div>
-                                            <h6 class="mb-1">Total Rooms</h6>
-                                            <p class="mb-0">{{ apartment.total_rooms }} Rooms</p>
+                                            <h6 class="mb-1">Bathrooms</h6>
+                                            <p class="mb-0">{{ apartment.bathrooms }} Bathrooms</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Amenities -->
-                        {% if apartment.amenities %}
-                        <div class="mt-4">
-                            <h5 class="mb-3">Amenities</h5>
-                            <div class="row">
-                                {% for amenity in apartment.amenities %}
-                                <div class="col-md-4 col-6 mb-3">
-                                    <div class="d-flex align-items-center">
-                                        {% if amenity == 'wifi' %}
-                                        <i class="bi bi-wifi text-blue me-2"></i>
-                                        <span>Wi-Fi</span>
-                                        {% elif amenity == 'parking' %}
-                                        <i class="bi bi-p-square text-blue me-2"></i>
-                                        <span>Parking</span>
-                                        {% elif amenity == 'pool' %}
-                                        <i class="bi bi-water text-blue me-2"></i>
-                                        <span>Swimming Pool</span>
-                                        {% elif amenity == 'gym' %}
-                                        <i class="bi bi-activity text-blue me-2"></i>
-                                        <span>Gym</span>
-                                        {% elif amenity == 'security' %}
-                                        <i class="bi bi-shield-check text-blue me-2"></i>
-                                        <span>24/7 Security</span>
-                                        {% elif amenity == 'elevator' %}
-                                        <i class="bi bi-arrow-up-circle text-blue me-2"></i>
-                                        <span>Elevator</span>
-                                        {% elif amenity == 'ac' %}
-                                        <i class="bi bi-snow text-blue me-2"></i>
-                                        <span>Air Conditioning</span>
-                                        {% elif amenity == 'heating' %}
-                                        <i class="bi bi-thermometer-sun text-blue me-2"></i>
-                                        <span>Heating</span>
-                                        {% elif amenity == 'laundry' %}
-                                        <i class="bi bi-tsunami text-blue me-2"></i>
-                                        <span>Laundry Facilities</span>
-                                        {% elif amenity == 'balcony' %}
-                                        <i class="bi bi-door-open text-blue me-2"></i>
-                                        <span>Balcony</span>
-                                        {% elif amenity == 'garden' %}
-                                        <i class="bi bi-flower2 text-blue me-2"></i>
-                                        <span>Garden</span>
-                                        {% elif amenity == 'playground' %}
-                                        <i class="bi bi-emoji-smile text-blue me-2"></i>
-                                        <span>Playground</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        <!-- Location -->
+                        </div>             <!-- Location -->
                         <div class="mt-4">
                             <h5 class="mb-3">Location</h5>
-                            <p><i class="bi bi-geo-alt text-blue me-2"></i>{{ apartment.address }}</p>
-                            
-                            {% if apartment.latitude and apartment.longitude %}
-                            <div id="map" style="height: 300px; border-radius: 10px; overflow: hidden;"></div>
-                            {% endif %}
+                            <p><i class="bi bi-geo-alt text-primary me-2"></i>{{ apartment.address }}, {{ apartment.location }}</p>
                         </div>
                         
-                        <!-- Reviews -->
-                        <div class="mt-5">
-                            <h5 class="mb-4">Tenant Reviews</h5>
-                            
-                            <!-- Average Rating -->
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="me-3">
-                                    <div class="display-4 fw-bold">{{ average_rating|floatformat:1 }}</div>
-                                    <div class="rating-stars">
-                                        {% for i in "12345" %}
-                                            {% if forloop.counter <= average_rating %}
-                                            <i class="bi bi-star-fill"></i>
-                                            {% elif forloop.counter|add:"-0.5" <= average_rating %}
-                                            <i class="bi bi-star-half"></i>
-                                            {% else %}
-                                            <i class="bi bi-star"></i>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                    <small class="text-muted">Based on {{ reviews|length }} reviews</small>
-                                </div>
+                        <!-- MODULE 2: Advertising Slider -->
+                        <div class="slider-ad-module">
+                            <div class="ad-slide active">
+                                <span class="ad-badge">Premium Advertising</span>
+                                <h4 style="color: yellow;">Grow Your Business</h4>
+                                <p class="typing"><span></span></p>
+                                <a href="#" class="ad-btn">Advertise With Us</a>
                             </div>
                             
-                            <!-- Review Form -->
-                            <div class="mb-4">
-                                <button class="btn btn-blue" type="button" data-bs-toggle="collapse" data-bs-target="#reviewForm">
-                                    <i class="bi bi-pencil-square me-2"></i>Write a Review
-                                </button>
-                                
-                                <div class="collapse mt-3" id="reviewForm">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <form method="post">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="submit_review" value="1">
-                                                
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        {{ review_form.reviewer_name }}
-                                                        {% if review_form.reviewer_name.errors %}
-                                                        <div class="text-danger small">{{ review_form.reviewer_name.errors }}</div>
-                                                        {% endif %}
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        {{ review_form.reviewer_email }}
-                                                        {% if review_form.reviewer_email.errors %}
-                                                        <div class="text-danger small">{{ review_form.reviewer_email.errors }}</div>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="mb-3">
-                                                    <label class="form-label">Rating</label>
-                                                    {{ review_form.rating }}
-                                                    {% if review_form.rating.errors %}
-                                                    <div class="text-danger small">{{ review_form.rating.errors }}</div>
-                                                    {% endif %}
-                                                </div>
-                                                
-                                                <div class="mb-3">
-                                                    {{ review_form.title }}
-                                                    {% if review_form.title.errors %}
-                                                    <div class="text-danger small">{{ review_form.title.errors }}</div>
-                                                    {% endif %}
-                                                </div>
-                                                
-                                                <div class="mb-3">
-                                                    {{ review_form.comment }}
-                                                    {% if review_form.comment.errors %}
-                                                    <div class="text-danger small">{{ review_form.comment.errors }}</div>
-                                                    {% endif %}
-                                                </div>
-                                                
-                                                <button type="submit" class="btn btn-yellow">
-                                                    Submit Review
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="ad-slide">
+                                <span class="ad-badge">Featured Spot</span>
+                                <h4>Reach Serious Buyers</h4>
+                                <p class="typing"><span></span></p>
+                                <a href="#" class="ad-btn">Start Advertising</a>
                             </div>
                             
-                            <!-- Reviews List -->
-                            {% if reviews %}
-                            <div class="review-list">
-                                {% for review in reviews %}
-                                <div class="review-card">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div>
-                                            <h6 class="mb-1">{{ review.reviewer_name }}</h6>
-                                            <div class="rating-stars">
-                                                {% for i in "12345" %}
-                                                    {% if forloop.counter <= review.rating %}
-                                                    <i class="bi bi-star-fill"></i>
-                                                    {% else %}
-                                                    <i class="bi bi-star"></i>
-                                                    {% endif %}
-                                                {% endfor %}
-                                                <span class="ms-2 text-muted">{{ review.created_at|date:"M d, Y" }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <h6 class="mb-2">{{ review.title }}</h6>
-                                    <p class="mb-0">{{ review.comment }}</p>
-                                </div>
-                                {% endfor %}
+                            <div class="ad-slide">
+                                <span class="ad-badge">High Visibility</span>
+                                <h4>Boost Brand Exposure</h4>
+                                <p class="typing"><span></span></p>
+                                <a href="#" class="ad-btn">Book Ad Space</a>
                             </div>
-                            {% else %}
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle me-2"></i>No reviews yet. Be the first to review this apartment!
-                            </div>
-                            {% endif %}
                         </div>
+                        
+                        
                     </div>
                 </div>
             </div>
             
-            <!-- Right Column: Booking Card -->
+            <!-- Right Column: Booking Card & Ads -->
             <div class="col-lg-4">
+                <!-- Booking Card -->
                 <div class="booking-card">
-                    <!-- Booking Steps -->
-                    <div class="booking-steps mb-4">
-                        <div class="step active">
-                            <div class="step-number">1</div>
-                            <div class="step-label">Select Dates</div>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">2</div>
-                            <div class="step-label">Enter Details</div>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">3</div>
-                            <div class="step-label">Confirm Booking</div>
-                        </div>
-                    </div>
-                    
                     <!-- Price Display -->
-                    <div class="price-display text-center">
-                        <div class="monthly-price">
+                    <div class="price-display">
+                        <div style="color: yellow;" class="monthly-price">
                             TSh {{ apartment.price_per_month|floatformat:0 }}
                         </div>
-                        <div class="price-details">per month</div>
+                        <div style="color: yellow;">per Day</div>
                     </div>
-                    
-                    <!-- Payment Breakdown -->
-                    <div class="payment-breakdown mb-4">
-                        <h6 class="mb-3">Payment Breakdown</h6>
-                        <div class="payment-item">
-                            <span>Monthly Rent:</span>
-                            <span>TSh {{ apartment.price_per_month|floatformat:0 }}</span>
-                        </div>
-                        {% if apartment.security_deposit > 0 %}
-                        <div class="payment-item">
-                            <span>Security Deposit:</span>
-                            <span>TSh {{ apartment.security_deposit|floatformat:0 }}</span>
-                        </div>
-                        {% endif %}
-                        {% if apartment.maintenance_fee > 0 %}
-                        <div class="payment-item">
-                            <span>Maintenance Fee:</span>
-                            <span>TSh {{ apartment.maintenance_fee|floatformat:0 }}</span>
-                        </div>
-                        {% endif %}
-                        <div class="payment-item total">
-                            <span>Total for 1 month:</span>
-                            <span>TSh {{ total_price|floatformat:0 }}</span>
-                        </div>
-                    </div>
+
+
+
+                    <div id="bookingMessage" class="alert alert-success d-none">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Booking submitted successfully! We’ll contact you shortly.
+                </div>
+
                     
                     <!-- Booking Form -->
-                    <form method="post">
+                    <form method="post" id="bookingForm">
                         {% csrf_token %}
                         <input type="hidden" name="book_now" value="1">
                         
-                        <div class="calendar-container mb-4">
-                            <h6 class="mb-3">Select Check-in Date</h6>
-                            {{ booking_form.check_in_date }}
-                            {% if booking_form.check_in_date.errors %}
-                            <div class="text-danger small mt-2">{{ booking_form.check_in_date.errors }}</div>
-                            {% endif %}
+                        <div class="mb-3">
+                            <label class="form-label">Check-in Date</label>
+                            <input type="date" class="form-control" name="check_in_date" required>
+
+                        </div><div class="mb-3">
+                            <label class="form-label">Check-Out Date</label>
+                            <input type="date" class="form-control" name="check_out_date" required>
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">Duration (Months)</label>
-                            {{ booking_form.duration_months }}
-                            {% if booking_form.duration_months.errors %}
-                            <div class="text-danger small mt-2">{{ booking_form.duration_months.errors }}</div>
-                            {% endif %}
+                            <label class="form-label">Duration (Days)</label>
+                            <select class="form-select" name="duration_months">
+                                <option value="1">1 - 3 Days</option>
+                                <option value="3">4 - 7 Days</option>
+                                <option value="4">2 weeks</option>
+                                <option value="5">3 - 4 weeks</option>
+                                <option value="6">2 Months</option>
+                                <option value="7">3 Months</option>
+                                <option value="8">6 Months</option>
+                                <option value="12">12 Months</option>
+                            </select>
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">Number of Guests</label>
-                            {{ booking_form.number_of_guests }}
-                            {% if booking_form.number_of_guests.errors %}
-                            <div class="text-danger small mt-2">{{ booking_form.number_of_guests.errors }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Your Full Name</label>
-                            {{ booking_form.customer_name }}
-                            {% if booking_form.customer_name.errors %}
-                            <div class="text-danger small mt-2">{{ booking_form.customer_name.errors }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Email Address</label>
-                            {{ booking_form.customer_email }}
-                            {% if booking_form.customer_email.errors %}
-                            <div class="text-danger small mt-2">{{ booking_form.customer_email.errors }}</div>
-                            {% endif %}
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" name="customer_name" required>
                         </div>
                         
                         <div class="mb-3">
                             <label class="form-label">Phone Number</label>
-                            {{ booking_form.customer_phone }}
-                            {% if booking_form.customer_phone.errors %}
-                            <div class="text-danger small mt-2">{{ booking_form.customer_phone.errors }}</div>
-                            {% endif %}
+                            <input type="tel" class="form-control" name="phone_number" required>
                         </div>
                         
-                        <div class="mb-4">
-                            <label class="form-label">Special Requests (Optional)</label>
-                            {{ booking_form.special_requests }}
-                        </div>
-                        
-                        <button type="submit" class="btn btn-yellow w-100 py-3 fw-bold">
+                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
                             <i class="bi bi-calendar-check me-2"></i>Book Now
                         </button>
-                        
-                        <div class="text-center mt-3">
-                            <small class="text-muted">
-                                <i class="bi bi-shield-check me-1"></i>
-                                Secure booking · No booking fees
-                            </small>
-                        </div>
                     </form>
-                    
-                    <!-- Contact Owner -->
-                    <div class="mt-4 pt-4 border-top">
-                        <h6 class="mb-3">Contact Property Manager</h6>
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-person-circle text-blue me-2"></i>
-                            <span>{{ apartment.owner_name }}</span>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-telephone text-blue me-2"></i>
-                            <a href="tel:{{ apartment.owner_phone }}" class="text-decoration-none">
-                                {{ apartment.owner_phone }}
-                            </a>
-                        </div>
-                        {% if apartment.owner_email %}
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-envelope text-blue me-2"></i>
-                            <a href="mailto:{{ apartment.owner_email }}" class="text-decoration-none">
-                                {{ apartment.owner_email }}
-                            </a>
-                        </div>
-                        {% endif %}
-                    </div>
                 </div>
                 
-                <!-- Similar Apartments -->
-                {% if similar_apartments %}
-                <div class="mt-4">
-                    <h5 class="mb-3">Similar Apartments</h5>
-                    {% for similar in similar_apartments %}
-                    <div class="similar-apartment-card">
-                        <a href="{% url 'makazi:apartment_detail' similar.pk %}" class="text-decoration-none text-dark">
-                            <div class="similar-image">
-                                {% if similar.main_image %}
-                                    <img src="{{ similar.main_image.url }}" alt="{{ similar.title }}">
-                                {% else %}
-                                    <div style="height: 100%; background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%); 
-                                         display: flex; align-items: center; justify-content: center; color: white;">
-                                        <i class="bi bi-building"></i>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="similar-content">
-                                <h6 class="mb-2">{{ similar.title|truncatechars:30 }}</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="similar-price">
-                                        TSh {{ similar.price_per_month|floatformat:0 }}
-                                    </span>
-                                    <span class="badge bg-blue">
-                                        {{ similar.bedrooms }} Bed
-                                    </span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
+                
+              
+                <!-- Another Sidebar Ad -->
+                 
+                
             </div>
         </div>
     </div>
-</section>
 
-<!-- Messages -->
-{% if messages %}
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-    {% for message in messages %}
-    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} text-white">
-            <strong class="me-auto">
-                <i class="bi bi-check-circle me-2"></i>Success
-            </strong>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-body">
-            {{ message }}
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
+     
+                <!-- MODULE 1: Premium Ad Banner -->
+                <!-- <div class="premium-ad-module float-animation">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="fw-bold mb-3">
+                                <span class="typed-text"></span>
+                                <span class="cursor">&nbsp;</span>
+                            </h4>
+                            
+                            <div class="sliding-messages mb-3">
+                                <div class="message active">
+                                    <i class="bi bi-eye-fill me-2"></i>Get <strong>3x more views</strong>
+                                </div>
+                                <div class="message">
+                                    <i class="bi bi-lightning-fill me-2"></i>Bookings <strong>5x faster</strong>
+                                </div>
+                                <div class="message">
+                                    <i class="bi bi-award-fill me-2"></i>Featured in <strong>top results</strong>
+                                </div>
+                            </div>
+                            
+                            <a href="#" class="btn btn-light btn-lg">
+                                <i class="bi bi-rocket-takeoff me-2"></i>Upgrade to Premium
+                            </a>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="bg-white text-dark p-3 rounded pulse-animation">
+                                <div class="fs-6 text-muted">Starting at</div>
+                                <div class="fs-4 fw-bold">TSh 100,000</div>
+                                <div class="fs-7 text-muted">/month</div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+</section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Change main image when thumbnail is clicked
-    function changeMainImage(imageUrl, element) {
-        document.getElementById('mainImage').src = imageUrl;
+// ===== AD MODULES SYSTEM =====
+// Kila module ina script yake isiyoathiri nyingine
+
+// MODULE 1: Premium Ad Module
+const PremiumAdModule = (function() {
+    const module = document.querySelector('.premium-ad-module');
+    
+    if (!module) return;
+    
+    const typedTextSpan = module.querySelector('.typed-text');
+    const cursorSpan = module.querySelector('.cursor');
+    
+    const textArray = [
+        "Premium List Your Property!",
+        "Get Featured Today!",
+        "Stand Out from Competition!",
+        "Maximize Your Bookings!"
+    ];
+    
+    let textArrayIndex = 0;
+    let charIndex = 0;
+    let isTyping = true;
+    
+    function type() {
+        if (charIndex < textArray[textArrayIndex].length) {
+            typedTextSpan.textContent += textArray[textArrayIndex].charAt(charIndex);
+            charIndex++;
+            setTimeout(type, 100);
+        } else {
+            isTyping = false;
+            cursorSpan.classList.remove('typing');
+            setTimeout(erase, 2000);
+        }
+    }
+    
+    function erase() {
+        if (charIndex > 0) {
+            typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex-1);
+            charIndex--;
+            setTimeout(erase, 50);
+        } else {
+            textArrayIndex = (textArrayIndex + 1) % textArray.length;
+            isTyping = true;
+            cursorSpan.classList.add('typing');
+            setTimeout(type, 500);
+        }
+    }
+    
+    function initSlidingMessages() {
+        const messages = module.querySelectorAll('.message');
+        if (messages.length === 0) return;
+        
+        let currentMessage = 0;
+        
+        function showNextMessage() {
+            messages.forEach(msg => msg.classList.remove('active'));
+            messages[currentMessage].classList.add('active');
+            currentMessage = (currentMessage + 1) % messages.length;
+            setTimeout(showNextMessage, 3000);
+        }
+        
+        showNextMessage();
+    }
+    
+    // Initialize
+    cursorSpan.classList.add('typing');
+    setTimeout(type, 1000);
+    initSlidingMessages();
+    
+    // Clean up when leaving page
+    window.addEventListener('beforeunload', () => {
+        typedTextSpan.textContent = '';
+        cursorSpan.classList.remove('typing');
+    });
+})();
+
+// MODULE 2: Slider Ad Module
+const SliderAdModule = (function() {
+    const module = document.querySelector('.slider-ad-module');
+    
+    if (!module) return;
+    
+    const slides = module.querySelectorAll('.ad-slide');
+    const typingSpans = module.querySelectorAll('.typing span');
+    
+    const adTexts = [
+        [
+            "Turn visitors into paying customers.",
+            "Advertise where buyers are searching daily."
+        ],
+        [
+            "Reach serious buyers instantly.",
+            "Get premium visibility on our platform."
+        ],
+        [
+            "Boost your brand awareness.",
+            "Your business deserves premium exposure."
+        ]
+    ];
+    
+    let slideIndex = 0;
+    let textIndex = 0;
+    let charIndex = 0;
+    let isTyping = true;
+    let slideInterval;
+    
+    function typeText() {
+        const currentSlide = slides[slideIndex];
+        const span = currentSlide.querySelector('.typing span');
+        const text = adTexts[slideIndex][textIndex];
+        
+        span.textContent = text.slice(0, charIndex++);
+        
+        if (charIndex <= text.length) {
+            setTimeout(typeText, 50);
+        } else {
+            isTyping = false;
+            setTimeout(() => {
+                charIndex = 0;
+                textIndex = (textIndex + 1) % adTexts[slideIndex].length;
+                isTyping = true;
+                typeText();
+            }, 1500);
+        }
+    }
+    
+    function showSlide(index) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        slides[index].classList.add('active');
+        textIndex = 0;
+        charIndex = 0;
+        isTyping = true;
+        typeText();
+    }
+    
+    function nextSlide() {
+        if (isTyping) return; // Don't change slides while typing
+        
+        slideIndex = (slideIndex + 1) % slides.length;
+        showSlide(slideIndex);
+    }
+    
+    function init() {
+        showSlide(0);
+        slideInterval = setInterval(nextSlide, 7000);
+        
+        // Pause on hover
+        module.addEventListener('mouseenter', () => {
+            clearInterval(slideInterval);
+        });
+        
+        module.addEventListener('mouseleave', () => {
+            slideInterval = setInterval(nextSlide, 7000);
+        });
+    }
+    
+    // Initialize
+    init();
+    
+    // Clean up
+    window.addEventListener('beforeunload', () => {
+        clearInterval(slideInterval);
+        typingSpans.forEach(span => span.textContent = '');
+    });
+})();
+
+// MODULE 3: Sidebar Ads Interactions
+const SidebarAdsModule = (function() {
+    const modules = document.querySelectorAll('.sidebar-ad-module');
+    
+    if (modules.length === 0) return;
+    
+    modules.forEach(module => {
+        module.addEventListener('click', function() {
+            const title = this.querySelector('.ad-title').textContent;
+            console.log('Ad clicked:', title);
+            // Add your click tracking logic here
+        });
+        
+        // Add view tracking
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const title = entry.target.querySelector('.ad-title').textContent;
+                    console.log('Ad viewed:', title);
+                    // Add your view tracking logic here
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        observer.observe(module);
+    });
+})();
+
+// ===== APARTMENT FUNCTIONALITY =====
+// Change main image when thumbnail is clicked
+function changeMainImage(imageUrl, element) {
+    const mainImage = document.getElementById('mainImage');
+    if (mainImage) {
+        mainImage.src = imageUrl;
         
         // Remove active class from all thumbnails
         document.querySelectorAll('.thumbnail').forEach(thumb => {
@@ -817,92 +889,35 @@
         // Add active class to clicked thumbnail
         element.classList.add('active');
     }
-    
-    // Initialize date picker restrictions
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkInInput = document.querySelector('input[name="check_in_date"]');
-        if (checkInInput) {
-            // Set min date to today
-            const today = new Date().toISOString().split('T')[0];
-            checkInInput.min = today;
-            
-            // Set max date to 1 year from today
-            const maxDate = new Date();
-            maxDate.setFullYear(maxDate.getFullYear() + 1);
-            checkInInput.max = maxDate.toISOString().split('T')[0];
-        }
+}
+
+// Initialize date picker
+document.addEventListener('DOMContentLoaded', function() {
+    const checkInInput = document.querySelector('input[name="check_in_date"]');
+    if (checkInInput) {
+        const today = new Date().toISOString().split('T')[0];
+        checkInInput.min = today;
         
-        // Calculate and display total price dynamically
-        const durationInput = document.querySelector('input[name="duration_months"]');
-        const monthlyRent = {{ apartment.price_per_month }};
-        const securityDeposit = {{ apartment.security_deposit }};
-        const maintenanceFee = {{ apartment.maintenance_fee }};
-        
-        function updateTotalPrice() {
-            const duration = parseInt(durationInput.value) || 1;
-            const total = (monthlyRent * duration) + securityDeposit + maintenanceFee;
-            
-            // Update display if exists
-            const totalDisplay = document.querySelector('.payment-item.total span:last-child');
-            if (totalDisplay) {
-                totalDisplay.textContent = 'TSh ' + total.toLocaleString('en-US');
-            }
-        }
-        
-        if (durationInput) {
-            durationInput.addEventListener('input', updateTotalPrice);
-            updateTotalPrice(); // Initial calculation
-        }
-    });
-    
-    // Load map if coordinates exist
-    {% if apartment.latitude and apartment.longitude %}
-    function initMap() {
-        const location = { 
-            lat: {{ apartment.latitude }}, 
-            lng: {{ apartment.longitude }} 
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() + 1);
+        checkInInput.max = maxDate.toISOString().split('T')[0];
+    }
+});
+
+// ===== UTILITY FUNCTIONS =====
+// Debounce function for performance
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
         };
-        
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: location,
-            mapTypeId: 'roadmap',
-            styles: [
-                {
-                    featureType: "poi",
-                    elementType: "labels",
-                    stylers: [{ visibility: "off" }]
-                }
-            ]
-        });
-        
-        const marker = new google.maps.Marker({
-            position: location,
-            map: map,
-            title: "{{ apartment.title }}"
-        });
-        
-        const infoWindow = new google.maps.InfoWindow({
-            content: `<h6>${"{{ apartment.title|escapejs }}"}</h6>
-                     <p>${"{{ apartment.address|escapejs }}"}</p>`
-        });
-        
-        marker.addListener("click", () => {
-            infoWindow.open(map, marker);
-        });
-    }
-    
-    // Load Google Maps API
-    function loadGoogleMaps() {
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap`;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-    }
-    
-    // Load maps when needed
-    window.addEventListener('load', loadGoogleMaps);
-    {% endif %}
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+
 </script>
 {% endblock %}
