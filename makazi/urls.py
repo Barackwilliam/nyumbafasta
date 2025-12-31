@@ -23,5 +23,18 @@ urlpatterns = [
     path('apartments/<int:pk>/', apartment_detail, name='apartment_detail'),
     path('my-bookings/', my_bookings, name='my_bookings'),
     path('apartments/search/', apartment_search, name='apartment_search'),
+
+
+
+    path('hostels/', views.hostels_list, name='hostels_list'),
+    path('hostels/<int:pk>/', views.hostel_detail, name='hostel_detail'),
+    path('hostels/university/<str:university_name>/', views.university_hostels, name='university_hostels'),
+    
+    # Booking URLs
+    path('bookings/', views.my_bookings, name='my_bookings'),
+    path('bookings/confirm/<int:booking_id>/', views.booking_confirmation, name='booking_confirmation'),
+    
+    # API/Utility URLs
+    path('api/search/hostels/', views.search_hostels, name='search_hostels'),
     
 ]

@@ -1,0 +1,490 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ hostel.name }} - Hostel Details{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="py-2 bg-light">
+    <div class="container">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item"><a href="{% url 'makazi:hostels_list' %}">Hostels</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'makazi:hostels_list' %}?university={{ hostel.university|urlencode }}">{{ hostel.university }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ hostel.name }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="py-4">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- Images -->
+                <div class="mb-4">
+                    <div class="main-image mb-2" style="height: 360px; border-radius: 10px; overflow: hidden;">
+                        {% if hostel.main_image %}
+                        <img src="{{ hostel.main_image.url }}" alt="{{ hostel.name }}" 
+                             class="w-100 h-100 object-fit-cover" id="mainImage">
+                        {% else %}
+                        <div class="w-100 h-100 bg-primary bg-opacity-10 d-flex align-items-center justify-content-center">
+                            <div class="text-center text-muted">
+                                <i class="bi bi-building fs-2"></i>
+                                <p class="mt-2 small">No Image Available</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Thumbnails -->
+                    {% with images=hostel.get_all_images %}
+                    {% if images|length > 1 %}
+                    <div class="d-flex gap-2">
+                        {% for image_url in images %}
+                        <div class="thumbnail" style="width: 70px; height: 70px; cursor: pointer; border: 2px solid transparent; border-radius: 6px; overflow: hidden;"
+                             onclick="changeMainImage('{{ image_url }}', this)">
+                            <img src="{{ image_url }}" alt="Image {{ forloop.counter }}" 
+                                 class="w-100 h-100 object-fit-cover">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+
+                <!-- Hostel Info -->
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h1 class="h3 fw-bold mb-1">{{ hostel.name }}</h1>
+                                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 small">
+                                        <i class="bi bi-mortarboard me-1"></i>{{ hostel.university|truncatechars:30 }}
+                                    </span>
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 small">
+                                        {{ hostel.get_hostel_type_display }}
+                                    </span>
+                                    <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 small">
+                                        {{ hostel.get_gender_allowed_display }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% if hostel.is_verified %}
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 small">
+                                <i class="bi bi-shield-check me-1"></i>Verified
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Location -->
+                        <div class="mb-3">
+                            <h6 class="fw-bold mb-1 text-muted">
+                                <i class="bi bi-geo-alt text-primary me-1"></i>Location
+                            </h6>
+                            <p class="mb-0 small">{{ hostel.address }}</p>
+                            <p class="text-muted small">{{ hostel.location }}</p>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <h6 class="fw-bold mb-2 text-muted">About This Hostel</h6>
+                            <p class="small" style="line-height: 1.6;">{{ hostel.description|linebreaks }}</p>
+                        </div>
+
+                        <!-- Amenities -->
+                        {% if hostel.amenities %}
+                        <div class="mb-3">
+                            <h6 class="fw-bold mb-2 text-muted">
+                                <i class="bi bi-stars text-primary me-1"></i>Amenities & Facilities
+                            </h6>
+                            <div class="row g-2">
+                                {% for amenity in hostel.amenities %}
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center small">
+                                        <i class="bi bi-check-circle-fill text-success me-2" style="font-size: 0.8rem;"></i>
+                                        <span>
+                                            {% if amenity == 'wifi' %}
+                                            High-Speed WiFi
+                                            {% elif amenity == 'library' %}
+                                            Study Library
+                                            {% elif amenity == 'security' %}
+                                            24/7 Security
+                                            {% elif amenity == 'laundry' %}
+                                            Laundry Service
+                                            {% elif amenity == 'cafeteria' %}
+                                            Cafeteria
+                                            {% elif amenity == 'medical' %}
+                                            Medical Room
+                                            {% elif amenity == 'sports' %}
+                                            Sports Facilities
+                                            {% elif amenity == 'parking' %}
+                                            Secure Parking
+                                            {% elif amenity == 'cleaning' %}
+                                            Daily Cleaning
+                                            {% elif amenity == 'hot_water' %}
+                                            Hot Water
+                                            {% elif amenity == 'generator' %}
+                                            Backup Generator
+                                            {% else %}
+                                            {{ amenity|title }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Warden Info -->
+                        <div class="card bg-light border-0">
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold mb-2 text-muted">
+                                    <i class="bi bi-person-badge text-primary me-1"></i>Hostel Warden
+                                </h6>
+                                <div class="row small">
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><strong>Name:</strong> {{ hostel.warden_name }}</p>
+                                        <p class="mb-0"><strong>Phone:</strong> {{ hostel.warden_phone }}</p>
+                                    </div>
+                                    {% if hostel.warden_email %}
+                                    <div class="col-md-6">
+                                        <p class="mb-0"><strong>Email:</strong> {{ hostel.warden_email }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews -->
+                {% if reviews %}
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-3 text-muted">
+                            <i class="bi bi-star text-warning me-1"></i>Student Reviews
+                        </h6>
+                        
+                        <!-- Average Ratings -->
+                        <div class="row mb-3">
+                            <div class="col-md-3 text-center mb-2 mb-md-0">
+                                <div class="h1 fw-bold text-primary">
+                                    {{ avg_ratings.overall|floatformat:1 }}
+                                </div>
+                                <div class="text-warning mb-1 small">
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= avg_ratings.overall|floatformat:0 %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <small class="text-muted">{{ reviews|length }} reviews</small>
+                            </div>
+                            <div class="col-md-9">
+                                <!-- REKEBISHA SEHEMU HII - Usitumie multiply filter -->
+                                <div class="mb-2">
+                                    <small class="text-muted d-block">Cleanliness</small>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" 
+                                                 style="width: {% widthratio avg_ratings.cleanliness 1 20 %}%"></div>
+                                        </div>
+                                        <small class="fw-bold small">{{ avg_ratings.cleanliness|floatformat:1 }}</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <small class="text-muted d-block">Security</small>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" 
+                                                 style="width: {% widthratio avg_ratings.security 1 20 %}%"></div>
+                                        </div>
+                                        <small class="fw-bold small">{{ avg_ratings.security|floatformat:1 }}</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <small class="text-muted d-block">Facilities</small>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" 
+                                                 style="width: {% widthratio avg_ratings.facilities 1 20 %}%"></div>
+                                        </div>
+                                        <small class="fw-bold small">{{ avg_ratings.facilities|floatformat:1 }}</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <small class="text-muted d-block">Management</small>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" 
+                                                 style="width: {% widthratio avg_ratings.management 1 20 %}%"></div>
+                                        </div>
+                                        <small class="fw-bold small">{{ avg_ratings.management|floatformat:1 }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Cards -->
+                        {% for review in reviews %}
+                        <div class="border-top pt-3 mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-0 small">{{ review.student_name }}</h6>
+                                    <small class="text-muted">
+                                        {{ review.student_course }} • Year {{ review.student_year }}
+                                        {% if review.is_verified_student %}
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 ms-1 small">Verified</span>
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <div class="text-warning small">
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= review.overall_rating %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <h6 class="fw-bold mt-1 small">{{ review.review_title }}</h6>
+                            <p class="mb-2 small">{{ review.review_text }}</p>
+                            <small class="text-muted small">
+                                <i class="bi bi-calendar me-1"></i>{{ review.created_at|date:"M d, Y" }}
+                            </small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right Column - Booking Card -->
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 20px;">
+                    <!-- Price Card -->
+                    <div class="card border-0 shadow-sm mb-3 bg-primary bg-opacity-10 border border-primary border-opacity-25">
+                        <div class="card-body p-3 text-center">
+                            <h6 class="fw-bold mb-2 text-primary">Booking Price</h6>
+                            <div class="h2 fw-bold text-primary mb-1">
+                                TSh {{ hostel.price_per_semester|floatformat:0 }}
+                            </div>
+                            <p class="small text-muted mb-2">per semester</p>
+                            <div class="d-flex justify-content-between mb-1 small">
+                                <span class="text-muted">Monthly:</span>
+                                <strong class="text-primary">TSh {{ hostel.price_per_month|floatformat:0 }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1 small">
+                                <span class="text-muted">Security Deposit:</span>
+                                <strong class="text-primary">TSh {{ hostel.security_deposit|floatformat:0 }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between small">
+                                <span class="text-muted">Caution Money:</span>
+                                <strong class="text-primary">TSh {{ hostel.caution_money|floatformat:0 }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Form -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-3">
+                            <h6 class="fw-bold mb-3 text-muted">Book This Hostel</h6>
+                            
+                            <form method="post" class="small">
+                                {% csrf_token %}
+                                <input type="hidden" name="book_now" value="1">
+                                
+                                <!-- Student Info -->
+                                <div class="mb-2">
+                                    <label class="form-label fw-bold small">Full Name</label>
+                                    <input type="text" name="student_name" class="form-control form-control-sm" required>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small">Email</label>
+                                        <input type="email" name="student_email" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small">Phone</label>
+                                        <input type="tel" name="student_phone" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <label class="form-label fw-bold small">Course/Program</label>
+                                    <input type="text" name="student_course" class="form-control form-control-sm" required>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small">Year</label>
+                                        <select name="student_year" class="form-select form-select-sm" required>
+                                            <option value="">Select Year</option>
+                                            <option value="1">Year 1</option>
+                                            <option value="2">Year 2</option>
+                                            <option value="3">Year 3</option>
+                                            <option value="4">Year 4</option>
+                                            <option value="5">Year 5</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small">Duration</label>
+                                        <select name="duration_months" class="form-select form-select-sm">
+                                            <option value="4">4 Months (Semester)</option>
+                                            <option value="6">6 Months</option>
+                                            <option value="8">8 Months</option>
+                                            <option value="12">12 Months</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">Check-in Date</label>
+                                    <input type="date" name="check_in_date" class="form-control form-control-sm" required 
+                                           min="{{ min_date }}" max="{{ max_date }}">
+                                </div>
+                                
+                                <!-- Payment Method -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">Payment Method</label>
+                                    <div class="d-flex gap-1">
+                                        <button type="button" class="btn btn-outline-primary btn-sm flex-fill py-1">
+                                            <i class="bi bi-phone me-1"></i>M-Pesa
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm flex-fill py-1">
+                                            <i class="bi bi-phone me-1"></i>Airtel
+                                        </button>
+                                        <button type="button" class="btn btn-outline-success btn-sm flex-fill py-1">
+                                            <i class="bi bi-bank me-1"></i>Bank
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Submit -->
+                                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                                    <i class="bi bi-check-circle me-1"></i>Book Now
+                                </button>
+                                
+                                <p class="text-center text-muted mt-2 mb-0 small">
+                                    You'll receive booking confirmation via email
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Card -->
+                    <div class="card border-0 shadow-sm mt-3">
+                        <div class="card-body p-3">
+                            <h6 class="fw-bold mb-2 text-muted">
+                                <i class="bi bi-headset text-primary me-1"></i>Need booking Help?
+                            </h6>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-telephone text-primary me-2" style="font-size: 0.9rem;"></i>
+                                <div>
+                                    <small class="text-muted d-block">Call Us</small>
+                                    <strong class="small">+255 784 123 456</strong>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-whatsapp text-success me-2" style="font-size: 0.9rem;"></i>
+                                <div>
+                                    <small class="text-muted d-block">WhatsApp</small>
+                                    <strong class="small">+255 684 123 456</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Similar Hostels -->
+{% if similar_hostels %}
+<section class="py-4 bg-light">
+    <div class="container">
+        <h5 class="fw-bold mb-3">Similar Hostels at {{ hostel.university }}</h5>
+        <div class="row g-3">
+            {% for similar in similar_hostels %}
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    {% if similar.main_image %}
+                    <img src="{{ similar.main_image.url }}" class="card-img-top" alt="{{ similar.name }}" 
+                         style="height: 140px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-primary bg-opacity-10" style="height: 140px;"></div>
+                    {% endif %}
+                    <div class="card-body p-3">
+                        <h6 class="fw-bold mb-1 small">{{ similar.name|truncatechars:40 }}</h6>
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-geo-alt me-1"></i>{{ similar.location|truncatechars:30 }}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary mb-0 small">TSh {{ similar.price_per_semester|floatformat:0 }}</h6>
+                            <a href="{% url 'makazi:hostel_detail' similar.pk %}" class="btn btn-sm btn-primary py-1 px-3">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Change main image
+function changeMainImage(imageUrl, element) {
+    const mainImage = document.getElementById('mainImage');
+    if (mainImage) {
+        mainImage.src = imageUrl;
+        document.querySelectorAll('.thumbnail').forEach(thumb => {
+            thumb.style.border = '2px solid transparent';
+        });
+        element.style.border = '2px solid var(--bs-primary)';
+    }
+}
+
+// Form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const checkInInput = document.querySelector('input[name="check_in_date"]');
+    if (checkInInput) {
+        const today = new Date().toISOString().split('T')[0];
+        checkInInput.min = today;
+    }
+    
+    // Booking form submission
+    const bookingForm = document.querySelector('form[method="post"]');
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }, 5000);
+        });
+    }
+});
+</script>
+{% endblock %}

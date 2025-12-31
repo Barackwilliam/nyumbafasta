@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Confirmation - NyumbaFasta{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Success Message -->
+            <div class="card border-0 shadow-sm mb-4 border-success">
+                <div class="card-body text-center py-5">
+                    <div class="display-1 text-success mb-4">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <h1 class="fw-bold mb-3">Booking Submitted Successfully!</h1>
+                    <p class="lead mb-4">
+                        Your booking request for <strong>{{ booking.hostel.name }}</strong> has been received.
+                    </p>
+                    <div class="alert alert-success">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Please complete payment within <strong>14 days</strong> to confirm your booking
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Details -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-receipt text-primary"></i> Booking Details
+                    </h4>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted d-block">Booking ID</small>
+                            <strong class="fs-5">#{{ booking.id }}</strong>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted d-block">Date</small>
+                            <strong>{{ booking.booking_date|date:"M d, Y H:i" }}</strong>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted d-block">Student Name</small>
+                            <strong>{{ booking.student_name }}</strong>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted d-block">Course</small>
+                            <strong>{{ booking.student_course }}</strong>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted d-block">Check-in Date</small>
+                            <strong>{{ booking.check_in_date|date:"M d, Y" }}</strong>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted d-block">Duration</small>
+                            <strong>{{ booking.duration_months }} months</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-credit-card text-primary"></i> Payment Information
+                    </h4>
+                    
+                    <!-- Amount Due -->
+                    <div class="alert alert-primary">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="fw-bold mb-1">Total Amount Due</h5>
+                                <small>Payment deadline: {{ booking.payment_deadline|date:"M d, Y" }}</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="display-6 fw-bold text-primary">
+                                    TSh {{ booking.total_amount|floatformat:0 }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">Payment Methods</h6>
+                        <div class="row g-3">
+                            <!-- M-Pesa -->
+                            <div class="col-md-6">
+                                <div class="card border h-100">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-phone fs-1 text-success mb-3"></i>
+                                        <h6 class="fw-bold">M-Pesa</h6>
+                                        <p class="small text-muted mb-2">Vodacom Tanzania</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <small class="d-block">Paybill: 123456</small>
+                                            <small class="d-block">Account: HST{{ booking.id }}</small>
+                                            <small class="d-block">Amount: {{ booking.total_amount|floatformat:0 }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bank Transfer -->
+                            <div class="col-md-6">
+                                <div class="card border h-100">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-bank fs-1 text-primary mb-3"></i>
+                                        <h6 class="fw-bold">Bank Transfer</h6>
+                                        <p class="small text-muted mb-2">CRDB Bank</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <small class="d-block">Account: {{ payment_instructions.account_name }}</small>
+                                            <small class="d-block">Number: {{ payment_instructions.account_number }}</small>
+                                            <small class="d-block">Reference: {{ payment_instructions.reference }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="alert alert-warning">
+                        <h6 class="fw-bold mb-2">
+                            <i class="bi bi-exclamation-triangle"></i> Important Instructions
+                        </h6>
+                        <ol class="mb-0">
+                            <li>Use the exact reference number when making payment</li>
+                            <li>Keep your payment receipt/screenshot</li>
+                            <li>Upload payment proof via your dashboard</li>
+                            <li>Contact support if payment confirmation is delayed</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-4">Next Steps</h4>
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-primary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 80px; height: 80px;">
+                                <i class="bi bi-credit-card fs-3 text-white"></i>
+                            </div>
+                            <h6 class="fw-bold">1. Make Payment</h6>
+                            <p class="small text-muted">Complete payment using any method above</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 80px; height: 80px;">
+                                <i class="bi bi-check-circle fs-3 text-dark"></i>
+                            </div>
+                            <h6 class="fw-bold">2. Wait for Confirmation</h6>
+                            <p class="small text-muted">We'll verify payment within 24 hours</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 80px; height: 80px;">
+                                <i class="bi bi-house-door fs-3 text-white"></i>
+                            </div>
+                            <h6 class="fw-bold">3. Move In</h6>
+                            <p class="small text-muted">Check-in on {{ booking.check_in_date|date:"M d, Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-5">
+                <a href="{% url 'makazi:my_bookings' %}" class="btn btn-primary btn-lg me-3">
+                    <i class="bi bi-list-check"></i> View My Bookings
+                </a>
+                <a href="{% url 'makazi:hostel_detail' booking.hostel.pk %}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-arrow-left"></i> Back to Hostel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

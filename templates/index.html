@@ -1,4 +1,3 @@
-<!-- templates/index.html -->
 {% extends 'base.html' %}
 {% load static %}
 
@@ -150,17 +149,19 @@
         transform: scale(1.05);
     }
     
+    /* Featured Properties Badges - Updated */
     .featured-badges {
         position: absolute;
         top: 15px;
         left: 15px;
+        right: 15px;
         display: flex;
-        flex-direction: column;
-        gap: 8px;
+        justify-content: space-between;
+        align-items: flex-start;
         z-index: 2;
     }
     
-    .featured-badge {
+    .featured-badge-left {
         background: var(--blue-gradient);
         color: white;
         padding: 6px 15px;
@@ -171,12 +172,44 @@
         box-shadow: 0 3px 10px rgba(67, 97, 238, 0.3);
     }
     
-    .featured-badge.verified {
-        background: linear-gradient(135deg, #10b981 0%, #0da271 100%);
+    .featured-badge-right {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff4d00 100%);
+        color: white;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
     }
     
-    .featured-badge.hot {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff4d00 100%);
+    .verified-badge-container {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        z-index: 2;
+    }
+    
+    .verified-badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    }
+    
+    .verified-tick {
+        color: #ff0000; /* Red color */
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    
+    .verified-text {
+        color: #ff0000; /* Red color */
+        font-size: 0.75rem;
+        font-weight: 600;
     }
     
     .featured-price-tag {
@@ -190,6 +223,7 @@
         font-size: 1.1rem;
         color: #ff6b35;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        z-index: 2;
     }
     
     .featured-content {
@@ -889,16 +923,25 @@
                         </div>
                     {% endif %}
                     
+                    <!-- Featured and New Badges -->
                     <div class="featured-badges">
-                        <div class="featured-badge">FEATURED</div>
-                        {% if listing.is_verified %}
-                        <div class="featured-badge verified">VERIFIED</div>
-                        {% endif %}
+                        <div class="featured-badge-left">FEATURED</div>
                         {% if listing.scraped_at|date:"U" > now|date:"U"|add:"-259200" %}
-                        <div class="featured-badge hot">NEW</div>
+                        <div class="featured-badge-right">NEW</div>
                         {% endif %}
                     </div>
                     
+                    <!-- Verified Badge (tick symbol in red) -->
+                    {% if listing.is_verified %}
+                    <div class="verified-badge-container">
+                        <div class="verified-badge">
+                            <span class="verified-tick">✓</span>
+                            <span class="verified-text">VERIFIED</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Price Tag -->
                     <div class="featured-price-tag">
                         {% if listing.price %}
                             {{ listing.price }}
@@ -915,8 +958,6 @@
                         <i class="bi bi-geo-alt-fill"></i>
                         <span>{{ listing.location|truncatechars:40 }}</span>
                     </div>
-                    
-                    
                     
                     <div class="featured-features">
                         {% if listing.bedrooms %}
@@ -1002,7 +1043,6 @@
                             <span>{{ listing.location|truncatechars:30 }}</span>
                         </div>
                         
-                        
                         <div class="property-features">
                             {% if listing.bedrooms %}
                             <small class="text-muted">
@@ -1035,7 +1075,6 @@
         </div>
     </div>
 </section>
-
 
 <!-- Call to Action -->
 <section class="py-5" style="background: var(--dark-blue-gradient);">

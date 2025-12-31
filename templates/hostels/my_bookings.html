@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bookings - NyumbaFasta{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <!-- Sidebar -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-person-circle text-primary"></i> My Account
+                    </h5>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'makazi:my_bookings' %}" 
+                           class="list-group-item list-group-item-action border-0 active">
+                            <i class="bi bi-list-check me-2"></i> My Bookings
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            <i class="bi bi-heart me-2"></i> Saved Hostels
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            <i class="bi bi-gear me-2"></i> Settings
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Booking Stats</h6>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Total Bookings</small>
+                        <strong class="fs-4">{{ bookings|length }}</strong>
+                    </div>
+                    {% if bookings %}
+                    <div>
+                        <small class="text-muted d-block">Latest Booking</small>
+                        <strong>{{ bookings.0.booking_date|date:"M d, Y" }}</strong>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 fw-bold mb-2">My Bookings</h1>
+                    <p class="text-muted">Manage your hostel bookings and payments</p>
+                </div>
+                <a href="{% url 'makazi:hostels_list' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Book New Hostel
+                </a>
+            </div>
+
+            {% if bookings %}
+            <!-- Bookings List -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Hostel</th>
+                                    <th>Booking Date</th>
+                                    <th>Check-in</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in bookings %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if booking.hostel.main_image %}
+                                            <img src="{{ booking.hostel.main_image.url }}" 
+                                                 class="rounded me-3" 
+                                                 style="width: 60px; height: 60px; object-fit: cover;">
+                                            {% endif %}
+                                            <div>
+                                                <strong class="d-block">{{ booking.hostel.name }}</strong>
+                                                <small class="text-muted">{{ booking.hostel.university }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <small class="d-block">{{ booking.booking_date|date:"M d, Y" }}</small>
+                                        <small class="text-muted">{{ booking.booking_date|date:"H:i" }}</small>
+                                    </td>
+                                    <td>
+                                        <strong>{{ booking.check_in_date|date:"M d, Y" }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ booking.duration_months }} months</small>
+                                    </td>
+                                    <td>
+                                        <strong class="text-primary">TSh {{ booking.total_amount|floatformat:0 }}</strong>
+                                        <br>
+                                        <small class="text-{% if booking.payment_status %}success{% else %}warning{% endif %}">
+                                            {% if booking.payment_status %}Paid{% else %}Pending{% endif %}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {% if booking.status == 'pending' %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                        {% elif booking.status == 'confirmed' %}
+                                        <span class="badge bg-success">Confirmed</span>
+                                        {% elif booking.status == 'cancelled' %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ booking.status|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'makazi:booking_confirmation' booking.id %}" 
+                                               class="btn btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            {% if not booking.payment_status %}
+                                            <a href="#" class="btn btn-outline-success">
+                                                <i class="bi bi-credit-card"></i>
+                                            </a>
+                                            {% endif %}
+                                            {% if booking.status == 'pending' %}
+                                            <a href="#" class="btn btn-outline-danger">
+                                                <i class="bi bi-x-circle"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Legend -->
+            <div class="mt-4">
+                <h6 class="fw-bold mb-3">Booking Status Legend</h6>
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-warning me-2" style="width: 20px; height: 20px;"></span>
+                        <small>Pending - Awaiting approval</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-success me-2" style="width: 20px; height: 20px;"></span>
+                        <small>Confirmed - Booking approved</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary me-2" style="width: 20px; height: 20px;"></span>
+                        <small>Payment Pending</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-danger me-2" style="width: 20px; height: 20px;"></span>
+                        <small>Cancelled - Booking cancelled</small>
+                    </div>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- No Bookings -->
+            <div class="text-center py-5">
+                <div class="display-1 text-muted mb-4">
+                    <i class="bi bi-calendar-x"></i>
+                </div>
+                <h3 class="mb-3">No Bookings Yet</h3>
+                <p class="text-muted mb-4">
+                    You haven't made any hostel bookings yet. Find your perfect hostel and make your first booking!
+                </p>
+                <a href="{% url 'makazi:hostels_list' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-search me-2"></i> Browse Hostels
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.table td {
+    vertical-align: middle;
+}
+.badge {
+    padding: 8px 12px;
+}
+</style>
+{% endblock %}

@@ -234,3 +234,172 @@ class ApartmentReviewAdmin(admin.ModelAdmin):
         updated = queryset.update(is_approved=False)
         self.message_user(request, f'{updated} review(s) disapproved successfully.')
     disapprove_reviews.short_description = "Disapprove selected reviews"
+
+
+
+
+
+
+
+
+
+
+
+
+
+    from django.contrib import admin
+from .models import Hostel, HostelBooking, HostelReview
+
+
+@admin.register(Hostel)
+class HostelAdmin(admin.ModelAdmin):
+    list_display = (
+        'name', 'university', 'location',
+        'hostel_type', 'gender_allowed',
+        'price_per_semester', 'is_available',
+        'is_featured', 'is_verified',
+        'created_at'
+    )
+    list_filter = (
+        'hostel_type', 'gender_allowed',
+        'is_available', 'is_featured',
+        'is_verified', 'location', 'university'
+    )
+    search_fields = ('name', 'university', 'location', 'warden_name')
+    readonly_fields = ('created_at', 'updated_at')
+    ordering = ('-created_at',)
+    filter_horizontal = ()
+    fieldsets = (
+        ('Basic Information', {
+            'fields': (
+                'name', 'university', 'description',
+                'location', 'address',
+                'hostel_type', 'gender_allowed'
+            )
+        }),
+        ('Contact Information', {
+            'fields': (
+                'warden_name', 'warden_phone', 'warden_email'
+            )
+        }),
+        ('Pricing (TZS)', {
+            'fields': (
+                'price_per_semester', 'price_per_month',
+                'security_deposit', 'caution_money'
+            )
+        }),
+        ('Facilities', {
+            'fields': (
+                'amenities', 'total_rooms',
+                'available_rooms', 'total_capacity',
+                'current_occupancy'
+            )
+        }),
+        ('Academic Info', {
+            'fields': ('academic_year', 'semester')
+        }),
+        ('Status', {
+            'fields': (
+                'is_available', 'is_featured', 'is_verified'
+            )
+        }),
+        ('Images', {
+            'fields': (
+                'main_image', 'image_1',
+                'image_2', 'image_3', 'image_4'
+            )
+        }),
+        ('Dates', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
+
+
+@admin.register(HostelBooking)
+class HostelBookingAdmin(admin.ModelAdmin):
+    list_display = (
+        'id', 'student_name', 'registration_number',
+        'hostel', 'booking_type', 'status',
+        'total_amount', 'amount_paid', 'balance',
+        'payment_status', 'booking_date'
+    )
+    list_filter = (
+        'status', 'payment_status',
+        'booking_type', 'academic_year', 'semester'
+    )
+    search_fields = (
+        'student_name', 'registration_number',
+        'student_phone', 'student_email'
+    )
+    readonly_fields = (
+        'booking_date', 'approval_date',
+        'payment_date', 'balance'
+    )
+    ordering = ('-booking_date',)
+    fieldsets = (
+        ('Student Information', {
+            'fields': (
+                'student', 'student_name',
+                'registration_number',
+                'student_email', 'student_phone',
+                'student_course', 'student_year'
+            )
+        }),
+        ('Booking Details', {
+            'fields': (
+                'hostel', 'booking_type',
+                'payment_option',
+                'academic_year', 'semester',
+                'check_in_date', 'check_out_date',
+                'duration_months'
+            )
+        }),
+        ('Payment Information', {
+            'fields': (
+                'total_amount', 'amount_paid',
+                'balance', 'payment_deadline',
+                'payment_status'
+            )
+        }),
+        ('Status', {
+            'fields': (
+                'status', 'is_approved',
+                'approval_date', 'payment_date'
+            )
+        }),
+        ('Guardian Information', {
+            'fields': (
+                'guardian_name', 'guardian_phone',
+                'guardian_relationship'
+            )
+        }),
+        ('Special Requirements', {
+            'fields': (
+                'special_needs', 'medical_conditions'
+            )
+        }),
+        ('Dates', {
+            'fields': ('booking_date',)
+        }),
+    )
+
+
+@admin.register(HostelReview)
+class HostelReviewAdmin(admin.ModelAdmin):
+    list_display = (
+        'hostel', 'student_name',
+        'overall_rating', 'cleanliness',
+        'security', 'facilities',
+        'management', 'is_approved',
+        'created_at'
+    )
+    list_filter = (
+        'overall_rating', 'is_approved',
+        'is_verified_student'
+    )
+    search_fields = (
+        'student_name', 'review_title',
+        'review_text'
+    )
+    readonly_fields = ('created_at', 'updated_at')
+    ordering = ('-created_at',)

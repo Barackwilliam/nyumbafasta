@@ -681,3 +681,268 @@ def apartment_search(request):
     return JsonResponse({'apartments': data})
 
 # Ongeza URLs za apartments kwenye urls.py
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db.models import Q, Avg, Count
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from .models import Hostel, HostelBooking, HostelReview  # ONDOA 'Room' KUTOKA HAPA
+from .forms import HostelBookingForm, HostelReviewForm, HostelFilterForm
+
+def hostels_list(request):
+    """List all hostels with filtering"""
+    hostels = Hostel.objects.filter(is_available=True)
+    
+    # Initialize filter form
+    filter_form = HostelFilterForm(request.GET)
+    
+    # Apply filters if form is valid
+    if filter_form.is_valid():
+        data = filter_form.cleaned_data
+        
+        # University filter
+        if data.get('university'):
+            hostels = hostels.filter(
+                Q(university__icontains=data['university']) |
+                Q(location__icontains=data['university'])
+            )
+        
+        # Hostel type filter
+        if data.get('hostel_type'):
+            hostels = hostels.filter(hostel_type=data['hostel_type'])
+        
+        # Gender filter
+        if data.get('gender_allowed'):
+            hostels = hostels.filter(gender_allowed=data['gender_allowed'])
+        
+        # Price range filter
+        if data.get('min_price'):
+            hostels = hostels.filter(price_per_semester__gte=data['min_price'])
+        
+        if data.get('max_price'):
+            hostels = hostels.filter(price_per_semester__lte=data['max_price'])
+        
+        # Amenities filter
+        if data.get('amenities'):
+            for amenity in data['amenities']:
+                hostels = hostels.filter(amenities__contains=amenity)
+    
+    # Sorting
+    sort_by = request.GET.get('sort', '-created_at')
+    valid_sorts = ['price_per_semester', '-price_per_semester', 'created_at', '-created_at']
+    
+    if sort_by in valid_sorts:
+        hostels = hostels.order_by(sort_by)
+    else:
+        hostels = hostels.order_by('-created_at')
+    
+    # Get featured hostels
+    featured_hostels = hostels.filter(is_featured=True)[:3]
+    
+    # Get popular universities
+    popular_universities = Hostel.objects.values('university').annotate(
+        count=Count('id')
+    ).order_by('-count')[:10]
+    
+    # Pagination
+    paginator = Paginator(hostels, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'hostels': page_obj,
+        'featured_hostels': featured_hostels,
+        'filter_form': filter_form,
+        'popular_universities': popular_universities,
+        'total_hostels': hostels.count(),
+        'sort_by': sort_by,
+    }
+    
+    return render(request, 'hostels/list.html', context)
+
+def hostel_detail(request, pk):
+    """Hostel detail page with booking form"""
+    hostel = get_object_or_404(Hostel, pk=pk, is_available=True)
+    
+    # Get similar hostels (ONDOA 'available_rooms' QUERY)
+    similar_hostels = Hostel.objects.filter(
+        Q(university__icontains=hostel.university) |
+        Q(location__icontains=hostel.location)
+    ).exclude(id=hostel.id).filter(is_available=True).order_by('?')[:3]
+    
+    # Get reviews
+    reviews = hostel.reviews.filter(is_approved=True).order_by('-created_at')[:10]
+    
+    # Calculate average ratings
+    avg_ratings = {
+        'overall': reviews.aggregate(Avg('overall_rating'))['overall_rating__avg'] or 0,
+        'cleanliness': reviews.aggregate(Avg('cleanliness'))['cleanliness__avg'] or 0,
+        'security': reviews.aggregate(Avg('security'))['security__avg'] or 0,
+        'facilities': reviews.aggregate(Avg('facilities'))['facilities__avg'] or 0,
+        'management': reviews.aggregate(Avg('management'))['management__avg'] or 0,
+    }
+    
+    # Booking form
+    booking_form = HostelBookingForm(initial={
+        'academic_year': hostel.academic_year,
+        'semester': hostel.semester,
+    })
+    
+    # Review form
+    review_form = HostelReviewForm()
+    
+    # Calculate dates for template
+    import datetime
+    min_date = datetime.date.today().isoformat()
+    max_date = (datetime.date.today() + datetime.timedelta(days=365)).isoformat()
+    
+    if request.method == 'POST':
+        if 'book_now' in request.POST:
+            booking_form = HostelBookingForm(request.POST)
+            if booking_form.is_valid():
+                booking = booking_form.save(commit=False)
+                booking.hostel = hostel
+                booking.academic_year = hostel.academic_year
+                booking.semester = hostel.semester
+                
+                # Calculate total amount based on booking type
+                if booking.booking_type == 'semester':
+                    booking.total_amount = hostel.price_per_semester + hostel.security_deposit + hostel.caution_money
+                elif booking.booking_type == 'monthly':
+                    booking.total_amount = (hostel.price_per_month * booking.duration_months) + hostel.security_deposit + hostel.caution_money
+                else:  # academic year
+                    booking.total_amount = (hostel.price_per_semester * 2) + hostel.security_deposit + hostel.caution_money
+                
+                # Auto-set check-out date
+                booking.check_out_date = booking.check_in_date + datetime.timedelta(days=30 * booking.duration_months)
+                
+                # Auto-set payment deadline (2 weeks before check-in)
+                booking.payment_deadline = booking.check_in_date - datetime.timedelta(days=14)
+                
+                # Link to user if authenticated
+                if request.user.is_authenticated:
+                    booking.student = request.user
+                
+                booking.save()
+                
+                # Update hostel occupancy
+                hostel.current_occupancy += 1
+                hostel.available_rooms = max(0, hostel.total_rooms - (hostel.current_occupancy // 4))
+                hostel.save()
+                
+                messages.success(request, 'Booking submitted successfully! Please complete payment within 2 weeks.')
+                return redirect('makazi:booking_confirmation', booking_id=booking.id)
+        
+        elif 'submit_review' in request.POST:
+            review_form = HostelReviewForm(request.POST)
+            if review_form.is_valid():
+                review = review_form.save(commit=False)
+                review.hostel = hostel
+                if request.user.is_authenticated:
+                    review.student = request.user
+                    review.is_verified_student = True
+                review.save()
+                messages.success(request, 'Review submitted for approval. Thank you!')
+                return redirect('makazi:hostel_detail', pk=hostel.pk)
+    
+    context = {
+        'hostel': hostel,
+        'similar_hostels': similar_hostels,
+        'reviews': reviews,
+        'avg_ratings': avg_ratings,
+        'booking_form': booking_form,
+        'review_form': review_form,
+        'min_date': min_date,
+        'max_date': max_date,
+    }
+    
+    return render(request, 'hostels/detail.html', context)
+
+@login_required
+def my_bookings(request):
+    """View student's hostel bookings"""
+    bookings = HostelBooking.objects.filter(
+        Q(student_email=request.user.email) |
+        Q(student=request.user)
+    ).order_by('-booking_date')
+    
+    context = {'bookings': bookings}
+    return render(request, 'hostels/my_bookings.html', context)
+
+def booking_confirmation(request, booking_id):
+    """Booking confirmation page with payment instructions"""
+    booking = get_object_or_404(HostelBooking, id=booking_id)
+    
+    # Generate payment instructions for Tanzania
+    payment_instructions = {
+        'bank_name': 'CRDB Bank / NMB Bank',
+        'account_name': f"{booking.hostel.name} Hostel Account",
+        'account_number': '0123456789',
+        'reference': f"HST{booking.id}",
+        'mobile_money': {
+            'vodacom': '*150*00#',
+            'airtel': '*150*60#',
+            'tigo': '*150*01#',
+            'number': '0754123456'
+        }
+    }
+    
+    context = {
+        'booking': booking,
+        'payment_instructions': payment_instructions,
+    }
+    
+    return render(request, 'hostels/booking_confirmation.html', context)
+
+def university_hostels(request, university_name):
+    """Filter hostels by specific university"""
+    hostels = Hostel.objects.filter(
+        Q(university__icontains=university_name) |
+        Q(location__icontains=university_name),
+        is_available=True
+    )
+    
+    context = {
+        'hostels': hostels,
+        'university': university_name,
+        'total_hostels': hostels.count(),
+    }
+    
+    return render(request, 'hostels/university_hostels.html', context)
+
+def search_hostels(request):
+    """AJAX search for hostels"""
+    query = request.GET.get('q', '')
+    university = request.GET.get('university', '')
+    
+    hostels = Hostel.objects.filter(is_available=True)
+    
+    if query:
+        hostels = hostels.filter(
+            Q(name__icontains=query) |
+            Q(location__icontains=query) |
+            Q(description__icontains=query)
+        )
+    
+    if university:
+        hostels = hostels.filter(university__icontains=university)
+    
+    hostels = hostels[:10]
+    
+    data = []
+    for hostel in hostels:
+        data.append({
+            'id': hostel.id,
+            'name': hostel.name,
+            'university': hostel.university,
+            'location': hostel.location,
+            'price_per_semester': float(hostel.price_per_semester),
+            'available_rooms': hostel.available_rooms,
+            'hostel_type': hostel.get_hostel_type_display(),
+        })
+    
+    return JsonResponse({'hostels': data})

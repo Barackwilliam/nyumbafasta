@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
@@ -61,360 +60,359 @@
     <!-- Custom CSS with Blue & Yellow Theme -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
-
         /* ===== BLUE & YELLOW COLOR THEME ===== */
-:root {
-    --primary-blue: #4361ee;
-    --primary-blue-dark: #3a56d4;
-    --primary-blue-light: #4cc9f0;
-    --secondary-yellow: #ffd60a;
-    --secondary-yellow-dark: #ffc300;
-    --secondary-yellow-light: #ffea00;
-    --accent-blue: #4895ef;
-    --accent-yellow: #f9c74f;
-    
-    /* Neutral colors */
-    --white: #ffffff;
-    --light-gray: #f8f9fa;
-    --gray: #6c757d;
-    --dark-gray: #343a40;
-    --black: #212529;
-}
+        :root {
+            --primary-blue: #4361ee;
+            --primary-blue-dark: #3a56d4;
+            --primary-blue-light: #4cc9f0;
+            --secondary-yellow: #ffd60a;
+            --secondary-yellow-dark: #ffc300;
+            --secondary-yellow-light: #ffea00;
+            --accent-blue: #4895ef;
+            --accent-yellow: #f9c74f;
+            
+            /* Neutral colors */
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --gray: #6c757d;
+            --dark-gray: #343a40;
+            --black: #212529;
+        }
 
-/* ===== BASE STYLES ===== */
-body {
-    font-family: 'Inter', sans-serif;
-    color: var(--dark-gray);
-    background-color: var(--light-gray);
-    transition: all 0.3s ease;
-}
+        /* ===== BASE STYLES ===== */
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark-gray);
+            background-color: var(--light-gray);
+            transition: all 0.3s ease;
+        }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-}
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
 
-.preload {
-    opacity: 0;
-}
+        .preload {
+            opacity: 0;
+        }
 
-/* ===== BLUE BACKGROUND CLASSES ===== */
-.bg-blue {
-    background-color: var(--primary-blue) !important;
-}
+        /* ===== BLUE BACKGROUND CLASSES ===== */
+        .bg-blue {
+            background-color: var(--primary-blue) !important;
+        }
 
-.bg-blue-dark {
-    background-color: var(--primary-blue-dark) !important;
-}
+        .bg-blue-dark {
+            background-color: var(--primary-blue-dark) !important;
+        }
 
-.bg-blue-light {
-    background-color: var(--primary-blue-light) !important;
-}
+        .bg-blue-light {
+            background-color: var(--primary-blue-light) !important;
+        }
 
-.bg-accent-blue {
-    background-color: var(--accent-blue) !important;
-}
+        .bg-accent-blue {
+            background-color: var(--accent-blue) !important;
+        }
 
-/* ===== YELLOW BACKGROUND CLASSES ===== */
-.bg-yellow {
-    background-color: var(--secondary-yellow) !important;
-}
+        /* ===== YELLOW BACKGROUND CLASSES ===== */
+        .bg-yellow {
+            background-color: var(--secondary-yellow) !important;
+        }
 
-.bg-yellow-dark {
-    background-color: var(--secondary-yellow-dark) !important;
-}
+        .bg-yellow-dark {
+            background-color: var(--secondary-yellow-dark) !important;
+        }
 
-.bg-yellow-light {
-    background-color: var(--secondary-yellow-light) !important;
-}
+        .bg-yellow-light {
+            background-color: var(--secondary-yellow-light) !important;
+        }
 
-.bg-accent-yellow {
-    background-color: var(--accent-yellow) !important;
-}
+        .bg-accent-yellow {
+            background-color: var(--accent-yellow) !important;
+        }
 
-/* ===== TEXT COLORS ===== */
-.text-blue {
-    color: var(--primary-blue) !important;
-}
+        /* ===== TEXT COLORS ===== */
+        .text-blue {
+            color: var(--primary-blue) !important;
+        }
 
-.text-blue-dark {
-    color: var(--primary-blue-dark) !important;
-}
+        .text-blue-dark {
+            color: var(--primary-blue-dark) !important;
+        }
 
-.text-blue-light {
-    color: var(--primary-blue-light) !important;
-}
+        .text-blue-light {
+            color: var(--primary-blue-light) !important;
+        }
 
-.text-yellow {
-    color: var(--secondary-yellow) !important;
-}
+        .text-yellow {
+            color: var(--secondary-yellow) !important;
+        }
 
-.text-yellow-dark {
-    color: var(--secondary-yellow-dark) !important;
-}
+        .text-yellow-dark {
+            color: var(--secondary-yellow-dark) !important;
+        }
 
-.text-yellow-light {
-    color: var(--secondary-yellow-light) !important;
-}
+        .text-yellow-light {
+            color: var(--secondary-yellow-light) !important;
+        }
 
-/* ===== BUTTONS ===== */
-.btn-blue {
-    background-color: var(--primary-blue);
-    color: var(--white);
-    border: none;
-}
+        /* ===== BUTTONS ===== */
+        .btn-blue {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+        }
 
-.btn-blue:hover {
-    background-color: var(--primary-blue-dark);
-    color: var(--white);
-}
+        .btn-blue:hover {
+            background-color: var(--primary-blue-dark);
+            color: var(--white);
+        }
 
-.btn-yellow {
-    background-color: var(--secondary-yellow);
-    color: var(--primary-blue);
-    border: none;
-    font-weight: 600;
-}
+        .btn-yellow {
+            background-color: var(--secondary-yellow);
+            color: var(--primary-blue);
+            border: none;
+            font-weight: 600;
+        }
 
-.btn-yellow:hover {
-    background-color: var(--secondary-yellow-dark);
-    color: var(--primary-blue-dark);
-}
+        .btn-yellow:hover {
+            background-color: var(--secondary-yellow-dark);
+            color: var(--primary-blue-dark);
+        }
 
-.btn-outline-blue {
-    border: 2px solid var(--primary-blue);
-    color: var(--primary-blue);
-    background-color: transparent;
-}
+        .btn-outline-blue {
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+            background-color: transparent;
+        }
 
-.btn-outline-blue:hover {
-    background-color: var(--primary-blue);
-    color: var(--white);
-}
+        .btn-outline-blue:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
 
-.btn-outline-yellow {
-    border: 2px solid var(--secondary-yellow);
-    color: var(--secondary-yellow);
-    background-color: transparent;
-}
+        .btn-outline-yellow {
+            border: 2px solid var(--secondary-yellow);
+            color: var(--secondary-yellow);
+            background-color: transparent;
+        }
 
-.btn-outline-yellow:hover {
-    background-color: var(--secondary-yellow);
-    color: var(--primary-blue);
-}
+        .btn-outline-yellow:hover {
+            background-color: var(--secondary-yellow);
+            color: var(--primary-blue);
+        }
 
-/* ===== NAVBAR ===== */
-.navbar {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
-    box-shadow: 0 2px 10px rgba(67, 97, 238, 0.2);
-    padding: 1rem 0;
-}
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            box-shadow: 0 2px 10px rgba(67, 97, 238, 0.2);
+            padding: 1rem 0;
+        }
 
-.navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 800;
-}
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
 
-.nav-link {
-    color: var(--white) !important;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    padding: 0.5rem 1rem !important;
-}
+        .nav-link {
+            color: var(--white) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem !important;
+        }
 
-.nav-link:hover {
-    color: var(--secondary-yellow) !important;
-    transform: translateY(-2px);
-}
+        .nav-link:hover {
+            color: var(--secondary-yellow) !important;
+            transform: translateY(-2px);
+        }
 
-.nav-link.active {
-    color: var(--secondary-yellow) !important;
-    border-bottom: 2px solid var(--secondary-yellow);
-}
+        .nav-link.active {
+            color: var(--secondary-yellow) !important;
+            border-bottom: 2px solid var(--secondary-yellow);
+        }
 
-.dropdown-menu {
-    background-color: var(--primary-blue);
-    border: 1px solid var(--secondary-yellow);
-    border-radius: 0.5rem;
-}
+        .dropdown-menu {
+            background-color: var(--primary-blue);
+            border: 1px solid var(--secondary-yellow);
+            border-radius: 0.5rem;
+        }
 
-.dropdown-item {
-    color: var(--white) !important;
-    padding: 0.75rem 1rem;
-    transition: all 0.3s ease;
-}
+        .dropdown-item {
+            color: var(--white) !important;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
 
-.dropdown-item:hover {
-    background-color: var(--secondary-yellow) !important;
-    color: var(--primary-blue) !important;
-}
+        .dropdown-item:hover {
+            background-color: var(--secondary-yellow) !important;
+            color: var(--primary-blue) !important;
+        }
 
-/* ===== SEARCH BAR ===== */
-.input-group .form-control {
-    border: 2px solid var(--secondary-yellow);
-    border-right: none;
-}
+        /* ===== SEARCH BAR ===== */
+        .input-group .form-control {
+            border: 2px solid var(--secondary-yellow);
+            border-right: none;
+        }
 
-.input-group .form-control:focus {
-    border-color: var(--secondary-yellow-dark);
-    box-shadow: 0 0 0 0.25rem rgba(255, 214, 10, 0.25);
-}
+        .input-group .form-control:focus {
+            border-color: var(--secondary-yellow-dark);
+            box-shadow: 0 0 0 0.25rem rgba(255, 214, 10, 0.25);
+        }
 
-.border-yellow {
-    border-color: var(--secondary-yellow) !important;
-}
+        .border-yellow {
+            border-color: var(--secondary-yellow) !important;
+        }
 
-/* ===== FOOTER ===== */
-footer {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
-    margin-top: auto;
-}
+        /* ===== FOOTER ===== */
+        footer {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            margin-top: auto;
+        }
 
-.footer-section h4,
-.footer-section h5 {
-    color: var(--secondary-yellow);
-}
+        .footer-section h4,
+        .footer-section h5 {
+            color: var(--secondary-yellow);
+        }
 
-.footer-section a {
-    transition: all 0.3s ease;
-}
+        .footer-section a {
+            transition: all 0.3s ease;
+        }
 
-.footer-section a:hover {
-    color: var(--secondary-yellow) !important;
-    transform: translateX(5px);
-}
+        .footer-section a:hover {
+            color: var(--secondary-yellow) !important;
+            transform: translateX(5px);
+        }
 
-.social-icons .btn {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
+        .social-icons .btn {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
 
-.social-icons .btn:hover {
-    transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 5px 15px rgba(255, 214, 10, 0.3);
-}
+        .social-icons .btn:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 214, 10, 0.3);
+        }
 
-/* ===== CARD STYLES ===== */
-.card {
-    border: none;
-    border-radius: 1rem;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    background: var(--white);
-}
+        /* ===== CARD STYLES ===== */
+        .card {
+            border: none;
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(67, 97, 238, 0.2);
-}
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.2);
+        }
 
-.card-title {
-    color: var(--primary-blue);
-    font-weight: 700;
-}
+        .card-title {
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
 
-.card-price {
-    color: var(--secondary-yellow);
-    font-weight: 800;
-    font-size: 1.5rem;
-}
+        .card-price {
+            color: var(--secondary-yellow);
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
 
-/* ===== BADGES ===== */
-.badge-blue {
-    background-color: var(--primary-blue);
-    color: var(--white);
-}
+        /* ===== BADGES ===== */
+        .badge-blue {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
 
-.badge-yellow {
-    background-color: var(--secondary-yellow);
-    color: var(--primary-blue);
-}
+        .badge-yellow {
+            background-color: var(--secondary-yellow);
+            color: var(--primary-blue);
+        }
 
-/* ===== BORDERS ===== */
-.border-blue {
-    border-color: var(--primary-blue) !important;
-}
+        /* ===== BORDERS ===== */
+        .border-blue {
+            border-color: var(--primary-blue) !important;
+        }
 
-.border-yellow {
-    border-color: var(--secondary-yellow) !important;
-}
+        .border-yellow {
+            border-color: var(--secondary-yellow) !important;
+        }
 
-/* ===== SHADOWS ===== */
-.shadow-blue {
-    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2) !important;
-}
+        /* ===== SHADOWS ===== */
+        .shadow-blue {
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2) !important;
+        }
 
-.shadow-yellow {
-    box-shadow: 0 5px 15px rgba(255, 214, 10, 0.2) !important;
-}
+        .shadow-yellow {
+            box-shadow: 0 5px 15px rgba(255, 214, 10, 0.2) !important;
+        }
 
-/* ===== HOVER EFFECTS ===== */
-.bg-blue-hover:hover {
-    background-color: var(--secondary-yellow) !important;
-    color: var(--primary-blue) !important;
-}
+        /* ===== HOVER EFFECTS ===== */
+        .bg-blue-hover:hover {
+            background-color: var(--secondary-yellow) !important;
+            color: var(--primary-blue) !important;
+        }
 
-/* ===== UTILITY CLASSES ===== */
-.rounded-lg {
-    border-radius: 1rem !important;
-}
+        /* ===== UTILITY CLASSES ===== */
+        .rounded-lg {
+            border-radius: 1rem !important;
+        }
 
-.rounded-xl {
-    border-radius: 1.5rem !important;
-}
+        .rounded-xl {
+            border-radius: 1.5rem !important;
+        }
 
-/* ===== ANIMATIONS ===== */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-.fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
-}
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .navbar-collapse {
-        background-color: var(--primary-blue);
-        padding: 1rem;
-        border-radius: 0 0 1rem 1rem;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .navbar-nav {
-        margin-bottom: 1rem;
-    }
-    
-    .nav-item {
-        margin-bottom: 0.5rem;
-    }
-}
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar-collapse {
+                background-color: var(--primary-blue);
+                padding: 1rem;
+                border-radius: 0 0 1rem 1rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+            
+            .navbar-nav {
+                margin-bottom: 1rem;
+            }
+            
+            .nav-item {
+                margin-bottom: 0.5rem;
+            }
+        }
 
-/* ===== ACCESSIBILITY ===== */
-.visually-hidden-focusable:focus {
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    background-color: var(--secondary-yellow);
-    color: var(--primary-blue);
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    text-decoration: none;
-    z-index: 9999;
-}
+        /* ===== ACCESSIBILITY ===== */
+        .visually-hidden-focusable:focus {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background-color: var(--secondary-yellow);
+            color: var(--primary-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            z-index: 9999;
+        }
     </style>
     <!-- Page-specific CSS -->
     {% block extra_css %}{% endblock %}
@@ -445,7 +443,7 @@ footer {
         <div class="container">
             <a style="color: white;" class="navbar-brand" href="{% url 'makazi:home' %}">
                 <i class="bi bi-house-heart-fill me-2 text-white"></i>
-                <span class="fw-bold text-white">    </span>
+                <span class="fw-bold text-white">NyumbaFasta</span>
             </a>
             
             <!-- Mobile Toggle -->
@@ -461,75 +459,59 @@ footer {
                             <i class="bi bi-house-door me-1 text-yellow"></i>Home
                         </a>
                     </li>
+                   
+                    
+                    <!-- Makazi/Houses -->
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{% url 'makazi:listings' %}">
-                            <i class="bi bi-grid-3x3-gap me-1 text-yellow"></i>All Properties
+                            <i class="bi bi-house-door me-1 text-yellow"></i>Makazi
                         </a>
                     </li>
-                    {% comment %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-geo-alt me-1 text-yellow"></i>Location
+                    
+                    <!-- HOSTELS - ACTIVE LINK -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'makazi:hostels_list' %}">
+                            <i class="bi bi-building me-1 text-yellow"></i>Hostels
                         </a>
-                        <ul class="dropdown-menu bg-blue">
-                            {% for location in popular_locations|slice:":10" %}
-                            <li>
-                                <a class="dropdown-item text-white bg-blue-hover" href="{% url 'makazi:listings' %}?location={{ location.location }}">
-                                    {{ location.location }}
-                                </a>
-                            </li>
-                            {% endfor %}
-                        </ul>
                     </li>
-                      {% endcomment %}
-                                 <li class="nav-item">
-    <a class="nav-link text-white" href="{% url 'makazi:listings' %}">
-        <i class="bi bi-house-door me-1 text-yellow"></i>Makazi
-    </a>
-</li>
-<li class="nav-item">
-    <a class="nav-link text-white" href="">
-        <i class="bi bi-building me-1 text-yellow"></i>Hostels
-    </a>
-</li>
-
-<li class="nav-item">
-    <a class="nav-link text-white" href="{% url 'makazi:apartments_list' %}">
-        <i class="bi bi-building-check me-1 text-yellow"></i>Apartments
-    </a>
-</li>
-
-<li class="nav-item">
-    <a class="nav-link text-white" href="#">
-        <i class="bi bi-building-fill me-1 text-yellow"></i>Hotels
-    </a>
-</li>
-<li class="nav-item">
-    <a class="nav-link text-white" 
-       href="https://www.airbnb.com/tanzania/stays">
-        <i class="bi bi-door-open me-1 text-yellow"></i>Airbnb
-    </a>
-</li>
-
+                    
+                    <!-- Apartments -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'makazi:apartments_list' %}">
+                            <i class="bi bi-building-check me-1 text-yellow"></i>Apartments
+                        </a>
+                    </li>
+                    
+                    <!-- Hotels (Coming Soon) -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white coming-soon" href="#" data-bs-toggle="modal" data-bs-target="#featureComingSoonModal">
+                            <i class="bi bi-building-fill me-1 text-yellow"></i>Hotels
+                        </a>
+                    </li>
+                    
+                    <!-- Airbnb -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="https://www.airbnb.com/tanzania/stays" target="_blank">
+                            <i class="bi bi-door-open me-1 text-yellow"></i>Airbnb
+                        </a>
+                    </li>
                 </ul>
                 
                 <!-- Search Bar -->
                 <form class="d-flex me-3" action="{% url 'makazi:listings' %}" method="get">
                     <div class="input-group">
-
-                               <input type="text" 
-                                       class="form-control border-yellow" 
-                                       id="searchInput" 
-                                       placeholder="Search properties..."
-                                       value="{{ request.GET.q }}">
-
-
-                                <button class="btn btn-yellow" type="button" id="searchButton">
-                                    <i class="bi bi-arrow-right"></i>
-                                </button>
-    
+                        <input type="text" 
+                               class="form-control border-yellow" 
+                               id="searchInput" 
+                               name="q"
+                               placeholder="Search properties..."
+                               value="{{ request.GET.q }}">
+                        <button class="btn btn-yellow" type="submit" id="searchButton">
+                            <i class="bi bi-search"></i>
+                        </button>
                     </div>
                 </form>
+                
                 <!-- Theme Toggle -->
                 <button class="btn btn-yellow me-2" id="themeToggle" 
                         aria-label="Toggle theme">
@@ -537,22 +519,22 @@ footer {
                 </button>
                 
                 <!-- User Menu (if logged in) -->
-{% if user.is_authenticated %}
-<div class="dropdown">
-    <button class="btn btn-yellow dropdown-toggle" type="button" data-bs-toggle="dropdown">
-        <i class="bi bi-person-circle text-blue"></i>
-    </button>
-    <ul class="dropdown-menu bg-blue">
-        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-person me-2 text-yellow"></i>Profile</a></li>
-        <li><a class="dropdown-item text-white bg-blue-hover" href="{% url 'makazi:my_bookings' %}"><i class="bi bi-calendar-check me-2 text-yellow"></i>My Bookings</a></li>
-        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-heart me-2 text-yellow"></i>Favorites</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-box-arrow-right me-2 text-yellow"></i>Logout</a></li>
-    </ul>
-</div>
-{% else %}
-<a href="#" class="btn btn-yellow text-white">Login</a>
-{% endif %}
+                {% if user.is_authenticated %}
+                <div class="dropdown">
+                    <button class="btn btn-yellow dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle text-blue"></i>
+                    </button>
+                    <ul class="dropdown-menu bg-blue">
+                        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-person me-2 text-yellow"></i>Profile</a></li>
+                        <li><a class="dropdown-item text-white bg-blue-hover" href="{% url 'makazi:my_bookings' %}"><i class="bi bi-calendar-check me-2 text-yellow"></i>My Bookings</a></li>
+                        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-heart me-2 text-yellow"></i>Favorites</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-white bg-blue-hover" href="#"><i class="bi bi-box-arrow-right me-2 text-yellow"></i>Logout</a></li>
+                    </ul>
+                </div>
+                {% else %}
+                <a href="#" class="btn btn-yellow">Login</a>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -606,13 +588,13 @@ footer {
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a href="#" class="text-white text-decoration-none">
-                                <i class="bi bi-arrow-right me-1 text-yellow"></i>About Us
+                            <a href="{% url 'makazi:hostels_list' %}" class="text-white text-decoration-none">
+                                <i class="bi bi-arrow-right me-1 text-yellow"></i>Hostels
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a href="#" class="text-white text-decoration-none">
-                                <i class="bi bi-arrow-right me-1 text-yellow"></i>Contact Us
+                            <a href="{% url 'makazi:apartments_list' %}" class="text-white text-decoration-none">
+                                <i class="bi bi-arrow-right me-1 text-yellow"></i>Apartments
                             </a>
                         </li>
                     </ul>
@@ -679,6 +661,46 @@ footer {
         </div>
     </footer>
 
+    <!-- Coming Soon Modal -->
+    <div class="modal fade" id="featureComingSoonModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; border: 2px solid #4361ee;">
+                <div class="modal-header border-0" style="background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);">
+                    <h5 class="modal-title text-white fw-bold">
+                        <i class="bi bi-hourglass-split me-2"></i>Feature Coming Soon!
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="mb-3" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #ffd60a 0%, #ffc300 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-tools fs-1 text-blue"></i>
+                        </div>
+                        <h4 class="fw-bold text-blue mb-2">Hotels Coming Soon!</h4>
+                        <p class="text-muted">Short-term stays and hotel accommodations for business and leisure will be available soon!</p>
+                    </div>
+                    
+                    <div class="alert alert-info border-0" style="background: rgba(67, 97, 238, 0.1); border-radius: 10px;">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="bi bi-info-circle-fill text-blue"></i>
+                            </div>
+                            <div>
+                                <p class="mb-0">This feature is currently in development and will be available soon. Our team is working hard to bring you the best experience!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-blue" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-yellow" onclick="notifyMe('hotels')">
+                        <i class="bi bi-bell me-1"></i>Notify Me
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -692,7 +714,6 @@ footer {
     <!-- Page-specific JS -->
     {% block extra_js %}{% endblock %}
     
-    <!-- Performance Monitoring -->
     <script>
         // Performance monitoring
         window.addEventListener('load', function() {
@@ -712,168 +733,180 @@ footer {
             // You can send this to your error tracking service
         });
 
-
-
-
-
-        // Coming Soon Modal Handler
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the modal
-    const featureModal = new bootstrap.Modal(document.getElementById('featureComingSoonModal'));
-    const featureTitle = document.getElementById('featureTitle');
-    const featureDescription = document.getElementById('featureDescription');
-    
-    // Define features that are coming soon
-    const comingSoonFeatures = {
-        'hostels': {
-            title: 'Hostels Coming Soon!',
-            description: 'Affordable student and youth accommodations across Tanzania.'
-        },
-        // 'apartments': {
-        //     title: 'Apartments Coming Soon!',
-        //     description: 'Premium apartment listings with modern amenities and great locations.'
-        // },
-        'hotels': {
-            title: 'Hotels Coming Soon!',
-            description: 'Short-term stays and hotel accommodations for business and leisure.'
-        }
-    };
-    
-    // Function to show feature modal
-    function showFeatureModal(featureType) {
-        const feature = comingSoonFeatures[featureType];
-        if (feature) {
-            featureTitle.textContent = feature.title;
-            featureDescription.textContent = feature.description;
-            featureModal.show();
-        }
-    }
-    
-    // Attach click events to feature links in navbar
-    const navbarLinks = document.querySelectorAll('.navbar-nav .nav-link');
-    
-    navbarLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const linkText = this.textContent.toLowerCase().trim();
-            const href = this.getAttribute('href');
+        // Theme Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
             
-            // Check if it's an empty link
-            if (!href || href === '#' || href.trim() === '') {
-                e.preventDefault();
+            themeToggle.addEventListener('click', function() {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
-                // Determine which feature was clicked
-                if (linkText.includes('hostel') || this.querySelector('.bi-building')) {
-                    showFeatureModal('hostels');
-                } else if (linkText.includes('apartment') || this.querySelector('.bi-building-check')) {
-                    showFeatureModal('apartments');
-                } else if (linkText.includes('hotel') || this.querySelector('.bi-building-fill')) {
-                    showFeatureModal('hotels');
-                }
-            }
-        });
-    });
-    
-    // Also check on hover for better UX (optional)
-    navbarLinks.forEach(link => {
-        link.addEventListener('mouseenter', function() {
-            const href = this.getAttribute('href');
-            if (!href || href === '#' || href.trim() === '') {
-                this.style.cursor = 'pointer';
-                this.title = 'Coming Soon! Click to learn more';
-            }
-        });
-    });
-    
-    // Notify button functionality
-    const notifyBtn = document.querySelector('#featureComingSoonModal .btn-yellow');
-    if (notifyBtn) {
-        notifyBtn.addEventListener('click', function() {
-            // Close the current modal
-            featureModal.hide();
+                html.setAttribute('data-bs-theme', newTheme);
+                themeIcon.className = newTheme === 'dark' ? 'bi bi-sun text-yellow' : 'bi bi-moon text-blue';
+                
+                // Save preference to localStorage
+                localStorage.setItem('theme', newTheme);
+            });
             
-            // Show a simple alert for now (you can replace with another modal)
-            setTimeout(() => {
-                alert('Thank you for your interest! We\'ll notify you when this feature is available.');
-            }, 300);
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-bs-theme', savedTheme);
+                themeIcon.className = savedTheme === 'dark' ? 'bi bi-sun text-yellow' : 'bi bi-moon text-blue';
+            }
+            
+            // Search functionality
+            const searchButton = document.getElementById('searchButton');
+            const searchInput = document.getElementById('searchInput');
+            
+            if (searchButton && searchInput) {
+                searchButton.addEventListener('click', function() {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        window.location.href = "{% url 'makazi:listings' %}?q=" + encodeURIComponent(query);
+                    }
+                });
+                
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchButton.click();
+                    }
+                });
+            }
+            
+            // Coming Soon Modal Handler
+            document.querySelectorAll('.coming-soon').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const modal = new bootstrap.Modal(document.getElementById('featureComingSoonModal'));
+                    modal.show();
+                });
+            });
+            
+            // Notify Me function
+            window.notifyMe = function(feature) {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('featureComingSoonModal'));
+                if (modal) modal.hide();
+                
+                // Show success message
+                setTimeout(() => {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3 shadow';
+                    alertDiv.style.zIndex = '9999';
+                    alertDiv.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <div>
+                                <strong>Thank you!</strong> We'll notify you when ${feature} are available.
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(alertDiv);
+                    
+                    // Remove alert after 3 seconds
+                    setTimeout(() => {
+                        alertDiv.remove();
+                    }, 3000);
+                }, 300);
+            };
+            
+            // Highlight current page in navbar
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                const linkPath = link.getAttribute('href');
+                if (linkPath && currentPath.includes(linkPath.split('/')[1])) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Add hover effect to cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px)';
+                    this.style.boxShadow = '0 15px 30px rgba(67, 97, 238, 0.3)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+                });
+            });
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
         });
-    }
-});
     </script>
 
-
-
-<!-- Coming Soon Modal -->
-<div class="modal fade" id="featureComingSoonModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; border: 2px solid #4361ee;">
-            <div class="modal-header border-0" style="background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);">
-                <h5 class="modal-title text-white fw-bold">
-                    <i class="bi bi-hourglass-split me-2"></i>Feature Coming Soon!
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="text-center mb-4">
-                    <div class="mb-3" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #ffd60a 0%, #ffc300 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-tools fs-1 text-blue"></i>
-                    </div>
-                    <h4 class="fw-bold text-blue mb-2" id="featureTitle"></h4>
-                    <p class="text-muted" id="featureDescription"></p>
-                </div>
-                
-                <div class="alert alert-info border-0" style="background: rgba(67, 97, 238, 0.1); border-radius: 10px;">
-                    <div class="d-flex">
-                        <div class="me-3">
-                            <i class="bi bi-info-circle-fill text-blue"></i>
-                        </div>
-                        <div>
-                            <p class="mb-0">This feature is currently in development and will be available soon. Our team is working hard to bring you the best experience!</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-outline-blue" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-yellow">
-                    <i class="bi bi-bell me-1"></i>Notify Me
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    .modal-content {
-        animation: modalSlideIn 0.3s ease-out;
-    }
-    
-    @keyframes modalSlideIn {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
+    <style>
+        /* Modal animation */
+        .modal-content {
+            animation: modalSlideIn 0.3s ease-out;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-    }
-    
-    .text-blue {
-        color: #4361ee !important;
-    }
-    
-    .btn-yellow {
-        background: linear-gradient(135deg, #ffd60a 0%, #ffc300 100%);
-        color: #4361ee;
-        border: none;
-        font-weight: 600;
-    }
-    
-    .btn-outline-blue {
-        color: #4361ee;
-        border: 2px solid #4361ee;
-        background: transparent;
-    }
-</style>
+        
+        /* Active nav link indicator */
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: var(--secondary-yellow);
+            border-radius: 2px;
+        }
+        
+        /* Search button animation */
+        #searchButton:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s ease;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-blue-dark);
+        }
+    </style>
 </body>
 </html>

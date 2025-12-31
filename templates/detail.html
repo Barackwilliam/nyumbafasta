@@ -958,7 +958,7 @@
              onerror="this.src='/static/images/default-property.jpg'">
         
         <div class="price-tag">
-            <div class="price-amount">TSh {{ listing.price|only_digits }}</div>
+            <div class="price-amount">{{ listing.price }}</div>
             <div class="price-label">Total Price</div>
         </div>
         
@@ -1190,7 +1190,7 @@
                                 <p class="text-blue mb-1" style="font-size: 0.85rem;">
                                     <i class="bi bi-geo-alt me-1"></i>{{ similar.location|truncatechars:20 }}
                                 </p>
-                                <div class="similar-price">TSh {{ similar.price|only_digits }}</div>
+                                <div class="similar-price">{{ similar.price }}</div>
                                 {% if similar.bedrooms %}
                                 <div class="d-flex align-items-center">
                                     <span class="badge bg-blue text-white" style="font-size: 0.75rem;">
